@@ -30,43 +30,43 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
 
-    Route::resource('levels', 'levelsController')->names([
+    Route::resource('levels', 'LevelsController')->names([
         'index' => 'levels',
         'create' => 'levels.create',
         'update' => 'levels.update',
         'destroy' => 'levels.destroy'
     ]);
-    Route::resource('transportations', 'transportationsController')->names([
+    Route::resource('transportations', 'TransportationsController')->names([
         'index' => 'transportations',
         'create' => 'transportations.create',
         'update' => 'transportations.update',
         'destroy' => 'transportations.destroy'
     ]);
-    Route::resource('juices', 'juicesController')->names([
+    Route::resource('juices', 'JuicesController')->names([
         'index' => 'juices',
         'create' => 'juices.create',
         'update' => 'juices.update',
         'destroy' => 'juices.destroy'
     ]);
-    Route::resource('foods', 'foodsController')->names([
+    Route::resource('foods', 'FoodsController')->names([
         'index' => 'foods',
         'create' => 'foods.create',
         'update' => 'foods.update',
         'destroy' => 'foods.destroy'
     ]);
-    Route::resource('drinks', 'drinksController')->names([
+    Route::resource('drinks', 'DrinksController')->names([
         'index' => 'drinks',
         'create' => 'drinks.create',
         'update' => 'drinks.update',
         'destroy' => 'drinks.destroy'
     ]);
-    Route::resource('machines', 'machinesController')->names([
+    Route::resource('machines', 'MachinesController')->names([
         'index' => 'machines',
         'create' => 'machines.create',
         'update' => 'machines.update',
         'destroy' => 'machines.destroy'
     ]);
-    Route::resource('tables', 'tablesController')->names([
+    Route::resource('tables', 'TablesController')->names([
         'index' => 'tables',
         'create' => 'tables.create',
         'update' => 'tables.update',

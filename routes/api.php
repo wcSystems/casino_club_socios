@@ -20,10 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // DATATABLES SERVICES
 Route::get('/users/service', 'UsersController@service')->name('users.service');
 Route::get('/clients/service', 'ClientsController@service')->name('clients.service');
-Route::get('/levels/service', 'levelsController@service')->name('levels.service');
-Route::get('/transportations/service', 'transportationsController@service')->name('transportations.service');
-Route::get('/juices/service', 'juicesController@service')->name('juices.service');
-Route::get('/foods/service', 'foodsController@service')->name('foods.service');
-Route::get('/drinks/service', 'drinksController@service')->name('drinks.service');
-Route::get('/machines/service', 'machinesController@service')->name('machines.service');
-Route::get('/tables/service', 'tablesController@service')->name('tables.service');
+Route::get('/levels/service', 'LevelsController@service')->name('levels.service');
+Route::get('/transportations/service', 'TransportationsController@service')->name('transportations.service');
+Route::get('/juices/service', 'JuicesController@service')->name('juices.service');
+Route::get('/foods/service', 'FoodsController@service')->name('foods.service');
+Route::get('/drinks/service', 'DrinksController@service')->name('drinks.service');
+Route::get('/machines/service', 'MachinesController@service')->name('machines.service');
+Route::get('/tables/service', 'TablesController@service')->name('tables.service');
