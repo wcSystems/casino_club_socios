@@ -15,11 +15,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('password');
             $table->string('name',100);
             $table->string('celular',10)->nullable();
-            $table->string('cedula',11)->unique();
+            $table->string('cedula',11);
             $table->date('nacimiento');
             $table->bigInteger('level_id')->nullable()->unsigned();
             $table->foreign('level_id')->references('id')->on('levels')->onUpdate('cascade');
