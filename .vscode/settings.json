@@ -1,0 +1,9 @@
+{
+    "remotePath": "./casino",
+    "host": "c2071626.ferozo.com",
+    "username": "c2071626",
+    "password": "pati07moNE",
+    "port": "21",
+    "protocol": "ftp",
+    "ignore": "\\.git,\\.vscode.\\node_modules"
+}

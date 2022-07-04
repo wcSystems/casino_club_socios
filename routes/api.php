@@ -27,3 +27,4 @@ Route::get('/foods/service', 'FoodsController@service')->name('foods.service');
 Route::get('/drinks/service', 'DrinksController@service')->name('drinks.service');
 Route::get('/machines/service', 'MachinesController@service')->name('machines.service');
 Route::get('/tables/service', 'TablesController@service')->name('tables.service');
+Route::get('/counting_table_stadistics/service', 'Counting_table_stadisticsController@service')->name('counting_table_stadistics.service');
