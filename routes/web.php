@@ -74,6 +74,14 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
 
+    Route::resource('counting_table_stadistics', 'Counting_table_stadisticsController')->names([
+        'index' => 'counting_table_stadistics',
+        'create' => 'counting_table_stadistics.create',
+        'update' => 'counting_table_stadistics.update',
+        'destroy' => 'counting_table_stadistics.destroy'
+    ]);
+
+
     // VIEW - GRAPHICS
     Route::get('/', 'GraphicsController@index')->name("graphics");
 

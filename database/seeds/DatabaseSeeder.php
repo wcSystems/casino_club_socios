@@ -29,6 +29,6 @@ class DatabaseSeeder extends Seeder
         $this->call(FoodsTableSeeder::class);
         $this->call(JuicesTableSeeder::class);
         $this->call(DrinksTableSeeder::class);
-        factory(Client::class, 75)->create();
+        factory(Client::class, 15)->create();
     }
 }

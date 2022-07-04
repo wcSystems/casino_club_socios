@@ -96,6 +96,28 @@
         #data-table-default_processing{
             background-color: var(--global-6) !important;
         }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        input[type=number] { -moz-appearance:textfield;padding:0;text-align: center }
+        .swal2-content {
+            padding: 0px;
+        }
+
+        #data-table-default-stadistic > thead > tr > th:nth-child(n),
+        #data-table-default-stadistic > tbody > tr:nth-child(n) > th:nth-child(n),
+        #data-table-default-stadistic > tbody > tr:nth-child(n) > td:nth-child(n)
+        {
+            padding: .12rem !important;
+            font-size: 1rem !important;
+        }
+
+
+
         
     </style>
 
@@ -152,14 +174,26 @@
                             <span class="text-white">CLIENTES</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES</li>
-                   
-                   
+                    <li class="nav-header" style="color: #fff !important">CONTEOS</li>
 
+                    <li id="counting_table_stadistics_nav" class="has-sub closed">
+                        <a href="{{ route('counting_table_stadistics') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">MESAS</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES</li>
                     <li id="levels_nav" class="has-sub closed">
                         <a href="{{ route('levels') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">NIVELES</span>
+                        </a>
+                    </li>
+                    <li id="users_nav" class="has-sub closed">
+                        <a href="{{ route('users') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">USUARIOS</span>
                         </a>
                     </li>
                     <li id="transportations_nav" class="has-sub closed">
@@ -198,12 +232,7 @@
                             <span class="text-white">MESAS EN VIVO</span>
                         </a>
                     </li>
-                    <li id="users_nav" class="has-sub closed">
-                        <a href="{{ route('users') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">USUARIOS</span>
-                        </a>
-                    </li>
+                    
 
 
 
@@ -239,6 +268,13 @@
 
     {{-- pasar estos script aparte para que sean globales --}}
     <script>
+        moment.locale('en', {
+            months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
+            monthsShort: 'Enero._Feb._Mar_Abr._May_Jun_Jul._Ago_Sept._Oct._Nov._Dec.'.split('_'),
+            weekdays: 'Domingo_Lunes_Martes_Miercoles_Jueves_Viernes_Sabado'.split('_'),
+            weekdaysShort: 'Dom._Lun._Mar._Mier._Jue._Vier._Sab.'.split('_'),
+            weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sa'.split('_')
+        });
         function dataTable(url,columns) {
             $(document).ready(function() {
                 let table = $('#data-table-default').DataTable({
@@ -304,6 +340,7 @@
                 $("#search_ticket_machine").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_ticket_table").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
             });
+            
         }
         
         function validateForm(){
@@ -344,7 +381,7 @@
                 }
             });
         };
-        
+
         
       
     </script>
