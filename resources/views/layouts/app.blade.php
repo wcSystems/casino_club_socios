@@ -302,10 +302,8 @@
         function dataTable(url,columns) {
             $(document).ready(function() {
                 let table = $('#data-table-default').DataTable({
-                    searching: false,
                     responsive: true,
                     processing: true,
-                    serverSide: true,
                     lengthChange: true,
                     columns: columns,
                     ajax: {
@@ -325,12 +323,6 @@
                             d.search_table = $("#search_table:checked").val() ? "1" : undefined,
                         ]}
                     },
-                    columnDefs: [
-                        {
-                            orderable: false,
-                            targets: 1
-                        }
-                    ],
                     language: {
                         "lengthMenu": "Mostrar _MENU_ registros por página",
                         "emptyTable":  "Sin datos disponibles",
