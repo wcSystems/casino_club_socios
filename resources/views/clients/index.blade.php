@@ -5,8 +5,11 @@
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
         <div class="panel-heading-btn">
-            <button onclick="excelExport('xlsx')" class="d-flex btn btn-1 btn-secondary mx-1">
-                <i class="m-auto fas fa-lg fa-arrow-alt-circle-down"></i>
+            <button onclick="pdfExport('Clients')" class="d-flex btn btn-1 btn-secondary mx-1">
+                <i class="m-auto fas fa-lg fa-file-pdf"></i>
+            </button>
+            <button onclick="excelExport('Clients')" class="d-flex btn btn-1 btn-secondary mx-1">
+                <i class="m-auto fas fa-lg fa-file-excel"></i>
             </button>
             <button onclick="create()" class="d-flex btn btn-1 btn-success mx-1">
                 <i class="m-auto fa fa-lg fa-plus"></i>
@@ -162,7 +165,6 @@
                         <th>Cedula</th>
                         <th>Telefono</th>
                         <th>Email</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
             </table>
@@ -174,15 +176,6 @@
 <script>
     $('#clients_nav').removeClass("closed").addClass("active").addClass("expand")
     let data_modal_current = []
-
-    function excelExport(type, fn, dl) {
-        let user = {!! Auth::user() !!}
-        var elt = document.getElementById('data-table-default');
-        var wb = XLSX.utils.table_to_book(elt, { sheet: "listado de Clientes" });
-        return dl ?
-        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
-        XLSX.writeFile(wb, fn || ( user.name+'-Clients-'+moment().format('MMMM Do YYYY, h:mm:ss a')+'.'+(type || 'xlsx')));
-    }
 
     /* funciones para ejecutar la modal */
     function elim(id) {
@@ -755,15 +748,19 @@
         { data: 'last_name' },
         { data: 'cedula' },
         { data: 'phone' },
-        { data: 'email' },
         {
             render: function ( data,type, row  ) {
                 data_modal_current[row.id] = row
                 let url_edit = "{{ route('clients.edit', 'id_replace' ) }}".replace('id_replace', row.id);
                 let url_destroy = "{{ route('clients.destroy', 'id_replace' ) }}".replace('id_replace', row.id);
                 return `
-                    <a onclick="elim(${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                    <a onclick="edit(data_modal_current[${row.id}])" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
+                    <div class="d-flex justify-content-between">
+                        <div>${row.name+'@'+row.domain_name}</div>
+                        <div>
+                            <a onclick="elim(${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
+                            <a onclick="edit(data_modal_current[${row.id}])" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
+                        </div>
+                    </div>
                 `;
             }
         },

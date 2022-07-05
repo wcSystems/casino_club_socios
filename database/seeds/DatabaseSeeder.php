@@ -11,6 +11,7 @@ use App\Models\Juice;
 use App\Models\Drink;
 use App\Models\Client;
 use App\Models\Domain;
+use App\Models\Email;
 use Illuminate\Support\Facades\URL;
 
 class DatabaseSeeder extends Seeder
@@ -31,6 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call(JuicesTableSeeder::class);
         $this->call(DrinksTableSeeder::class);
         $this->call(DomainsTableSeeder::class);
+        $this->call(EmailsTableSeeder::class);
         factory(Client::class, 1000)->create();
     }
 }
