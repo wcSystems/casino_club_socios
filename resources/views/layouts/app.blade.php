@@ -65,12 +65,6 @@
         .sidebar{
             background-color: var(--global-7) !important
         }
-        #data-table-default_wrapper > .row:first-child{
-            display: none !important;
-        }
-        .dataTables_paginate,.paging_simple_numbers{
-            display: none !important;
-        }
 
         /* NEW COLORS */
         /* NEW COLORS */
@@ -117,7 +111,21 @@
             padding: .12rem !important;
             font-size: 1rem !important;
         }
-
+        
+        .dataTables_wrapper.dt-bootstrap4 .dataTables_paginate .pagination .paginate_button.active a{
+            background-color: #000 !important;
+        }
+        .page-link{
+            color: #fff !important;
+            background-color: var(--global-6) !important
+        }
+        .page-link:hover{
+            background-color: #000 !important;
+        }
+        
+        .page-item.disabled .page-link{
+            opacity: 0.7 !important;
+        }
 
 
         
@@ -327,11 +335,12 @@
                         "lengthMenu": "Mostrar _MENU_ registros por página",
                         "emptyTable":  "Sin datos disponibles",
                         "zeroRecords": "Ningun resultado encontrado",
-                        "info": "Mostrando _TOTAL_ registros totales",
+                        "info": "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
                         "infoFiltered":   "(filtrado de un total de _MAX_ registros)",
                         "infoEmpty": "Ningun valor disponible",
                         "loadingRecords": "Cargando...",
                         "processing":     "Procesando...",
+                        "search":     "Buscar",
                         "paginate": {
                             "first":      "Primero",
                             "last":       "Ultimo",
