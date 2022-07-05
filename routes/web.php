@@ -80,6 +80,18 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'counting_table_stadistics.update',
         'destroy' => 'counting_table_stadistics.destroy'
     ]);
+    Route::resource('domains', 'DomainsController')->names([
+        'index' => 'domains',
+        'create' => 'domains.create',
+        'update' => 'domains.update',
+        'destroy' => 'domains.destroy'
+    ]);
+    Route::resource('emails', 'EmailsController')->names([
+        'index' => 'emails',
+        'create' => 'emails.create',
+        'update' => 'emails.update',
+        'destroy' => 'emails.destroy'
+    ]);
 
 
     // VIEW - GRAPHICS
