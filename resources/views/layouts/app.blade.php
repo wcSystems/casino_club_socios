@@ -32,6 +32,8 @@
     <link href="{{ asset('plugins/sweetalert/dist/sweetalert.min.css') }}" rel="stylesheet">
     
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" />
+    <script src="{{ asset('js/autotable/jspdf.js') }}"></script>
+    <script src="{{ asset('js/autotable/autotable.js') }}"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/solid.min.css" integrity="sha512-qzgHTQ60z8RJitD5a28/c47in6WlHGuyRvMusdnuWWBB6fZ0DWG/KyfchGSBlLVeqAz+1LzNq+gGZkCSHnSd3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     @yield('css')
@@ -174,6 +176,13 @@
                             <span class="text-white">CLIENTES</span>
                         </a>
                     </li>
+                    <li class="nav-header" style="color: #fff !important">LISTADOS</li>
+                    <li id="emails_nav" class="has-sub closed">
+                        <a href="{{ route('emails') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">CORREOS</span>
+                        </a>
+                    </li>
                     <li class="nav-header" style="color: #fff !important">CONTEOS</li>
 
                     <li id="counting_table_stadistics_nav" class="has-sub closed">
@@ -232,6 +241,12 @@
                             <span class="text-white">MESAS EN VIVO</span>
                         </a>
                     </li>
+                    <li id="domains_nav" class="has-sub closed">
+                        <a href="{{ route('domains') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">DOMINIOS</span>
+                        </a>
+                    </li>
                     
 
 
@@ -265,9 +280,16 @@
     <script src="{{ asset('js/xlsx/xlsx.full.min.js') }}"></script>
     <script src="{{ asset('js/filepond/filepond.min.js') }}"></script>
 
+    
+
+
+
 
     {{-- pasar estos script aparte para que sean globales --}}
     <script>
+
+
+
         moment.locale('en', {
             months: 'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split('_'),
             monthsShort: 'Enero._Feb._Mar_Abr._May_Jun_Jul._Ago_Sept._Oct._Nov._Dec.'.split('_'),
@@ -275,6 +297,8 @@
             weekdaysShort: 'Dom._Lun._Mar._Mier._Jue._Vier._Sab.'.split('_'),
             weekdaysMin: 'Do_Lu_Ma_Mi_Ju_Vi_Sa'.split('_')
         });
+
+        
         function dataTable(url,columns) {
             $(document).ready(function() {
                 let table = $('#data-table-default').DataTable({
