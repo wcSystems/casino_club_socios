@@ -4,10 +4,10 @@
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
         <div class="panel-heading-btn">
-            <button onclick="pdfExport()" class="d-flex btn btn-1 btn-secondary mx-1">
+            <button onclick="pdfExport('Emails')" class="d-flex btn btn-1 btn-secondary mx-1">
                 <i class="m-auto fas fa-lg fa-file-pdf"></i>
             </button>
-            <button onclick="excelExport('xlsx')" class="d-flex btn btn-1 btn-secondary mx-1">
+            <button onclick="excelExport('Emails')" class="d-flex btn btn-1 btn-secondary mx-1">
                 <i class="m-auto fas fa-lg fa-file-excel"></i>
             </button>
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
@@ -23,7 +23,6 @@
                         <th>#</th>
                         <th>Nombre y Apellido</th>
                         <th>Email</th>
-                        <!-- <th>Acciones</th> -->
                     </tr>
                 </thead>
             </table>
@@ -111,21 +110,6 @@
             });
         }
     }
-
-    function excelExport(type, fn, dl) {
-        let user = {!! Auth::user() !!}
-        var elt = document.getElementById('data-table-default');
-        var wb = XLSX.utils.table_to_book(elt, { sheet: "listado de Correos" });
-        return dl ?
-        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
-        XLSX.writeFile(wb, fn || ( user.name+'-Emails-'+moment().format('MMMM Do YYYY, h:mm:ss a')+'.'+(type || 'xlsx')));
-    }
-    function pdfExport(type, fn, dl) {
-            var doc = new jsPDF()
-            doc.autoTable({ html: '#data-table-default' })
-            doc.save('table.pdf')
-    }
-
     dataTable("{{route('emails.service')}}",[
         {
             render: function ( data,type, row,all  ) {
@@ -133,11 +117,6 @@
             }
         },
         { data: 'user' },
-        /* {
-            render: function ( data,type, row,all  ) {
-                return row.name+'@'+row.domain_name;
-            }
-        }, */
         {
             render: function ( data,type, row  ) {
                 return `

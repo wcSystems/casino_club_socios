@@ -408,6 +408,20 @@
             });
         };
 
+        function excelExport(title,dl,fn) {
+            let user = {!! Auth::user() !!}
+            var elt = document.getElementById('data-table-default');
+            var wb = XLSX.utils.table_to_book(elt, { sheet: "listado de Correos" });
+            return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+            XLSX.writeFile(wb, fn || ( user.name+'-'+title+'-'+moment().format('MMMM Do YYYY, h:mm:ss a')+'.'+('xlsx' || 'xlsx')));
+        }
+        function pdfExport(title) {
+                let user = {!! Auth::user() !!}
+                var doc = new jsPDF()
+                doc.autoTable({ html: '#data-table-default' })
+                doc.save(`${user.name}-${title}-${moment().format('MMMM Do YYYY, h:mm:ss a')}.pdf`)
+        }
         
       
     </script>
