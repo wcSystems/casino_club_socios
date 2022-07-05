@@ -21,6 +21,8 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert(['name' => "Winder Mucie",'email' => 'wmucie','password' => bcrypt('12345678'),'celular' => '4121482348','cedula' => '25047058','nacimiento' => '1996-09-13']);
         DB::table('users')->insert(['name' => "Roberto Estadistica",'email' => 'roberto','password' => bcrypt('12345678'),'celular' => '4121482348','cedula' => '25047058','nacimiento' => '1996-09-13']);
         DB::table('users')->insert(['name' => "Nicole Estadistica",'email' => 'nicole','password' => bcrypt('12345678'),'celular' => '4121482348','cedula' => '25047058','nacimiento' => '1996-09-13']);
+        DB::table('users')->insert(['name' => "Monitores",'email' => 'monitores','password' => bcrypt('12345678'),'celular' => '4121482348','cedula' => '25047058','nacimiento' => '1996-09-13']);
+        DB::table('users')->insert(['name' => "elizabeth",'email' => 'elizabeth','password' => bcrypt('12345678'),'celular' => '4121482348','cedula' => '25047058','nacimiento' => '1996-09-13']);
         
     }
 }

@@ -31,6 +31,6 @@ class DatabaseSeeder extends Seeder
         $this->call(JuicesTableSeeder::class);
         $this->call(DrinksTableSeeder::class);
         $this->call(DomainsTableSeeder::class);
-        factory(Client::class, 15)->create();
+        factory(Client::class, 1000)->create();
     }
 }
