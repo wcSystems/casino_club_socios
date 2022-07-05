@@ -310,6 +310,7 @@
         function dataTable(url,columns) {
             $(document).ready(function() {
                 let table = $('#data-table-default').DataTable({
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
                     responsive: true,
                     processing: true,
                     lengthChange: true,
