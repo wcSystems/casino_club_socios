@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Email;
 use App\Models\Domain;
+use Illuminate\Support\Facades\DB;
 
 class EmailsController extends Controller
 {
@@ -102,10 +103,11 @@ class EmailsController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         /* QUERY FILTER */
-        $query = Email::select('emails.*','domains.name AS domain_name')
+        $query = Email::select(DB::raw('emails.*, domains.name AS domain_name, IF(emails.group=1,"Usuarios",IF(emails.group=2,"Departamentos","Otros")) AS group_name'))
                     ->where('emails.name','LIKE','%'.$search.'%')
                     ->orWhere('emails.user','LIKE','%'.$search.'%')
-                    ->join('domains', 'emails.domain_id', '=', 'domains.id')->get();
+                    ->join('domains', 'emails.domain_id', '=', 'domains.id')
+                    ->orderBy('group', 'DESC')->get();
                     
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');

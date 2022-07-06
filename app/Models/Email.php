@@ -10,5 +10,6 @@ class Email extends Model
         'user',
         'name',
         'domain_id',
+        'group',
     ];
 }

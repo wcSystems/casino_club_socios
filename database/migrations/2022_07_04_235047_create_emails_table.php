@@ -19,6 +19,7 @@ class CreateEmailsTable extends Migration
             $table->string('name',100);
             $table->bigInteger('domain_id')->nullable()->unsigned();
             $table->foreign('domain_id')->references('id')->on('domains')->onUpdate('cascade');
+            $table->integer('group')->default(0);
             $table->timestamps();
         });
     }

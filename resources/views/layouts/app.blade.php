@@ -307,7 +307,7 @@
         });
 
         
-        function dataTable(url,columns) {
+        function dataTable(url,columns,group_name_all) {
             $(document).ready(function() {
                 let table = $('#data-table-default').DataTable({
                     lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
@@ -315,6 +315,26 @@
                     processing: true,
                     lengthChange: true,
                     columns: columns,
+                    drawCallback: function (settings) {
+                        if(group_name_all){
+                            var api = this.api();
+                            var rows = api.rows({ page: 'current' }).nodes();
+                            var last = null;
+                            api.rows({ page: 'current' }).data().each(function (data, i) {
+                                if (last !== data.group_name) {
+                                    $(rows).eq(i).before('<tr class="group_name"><td colspan="3">' + data.group_name + '</td></tr>');
+                                    last = data.group_name;
+                                }
+                            });
+                        }
+                    },
+
+
+
+
+
+
+
                     ajax: {
                         "url": url,
                         "data": function (d) {[
