@@ -755,7 +755,7 @@
                 let url_destroy = "{{ route('clients.destroy', 'id_replace' ) }}".replace('id_replace', row.id);
                 return `
                     <div class="d-flex justify-content-between">
-                        <div>${row.name+'@'+row.domain_name}</div>
+                        <div>${row.email}</div>
                         <div>
                             <a onclick="elim(${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                             <a onclick="edit(data_modal_current[${row.id}])" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>

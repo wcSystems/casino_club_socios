@@ -21,7 +21,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre y Apellido</th>
+                        <th>Descripcion</th>
                         <th>Email</th>
                     </tr>
                 </thead>
@@ -60,6 +60,20 @@
                         </div>
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Grupo <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="group" class="form-control w-100">
+                                        <option value="" selected >Todos los grupos</option>
+                                        <option value="1" > Usuario </option>
+                                        <option value="2" > Departamento </option>
+                                        <option value="0" > Otro </option>
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Dominio <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
                                     <select required id="domain_id" class="form-control w-100">
@@ -83,6 +97,7 @@
             $("#user").val(current.user)
             $("#name").val(current.name)
             $("#domain_id").val(current.domain_id)
+            $("#group").val(current.group)
         }
         validateForm()
     }
@@ -95,7 +110,8 @@
                 data: {
                     user: $('#user').val(),
                     name: $('#name').val(),
-                    domain_id: $('#domain_id').val()
+                    domain_id: $('#domain_id').val(),
+                    group: $('#group').val()
                 }
             }
             $.ajax({
@@ -131,6 +147,6 @@
                 `;
             }
         },
-    ])
+    ],"group_name_all")
 </script>
 @endsection
