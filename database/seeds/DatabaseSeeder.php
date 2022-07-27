@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DrinksTableSeeder::class);
         $this->call(DomainsTableSeeder::class);
         $this->call(EmailsTableSeeder::class);
+        $this->call(Ayb_itemsTableSeeder::class);
         factory(Client::class, 1000)->create();
     }
 }

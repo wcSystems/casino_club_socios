@@ -138,7 +138,7 @@
     <div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
         <div id="header" class="header navbar-default">
             <div class="navbar-header">
-                <a class="navbar-brand"><b>SISTEMAS </b></a>
+                <a class="navbar-brand"><b>CASINO</b></a>
                 <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -168,35 +168,44 @@
 
             <div data-scrollbar="true" data-height="100%" class="banner-icons">
                 <ul class="nav " data-click="pr-0">
-                    <li class="nav-header" style="color: #fff !important">DASBOARD</li>
+                    <!-- <li class="nav-header" style="color: #fff !important">DASBOARD</li> -->
 
+                    
+                    <li class="nav-header" style="color: #fff !important">MODULOS</li>
                     <li id="graphics_nav" class="has-sub closed">
                         <a href="{{ route('graphics') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">GRAFICAS</span>
+                            <span class="text-white">GRAFICOS</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">FORMULARIOS</li>
-
                     <li id="clients_nav" class="has-sub closed">
                         <a href="{{ route('clients') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CLIENTES</span>
+                            <span class="text-white">FORMULARIO CLIENTES</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">LISTADOS</li>
-                    <li id="emails_nav" class="has-sub closed">
-                        <a href="{{ route('emails') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CORREOS</span>
-                        </a>
-                    </li>
-                    <li class="nav-header" style="color: #fff !important">CONTEOS</li>
-
                     <li id="counting_table_stadistics_nav" class="has-sub closed">
                         <a href="{{ route('counting_table_stadistics') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MESAS</span>
+                            <span class="text-white">CONTEO DE MESAS</span>
+                        </a>
+                    </li>
+                    <li id="ayb_commands_nav" class="has-sub closed">
+                        <a href="{{ route('ayb_commands') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">A&B</span>
+                        </a>
+                    </li>
+                    <li id="users_nav" class="has-sub closed">
+                        <a href="{{ route('users') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">USUARIOS</span>
+                        </a>
+                    </li>
+                    <li id="attlogs_nav" class="has-sub closed">
+                        <a href="{{ route('attlogs') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">ASISTENCIA</span>
                         </a>
                     </li>
 
@@ -207,12 +216,7 @@
                             <span class="text-white">NIVELES</span>
                         </a>
                     </li>
-                    <li id="users_nav" class="has-sub closed">
-                        <a href="{{ route('users') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">USUARIOS</span>
-                        </a>
-                    </li>
+                    
                     <li id="transportations_nav" class="has-sub closed">
                         <a href="{{ route('transportations') }}">
                             <i class="fas fa-circle text-white"></i>
@@ -253,6 +257,18 @@
                         <a href="{{ route('domains') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">DOMINIOS</span>
+                        </a>
+                    </li>
+                    <li id="emails_nav" class="has-sub closed">
+                        <a href="{{ route('emails') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">CORREOS</span>
+                        </a>
+                    </li>
+                    <li id="ayb_items_nav" class="has-sub closed">
+                        <a href="{{ route('ayb_items') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">ITEMS A&B</span>
                         </a>
                     </li>
                     

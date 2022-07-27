@@ -30,3 +30,6 @@ Route::get('/tables/service', 'TablesController@service')->name('tables.service'
 Route::get('/counting_table_stadistics/service', 'Counting_table_stadisticsController@service')->name('counting_table_stadistics.service');
 Route::get('/domains/service', 'DomainsController@service')->name('domains.service');
 Route::get('/emails/service', 'EmailsController@service')->name('emails.service');
+Route::get('/ayb_items/service', 'Ayb_itemsController@service')->name('ayb_items.service');
+Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb_commands.service');
+Route::get('/attlogs/service', 'AttlogsController@service')->name('attlogs.service');

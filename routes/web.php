@@ -92,6 +92,24 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'emails.update',
         'destroy' => 'emails.destroy'
     ]);
+    Route::resource('ayb_items', 'Ayb_itemsController')->names([
+        'index' => 'ayb_items',
+        'create' => 'ayb_items.create',
+        'update' => 'ayb_items.update',
+        'destroy' => 'ayb_items.destroy'
+    ]);
+    Route::resource('ayb_commands', 'Ayb_commandsController')->names([
+        'index' => 'ayb_commands',
+        'create' => 'ayb_commands.create',
+        'update' => 'ayb_commands.update',
+        'destroy' => 'ayb_commands.destroy'
+    ]);
+    Route::resource('attlogs', 'AttlogsController')->names([
+        'index' => 'attlogs',
+        'create' => 'attlogs.create',
+        'update' => 'attlogs.update',
+        'destroy' => 'attlogs.destroy'
+    ]);
 
 
     // VIEW - GRAPHICS
