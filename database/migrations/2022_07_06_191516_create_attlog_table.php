@@ -13,17 +13,18 @@ class CreateAttlogTable extends Migration
      */
     public function up()
     {
-        Schema::create('attlogs', function (Blueprint $table) {
-            //$table->bigIncrements('id');
+        Schema::create('attlog', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('employeeID',50);
-            $table->dateTime('authDateTime',6)->nullable();
+            $table->dateTime('authDateTime')->nullable();
             $table->date('authDate')->nullable();
-            $table->time('authTime',6)->nullable();
+            $table->time('authTime')->nullable();
             $table->string('direction',50);
             $table->string('deviceName',50);
             $table->string('deviceSN',50);
             $table->string('personName',50);
             $table->string('cardNo',50);
+            $table->timestamps();
         });
     }
 

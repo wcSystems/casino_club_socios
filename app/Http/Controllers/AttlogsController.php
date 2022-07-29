@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attlog;
+use Illuminate\Support\Facades\DB;
 
 class AttlogsController extends Controller
 {
@@ -14,7 +15,7 @@ class AttlogsController extends Controller
      */
     public function index()
     {
-        $attlogs = Attlog::all();
+        $attlogs = Attlog::orderBy('id', 'desc')->get();
         return view('attlogs.index')->with('attlogs',$attlogs);
     }
 
@@ -88,8 +89,17 @@ class AttlogsController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+
         /* QUERY FILTER */
-        $query = Attlog::where('employeeID','LIKE','%'.$search.'%')->get();
+        $query = DB::table('attlog')
+        ->orWhere(function($query) use ($search){
+            $query->orWhere('employeeID','LIKE','%'.$search.'%');
+            $query->orWhere('personName','LIKE','%'.$search.'%');
+            $query->orWhere('authDate','LIKE','%'.$search.'%');
+            $query->orWhere('authTime','LIKE','%'.$search.'%');
+        })
+        ->get();
+
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
         $start = $request->get("start");
