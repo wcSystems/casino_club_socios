@@ -470,6 +470,14 @@
         }
       
     </script>
+
+    <!-- EVENTOS FACEBOOK PIXEL -->
+    <script type="text/javascript">
+        $('.$imgPlatos').click(function() {
+            fbq('track', 'Purchase', {currency: "USD", value: 30.00});
+        });
+    </script>
+    
     @yield('js')
 </body>
 </html>

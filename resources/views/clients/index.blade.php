@@ -314,7 +314,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ Estas satisfecho con la presentación de nuestros platillos ? <span class="text-danger">*</span> </label>
+                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ Cómo valorarías la variedad de opciones en nuestro menú ? <span class="text-danger">*</span> </label>
                                     <div class="col-12 text-left ml-2">
                                         <div class="form-check">
                                             <input required class="form-check-input" type="radio" name="star_variedad_comida" id="star_variedad_comida-1" value="1" >
