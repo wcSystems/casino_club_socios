@@ -34,6 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DomainsTableSeeder::class);
         $this->call(EmailsTableSeeder::class);
         $this->call(Ayb_itemsTableSeeder::class);
-        factory(Client::class, 1000)->create();
+        // factory(Client::class, 1000)->create();
     }
 }

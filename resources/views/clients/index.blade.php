@@ -130,30 +130,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
-                <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <div class="form-check" style="justify-content: left !important">
-                            <input required class="form-check-input" type="checkbox" name="ticket_machine" id="search_ticket_machine" >
-                            <label class="form-check-label" for="search_ticket_machine">
-                                Maquinas
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
-                <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <div class="form-check" style="justify-content: left !important">
-                            <input required class="form-check-input" type="checkbox" name="ticket_table" id="search_ticket_table" >
-                            <label class="form-check-label" for="search_ticket_table">
-                                Mesas en Vivo
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
         </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
@@ -235,7 +211,7 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger">*</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="number" id="cedula" name="cedula" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese su numero de cedula" >
+                                    <input required type="number" id="cedula" name="cedula" class="form-control parsley-normal upper text-left pl-3" style="color: var(--global-2) !important" placeholder="Ingrese su numero de cedula" >
                                     <div class="invalid-feedback text-left">Ingrese un numero de Cedula porfavor.</div>
                                 </div>
                             </div>
@@ -253,7 +229,7 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Telefono <span class="text-danger">*</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="number" id="phone" name="phone" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese su numero de telefono" >
+                                    <input required type="number" id="phone" name="phone" class="form-control parsley-normal upper text-left pl-3" style="color: var(--global-2) !important" placeholder="Ingrese su numero de telefono" >
                                     <div class="invalid-feedback text-left">Ingrese un numero de telefono porfavor.</div>
                                 </div>
                             </div>
@@ -276,7 +252,197 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-left col-form-label"> ¿Hay algo que hayas probado anteriormente en nuestras instalaciones, que te gustaría degustar más frecuentemente? <span class="text-danger">*</span> </label>
+                                <div class="col-lg-12">
+                                    <textarea required type="text" id="probar_de_nuevo" name="probar_de_nuevo" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Que te gustaría degustar?" ></textarea>
+                                    <div class="invalid-feedback text-left">Ingrese su respuesta porfavor.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Estrellas --}}
+                        <span class="font-weight-bold mt-4">ESTRELLAS</span>
+                        <div class="row px-2 my-3">
+                            <div class="col-sm-6">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ Cómo calificarías la calidad y el sabor de nuestra comida ? <span class="text-danger">*</span> </label>
+                                    <div class="col-12 text-left ml-2">
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_sabor_comida" id="star_sabor_comida-1" value="1">
+                                            <label class="form-check-label" for="star_sabor_comida-1">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_sabor_comida" id="star_sabor_comida-2" value="2" >
+                                            <label class="form-check-label" for="star_sabor_comida-2">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_sabor_comida" id="star_sabor_comida-3" value="3" >
+                                            <label class="form-check-label" for="star_sabor_comida-3">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_sabor_comida" id="star_sabor_comida-4" value="4" >
+                                            <label class="form-check-label" for="star_sabor_comida-4">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_sabor_comida" id="star_sabor_comida-5" value="5" >
+                                            <label class="form-check-label" for="star_sabor_comida-5">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ Estas satisfecho con la presentación de nuestros platillos ? <span class="text-danger">*</span> </label>
+                                    <div class="col-12 text-left ml-2">
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_variedad_comida" id="star_variedad_comida-1" value="1" >
+                                            <label class="form-check-label" for="star_variedad_comida-1">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_variedad_comida" id="star_variedad_comida-2" value="2" >
+                                            <label class="form-check-label" for="star_variedad_comida-2">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_variedad_comida" id="star_variedad_comida-3" value="3" >
+                                            <label class="form-check-label" for="star_variedad_comida-3">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_variedad_comida" id="star_variedad_comida-4" value="4" >
+                                            <label class="form-check-label" for="star_variedad_comida-4">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="star_variedad_comida" id="star_variedad_comida-5" value="5" >
+                                            <label class="form-check-label" for="star_variedad_comida-5">
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                                <i class="fa fa-star" style="color:#000 !important"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Desarrollo --}}
+                        <span class="font-weight-bold mt-4">DESARROLLO</span>
+                        <div class="row px-2 my-3">
+                            <div class="col-sm-6">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ El personal fue eficiente y servicial ? <span class="text-danger">*</span> </label>
+                                    <div class="col-12 text-left ml-2">
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="personal_fue_eficiente" id="personal_fue_eficiente-1" value="1">
+                                            <label class="form-check-label" for="personal_fue_eficiente-1">
+                                                Exelente
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="personal_fue_eficiente" id="personal_fue_eficiente-0" value="0" >
+                                            <label class="form-check-label" for="personal_fue_eficiente-0">
+                                                Pesimo
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="personal_fue_eficiente" id="personal_fue_eficiente-2" value="2" >
+                                            <label class="form-check-label" for="personal_fue_eficiente-2">
+                                                Mas o Menos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ Cuánto se ha tardado en llegar su comida ? <span class="text-danger">*</span> </label>
+                                    <div class="col-12 text-left ml-2">
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="tardanza_comida" id="tardanza_comida-0" value="0">
+                                            <label class="form-check-label" for="tardanza_comida-0">
+                                                5 Min Aproximadamente
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="tardanza_comida" id="tardanza_comida-1" value="1" >
+                                            <label class="form-check-label" for="tardanza_comida-1">
+                                                15 Min Aproximadamente
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="tardanza_comida" id="tardanza_comida-2" value="2" >
+                                            <label class="form-check-label" for="tardanza_comida-2">
+                                                Mas de 30 Min
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="tardanza_comida" id="tardanza_comida-3" value="3" >
+                                            <label class="form-check-label" for="tardanza_comida-3">
+                                                Mas de 1 Hora
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label font-weight-bold text-left"> ¿ Estas satisfecho con la presentación de nuestros platillos ? <span class="text-danger">*</span> </label>
+                                    <div class="col-12 text-left ml-2">
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="presentacion_platillos" id="presentacion_platillos-1" value="1">
+                                            <label class="form-check-label" for="presentacion_platillos-1">
+                                                Si
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input required class="form-check-input" type="radio" name="presentacion_platillos" id="presentacion_platillos-0" value="0" >
+                                            <label class="form-check-label" for="presentacion_platillos-0">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Booleanos --}}
+                        <span class="font-weight-bold mt-4">CLUB VIP</span>
                         <div class="row px-2 my-3">
                             <div class="col-sm-6">
                                 <div class="form-group row m-b-0">
@@ -438,9 +604,10 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
+
                         {{-- Checkboxs --}}
+                        <span class="font-weight-bold mt-4">FAVORITOS</span>
                         <div class="col-sm-12">
                             <div class="row px-2 my-3">
                                 <div class="col-sm-6">
@@ -475,6 +642,7 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- 
                         <div class="row px-2 my-3">
                             <div class="col-sm-4">
                                 <div class="form-group row m-b-0">
@@ -522,6 +690,8 @@
                                 </div>
                             </div>
                         </div>
+                        --}}
+
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="create_Submit()" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;">Guardar</button>
                         </div>
@@ -660,6 +830,7 @@
         let ssid_password = $('#ssid_password').val()
         let mac = $('#mac').val()
         let description = $('#description').val()
+        let probar_de_nuevo = $('#probar_de_nuevo').val()
         let url = "{{ route('clients.update', 'id_replace' ) }}".replace('id_replace', id);
         $.ajax({
             url: url,
@@ -677,6 +848,7 @@
                 "ssid_password": ssid_password,
                 "mac": mac,
                 "description": description,
+                "probar_de_nuevo": probar_de_nuevo,
             },
             success: function (res) {
                 if(res.type === 'error'){
@@ -705,6 +877,12 @@
                 phone: $("#phone").val(),
                 email: $("#email").val(),
                 address: $("#address").val(),
+                probar_de_nuevo: $('#probar_de_nuevo').val(),
+                personal_fue_eficiente: $("input[name=personal_fue_eficiente]:checked").val(),
+                tardanza_comida: $("input[name=tardanza_comida]:checked").val(),
+                presentacion_platillos: $("input[name=presentacion_platillos]:checked").val(),
+                star_sabor_comida: $("input[name=star_sabor_comida]:checked").val(),
+                star_variedad_comida: $("input[name=star_variedad_comida]:checked").val(),
                 club_vip: $("input[name=club_vip]:checked").val(),
                 referido: $("input[name=referido]:checked").val(),
                 vive_cerca: $("input[name=vive_cerca]:checked").val(),

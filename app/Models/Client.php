@@ -23,6 +23,13 @@ class Client extends Model
         'descuento',
         'puntos_por_canje',
         'ticket_souvenirs',
+        'star',
+        'probar_de_nuevo',
+        'personal_fue_eficiente',
+        'tardanza_comida',
+        'presentacion_platillos',
+        'star_sabor_comida',
+        'star_variedad_comida',
     ];
 
     public function transportation_one() {

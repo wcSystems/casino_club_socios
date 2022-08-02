@@ -33,6 +33,15 @@ class CreateClientsTable extends Migration
             $table->bigInteger('transportation_id')->nullable()->unsigned();
             $table->foreign('transportation_id')->references('id')->on('transportations')->onUpdate('cascade');
             $table->boolean('group')->default(1);
+
+            $table->boolean('star_sabor_comida')->default(0);
+            $table->boolean('star_variedad_comida')->default(0);
+
+            $table->string('probar_de_nuevo',100)->nullable();
+            $table->boolean('personal_fue_eficiente')->default(0);
+            $table->boolean('tardanza_comida')->default(0);
+            $table->boolean('presentacion_platillos')->default(0);
+
             $table->timestamps();
         });
     }
