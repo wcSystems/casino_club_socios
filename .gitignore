@@ -5,6 +5,7 @@
 /vendor
 .phpunit.result.cache
 Homestead.json
+casino_club_socios.zip
 Homestead.yaml
 npm-debug.log
 yarn-error.log
