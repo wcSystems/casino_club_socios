@@ -4,12 +4,34 @@
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
         <div class="panel-heading-btn">
-            <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
-                <i class="m-auto fa fa-lg fa-plus"></i>
+            <button onclick="pdfExport('Attlogs')" class="d-flex btn btn-1 btn-success">
+                <i class="m-auto fas fa-lg fa-file-pdf"></i>
             </button>
         </div>
     </div>
     <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <label for="start" class="text-left d-block"> Desde </label>
+                        <div class="form-check" style="justify-content: left !important">
+                            <input required class="form-control w-100" type="date" name="start" value="2022-01-01" id="start" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <label for="end" class="text-left d-block"> Hasta </label>
+                        <div class="form-check" style="justify-content: left !important">
+                            <input required class="form-control w-100" type="date" name="end"  value="2022-12-31"id="end" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
                 <thead>
@@ -19,7 +41,6 @@
                         <th>Nombre y Apellido</th>
                         <th>Fecha</th>
                         <th>Hora de Marcaje</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
             </table>
@@ -81,7 +102,7 @@
             });
         }
     }
-    dataTable("{{route('attlogs.service')}}",[
+    dataTableAttlog("{{route('attlogs.service')}}",[
         {
             render: function ( data,type, row,all  ) {
                 return all.row+1;
@@ -90,15 +111,12 @@
         { data: 'employeeID' },
         { data: 'personName' },
         { data: 'authDate' },
-        { data: 'authTime' },
         {
-            render: function ( data,type, row  ) {
-                return `
-                    <a onclick="elim('attlogs',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                    <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
-                `;
+            render: function ( data,type, row,all  ) {
+                return "<span class='font-weight-bold'>Entrada: </span>" +row.first+" "+" <span class='font-weight-bold'>Salida: </span>"+ row.last;
             }
         },
-    ])
+       
+    ],"group_name_all")
 </script>
 @endsection

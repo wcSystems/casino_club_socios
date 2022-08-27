@@ -86,21 +86,26 @@ class AttlogsController extends Controller
     }
 
     public function service(Request $request)
-    {
+    {+
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        $start = $request->get('start');
+        $end = $request->get('end');
 
         /* QUERY FILTER */
         $query = DB::table('attlog')
+        
         ->orWhere(function($query) use ($search){
             $query->orWhere('employeeID','LIKE','%'.$search.'%');
             $query->orWhere('personName','LIKE','%'.$search.'%');
             $query->orWhere('authDate','LIKE','%'.$search.'%');
             $query->orWhere('authTime','LIKE','%'.$search.'%');
-        })
+        })->select('employeeID', 'personName', 'authDate')->selectRaw('MIN(authTime) AS first, MAX(authTime) AS last')->groupBy('authDate','employeeID','personName')->orderBy('authDate', 'DESC')
+        ->whereBetween('authDate', [$start, $end])
         ->get();
 
-        /* FIELDS DEFAULTS DATATABLES */
+        
+
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length");
