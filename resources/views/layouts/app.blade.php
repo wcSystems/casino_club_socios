@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Casino Internacional Valencia</title>
+    <title>Casinos Roraima</title>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta content="" name="description" />
     <meta content="" name="author" />
@@ -181,7 +181,7 @@
                     <li id="clients_nav" class="has-sub closed">
                         <a href="{{ route('clients') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">FORMULARIO CLIENTES</span>
+                            <span class="text-white">CLIENTES</span>
                         </a>
                     </li>
                     <li id="counting_table_stadistics_nav" class="has-sub closed">

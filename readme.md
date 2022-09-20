@@ -1,6 +1,6 @@
 # Devs Only
 
-LARAVEL - Casino Internacional Valencia
+LARAVEL - Casinos Roraima
 - git clone https://github.com/wcSystems/casino_club_socios.git
 - cd casino_club_socios
 - composer install

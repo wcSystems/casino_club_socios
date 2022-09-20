@@ -5,7 +5,7 @@
         <div class="news-feed">
             <div class="news-image" style="background-image: url('{{ asset('img/login-bg/login-bg-11.jpg') }} ')"></div>
             <div class="news-caption">
-                <h4 class="caption-title"><b>CASINO INTERNACIONAL VALENCIA</b></h4>
+                <h4 class="caption-title"><b>CASINOS RORAIMA</b></h4>
                 <p>Desarrollado por el departamento de Sistemas</p>
             </div>
         </div>
