@@ -18,6 +18,7 @@
                         <th>#</th>
                         <th>Nombre y Apellido</th>
                         <th>Usuario</th>
+                        <th>Nivel</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -63,6 +64,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Nivel <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="level" class="form-control w-100">
+                                        <option value="" selected >Todos los niveles</option>
+                                        @foreach( $levels as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         </div>
@@ -74,6 +89,7 @@
             $("#email").val(current.email)
             $("#name").val(current.name)
             $("#password").val(current.password)
+            $("#level").val(current.level_id)
         }
         validateForm()
     }
@@ -86,7 +102,8 @@
                 data: {
                     email: $('#email').val(),
                     name: $('#name').val(),
-                    password: $('#password').val()
+                    password: $('#password').val(),
+                    level_id: $('#level').val()
                 }
             }
             $.ajax({
@@ -94,9 +111,11 @@
                 type: "POST",
                 data: payload,
                 success: function (res) {
-                    console.log(res)
                     if(res.type === 'success'){
                         location.reload();
+                    }
+                    if(res.type === 'repeat'){
+                        alertas('ERROR!','Este usuario ya se encuentra registrado, porfavor elija otro.','info')
                     }
                 }
             });
@@ -110,6 +129,7 @@
         },
         { data: 'name' },
         { data: 'email' },
+        { data: 'level_id' },
         {
             render: function ( data,type, row  ) {
                 let render = `` 

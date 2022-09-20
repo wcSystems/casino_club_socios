@@ -73,7 +73,6 @@
                 type: "POST",
                 data: payload,
                 success: function (res) {
-                    console.log(res)
                     if(res.type === 'success'){
                         location.reload();
                     }

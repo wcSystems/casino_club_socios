@@ -458,6 +458,15 @@
                 doc.autoTable({ html: '#data-table-default' })
                 doc.save(`${user.name}-${title}-${moment().format('MMMM Do YYYY, h:mm:ss a')}.pdf`)
         }
+
+        function alertas(title,text,mode) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: mode,
+                showCancelButton: false
+            })
+        }
         
       
     </script>

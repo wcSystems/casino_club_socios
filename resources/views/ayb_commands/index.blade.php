@@ -95,7 +95,6 @@
             current.forEach(element => {
                 /* payload.push(id)
                 let data = $(`#item-${ element.id }`).serializeArray() */
-                console.log(data)
             });
 
             $("#name").val(current.ayb_item_id)
@@ -117,7 +116,6 @@
                 type: "POST",
                 data: payload,
                 success: function (res) {
-                    console.log(res)
                     if(res.type === 'success'){
                         location.reload();
                     }
@@ -129,7 +127,6 @@
             
         });
         let data = $(`#form-all`).serializeArray()
-            console.log(data)
     }
     dataTable("{{route('ayb_commands.service')}}",[
         {
