@@ -15,7 +15,12 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
+                        <th>Item</th>
+                        <th>Opcion</th>
+                        <th>Juego</th>
+                        <th>Total</th>
+                        <th>Aprobado</th>
+                        <th>Fecha</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -35,52 +40,66 @@
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                     <div class="col-12">
-                        @foreach( $ayb_items as $item )
-                            <div class="row" id="item-{{ $item->id }}" >
-                                <label class="col-12 text-lg-left col-form-label font-weight-bold"> {{ $item->name }} </label>
-                                <input  type="hidden" id="ayb_item_id-{{ $item->id }}" name="ayb_item_id" value="{{ $item->id }}">
-                                <div class="col-xs-3">
+                            <div class="row" id="item" >
+                                <div class="col-xs-4">
                                     <div class="form-group row m-b-0">
+                                        <label class=" text-lg-right col-form-label"> Item <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <input required type="number" id="total-{{ $item->id }}" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
+                                            <select required id="ayb_item_id" name="option" class="form-control w-100">
+                                                <option value="" selected >Items</option>
+                                                @foreach( $ayb_items as $item )
+                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                @endforeach
+                                            </select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-4">
                                     <div class="form-group row m-b-0">
+                                        <label class=" text-lg-right col-form-label"> Total <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <select required id="option-{{ $item->id }}" name="option" class="form-control w-100">
+                                            <input required type="number" id="total" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
+                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="form-group row m-b-0">
+                                        <label class=" text-lg-right col-form-label"> tipo <span class="text-danger"> *</span> </label>
+                                        <div class="col-lg-12">
+                                            <select required id="option" name="option" class="form-control w-100">
                                                 <option value="" selected >Opciones</option>
-                                                <option value="1" > Cortesia </option>
-                                                <option value="2" > Venta </option>
+                                                <option value="Cortesia" > Cortesia </option>
+                                                <option value="Venta" > Venta </option>
                                             </select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-6">
                                     <div class="form-group row m-b-0">
+                                        <label class=" text-lg-right col-form-label"> Destino <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <select required id="game-{{ $item->id }}" name="game" class="form-control w-100">
+                                            <select required id="game" name="game" class="form-control w-100">
                                                 <option value="" selected >Juegos</option>
-                                                <option value="1" > Maquinas </option>
-                                                <option value="2" > Mesas </option>
+                                                <option value="Maquinas" > Maquinas </option>
+                                                <option value="Mesas" > Mesas </option>
                                             </select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-6">
                                     <div class="form-group row m-b-0">
+                                        <label class=" text-lg-right col-form-label"> Aprobado <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <input required type="text" id="aprobado-{{ $item->id }}" name="aprobado" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Aprobado por ... " >
+                                            <input required type="text" id="aprobado" name="aprobado" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Aprobado por ... " >
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
 
 
                         <div class="col-sm-12" style="margin-top:20px">
@@ -90,25 +109,27 @@
                 </form>`
         })
         if(id){
-            let current={!! $ayb_commands !!}.find(i=>i.id===id)
-            let payload = []
-            current.forEach(element => {
-                /* payload.push(id)
-                let data = $(`#item-${ element.id }`).serializeArray() */
-            });
-
-            $("#name").val(current.ayb_item_id)
+            let current={!! $ayb_item_commands !!}.find(i=>i.id===id)
+            $("#ayb_item_id").val(current.ayb_item_id)
+            $("#total").val(current.total)
+            $("#option").val(current.option)
+            $("#game").val(current.game)
+            $("#aprobado").val(current.aprobado)
         }
         validateForm()
     }
     function guardar(id) {
-        /* let validity = document.getElementById('form-all').checkValidity()
+        let validity = document.getElementById('form-all').checkValidity()
         if(validity){
             let payload = {
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    ayb_item_id: $('#name').val()
+                    ayb_item_id: $('#ayb_item_id').val(),
+                    total: $('#total').val(),
+                    option: $('#option').val(),
+                    game: $('#game').val(),
+                    aprobado: $('#aprobado').val()
                 }
             }
             $.ajax({
@@ -121,7 +142,7 @@
                     }
                 }
             });
-        } */
+        }
         let ayb_items = {!! $ayb_items !!}
         ayb_items.forEach(element => {
             
@@ -134,7 +155,12 @@
                 return all.row+1;
             }
         },
-        { data: 'ayb_item_id' },
+        { data: 'item_name' },
+        { data: 'option' },
+        { data: 'game' },
+        { data: 'total' },
+        { data: 'aprobado' },
+        { data: 'created_at' },
         {
             render: function ( data,type, row  ) {
                 return `
@@ -143,7 +169,7 @@
                 `;
             }
         },
-    ])
+    ],"group_name_all")
 
 
     

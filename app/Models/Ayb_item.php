@@ -10,7 +10,7 @@ class Ayb_item extends Model
         'name',
     ];
 
-    public function commands() {
-        return $this->belongsToMany('App\Models\Ayb_commands','ayb_commands');
+    public function item() {
+        return $this->belongsToMany('App\Models\Ayb_item_command','ayb_item_commands');
     }
 }

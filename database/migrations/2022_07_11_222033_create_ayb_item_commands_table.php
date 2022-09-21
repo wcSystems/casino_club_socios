@@ -20,8 +20,8 @@ class CreateAybItemCommandsTable extends Migration
             $table->bigInteger('ayb_command_id')->nullable()->unsigned();
             $table->foreign('ayb_command_id')->references('id')->on('ayb_commands')->onUpdate('cascade');
             $table->string('total',11);
-            $table->integer('option')->default(1);
-            $table->integer('game')->default(1);
+            $table->string('option',11);
+            $table->string('game',11);
             $table->string('aprobado',50);
             $table->timestamps();
         });

@@ -202,12 +202,12 @@
                             <span class="text-white">USUARIOS</span>
                         </a>
                     </li>
-                    <li id="attlogs_nav" class="has-sub closed">
+                    <!-- <li id="attlogs_nav" class="has-sub closed">
                         <a href="{{ route('attlogs') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">ASISTENCIA</span>
                         </a>
-                    </li>
+                    </li> -->
 
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES</li>
                     <li id="levels_nav" class="has-sub closed">
@@ -338,7 +338,7 @@
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
                                 if (last !== data.group_name) {
-                                    $(rows).eq(i).before('<tr class="group_name"><td colspan="3">' + data.group_name + '</td></tr>');
+                                    $(rows).eq(i).before('<tr class="group_name font-weight-bold"><td colspan="3">' + data.group_name + '</td></tr>');
                                     last = data.group_name;
                                 }
                             });

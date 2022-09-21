@@ -141,10 +141,6 @@
             }
         },
     ])
-
-
-
-
 </script>
 @endsection
 

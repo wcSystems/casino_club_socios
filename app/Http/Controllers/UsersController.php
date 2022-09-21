@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use DB;
 use App\User;
 use App\Models\Level;
 
@@ -111,8 +112,21 @@ class UsersController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        
         /* QUERY FILTER */
-        $query = User::where('name','LIKE','%'.$search.'%')->get();
+        //$query = User::where('name','LIKE','%'.$search.'%')->get();
+
+
+        $query = DB::table('users')
+        ->orWhere(function($query) use ($search){
+            $query->orWhere('email','LIKE','%'.$search.'%');
+            $query->orWhere('name','LIKE','%'.$search.'%');
+        })->where('id', '!=', Auth::id()) 
+        ->get();
+
+
+
+
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -127,7 +141,8 @@ class UsersController extends Controller
             "draw" => intval($draw),
             "iTotalRecords" => $totalRecords,
             "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $query
+            "aaData" => $query,
+            "id" => Auth::user()
         ));
     }
 }
