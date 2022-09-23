@@ -22,7 +22,6 @@ class CreateAybItemCommandsTable extends Migration
             $table->string('total',11);
             $table->string('option',11);
             $table->string('game',11);
-            $table->string('aprobado',50);
             $table->timestamps();
         });
     }

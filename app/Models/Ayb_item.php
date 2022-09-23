@@ -8,6 +8,7 @@ class Ayb_item extends Model
 {
     protected $fillable = [
         'name',
+        'price',
     ];
 
     public function item() {

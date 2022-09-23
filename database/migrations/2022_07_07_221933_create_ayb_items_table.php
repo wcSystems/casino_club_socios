@@ -16,6 +16,7 @@ class CreateAybItemsTable extends Migration
         Schema::create('ayb_items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',100);
+            $table->string('price',100);
             $table->timestamps();
         });
     }

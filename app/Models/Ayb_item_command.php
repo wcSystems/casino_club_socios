@@ -12,7 +12,6 @@ class Ayb_item_command extends Model
         'total',
         'option',
         'game',
-        'aprobado',
     ];
 
     public function items() {

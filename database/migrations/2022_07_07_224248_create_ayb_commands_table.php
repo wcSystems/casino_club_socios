@@ -15,6 +15,8 @@ class CreateAybCommandsTable extends Migration
     {
         Schema::create('ayb_commands', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('user_id')->nullable()->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -15,10 +15,6 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Item</th>
-                        <th>Opcion</th>
-                        <th>Juego</th>
-                        <th>Total</th>
                         <th>Aprobado</th>
                         <th>Fecha</th>
                         <th>Acciones</th>
@@ -32,6 +28,7 @@
 @section('js')
 <script>
     $('#ayb_commands_nav').removeClass("closed").addClass("active").addClass("expand")
+    let arrayItems  = 2
     function modal(type,id) {
         Swal.fire({
             title: `${type} Registro`,
@@ -40,14 +37,70 @@
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                     <div class="col-12">
-                            <div class="row" id="item" >
-                                <div class="col-xs-4">
+
+                            <div id="items">
+                                <label class=" text-lg-left col-form-label font-weight-bold"> Pedido #1 </label>
+                                <div class="row " >
+                                    <div class="col-xs-3">
+                                        <div class="form-group row m-b-0">
+                                            <label class=" text-lg-right col-form-label"> Item <span class="text-danger"> *</span> </label>
+                                            <div class="col-lg-12">
+                                                <select required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
+                                                    <option value="" selected >Items</option>
+                                                    @foreach( $ayb_items as $item )
+                                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="form-group row m-b-0">
+                                            <label class=" text-lg-right col-form-label"> Total <span class="text-danger"> *</span> </label>
+                                            <div class="col-lg-12">
+                                                <input required type="number" id="total" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
+                                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="form-group row m-b-0">
+                                            <label class=" text-lg-right col-form-label"> tipo <span class="text-danger"> *</span> </label>
+                                            <div class="col-lg-12">
+                                                <select required id="option" name="option" class="form-control w-100">
+                                                    <option value="" selected >Opciones</option>
+                                                    <option value="Cortesia" > Cortesia </option>
+                                                    <option value="Venta" > Venta </option>
+                                                </select>
+                                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <div class="form-group row m-b-0">
+                                            <label class=" text-lg-right col-form-label"> Destino <span class="text-danger"> *</span> </label>
+                                            <div class="col-lg-12">
+                                                <select required id="game" name="game" class="form-control w-100">
+                                                    <option value="" selected >Juegos</option>
+                                                    <option value="Maquinas" > Maquinas </option>
+                                                    <option value="Mesas" > Mesas </option>
+                                                </select>
+                                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="item2" >
+                                <div class="col-xs-6">
                                     <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Item <span class="text-danger"> *</span> </label>
+                                        <label class=" text-lg-right col-form-label"> Aprobado <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <select required id="ayb_item_id" name="option" class="form-control w-100">
+                                            <select required id="user_id" name="user_id" class="form-control w-100">
                                                 <option value="" selected >Items</option>
-                                                @foreach( $ayb_items as $item )
+                                                @foreach( $users as $item )
                                                     <option value="{{ $item->id }}" > {{ $item->name }} </option>
                                                 @endforeach
                                             </select>
@@ -55,81 +108,55 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-4">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Total <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12">
-                                            <input required type="number" id="total" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> tipo <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12">
-                                            <select required id="option" name="option" class="form-control w-100">
-                                                <option value="" selected >Opciones</option>
-                                                <option value="Cortesia" > Cortesia </option>
-                                                <option value="Venta" > Venta </option>
-                                            </select>
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Destino <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12">
-                                            <select required id="game" name="game" class="form-control w-100">
-                                                <option value="" selected >Juegos</option>
-                                                <option value="Maquinas" > Maquinas </option>
-                                                <option value="Mesas" > Mesas </option>
-                                            </select>
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Aprobado <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12">
-                                            <input required type="text" id="aprobado" name="aprobado" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Aprobado por ... " >
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
 
+
                         <div class="col-sm-12" style="margin-top:20px">
+                            <button onclick="itemCrud('-')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Quitar </button>
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                            <button onclick="itemCrud('+')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Agregar </button>
                         </div>
                     </div>
                 </form>`
         })
-        if(id){
+        /* if(id){
             let current={!! $ayb_item_commands !!}.find(i=>i.id===id)
             $("#ayb_item_id").val(current.ayb_item_id)
             $("#total").val(current.total)
             $("#option").val(current.option)
             $("#game").val(current.game)
-            $("#aprobado").val(current.aprobado)
-        }
+            $("#user_id").val(current.user_id)
+        } */
         validateForm()
     }
     function guardar(id) {
+
+        let arr_ayb_item_id = $("[name*='ayb_item_id']").serializeArray().map( i=> i.value )
+        let arr_total = $("[name*='total']").serializeArray().map( i=> i.value )
+        let arr_option = $("[name*='option']").serializeArray().map( i=> i.value )
+        let arr_game = $("[name*='game']").serializeArray().map( i=> i.value )
+        let newArrObj = []
+        for (let index = 0; index < arrayItems-1; index++) {
+            newArrObj.push({ 
+                "ayb_item_id": arr_ayb_item_id[index], 
+                "total": arr_total[index],
+                "option": arr_option[index],
+                "game": arr_game[index]
+            })
+            
+        }
+        console.log(newArrObj)
+
+
         let validity = document.getElementById('form-all').checkValidity()
         if(validity){
             let payload = {
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    ayb_item_id: $('#ayb_item_id').val(),
-                    total: $('#total').val(),
-                    option: $('#option').val(),
-                    game: $('#game').val(),
-                    aprobado: $('#aprobado').val()
+                    obj: newArrObj,
+                    user_id: $('#user_id').val()
                 }
             }
             $.ajax({
@@ -143,11 +170,11 @@
                 }
             });
         }
-        let ayb_items = {!! $ayb_items !!}
+       /*  let ayb_items = {!! $ayb_items !!}
         ayb_items.forEach(element => {
             
         });
-        let data = $(`#form-all`).serializeArray()
+        let data = $(`#form-all`).serializeArray() */
     }
     dataTable("{{route('ayb_commands.service')}}",[
         {
@@ -155,11 +182,7 @@
                 return all.row+1;
             }
         },
-        { data: 'item_name' },
-        { data: 'option' },
-        { data: 'game' },
-        { data: 'total' },
-        { data: 'aprobado' },
+        { data: 'user_name' },
         { data: 'created_at' },
         {
             render: function ( data,type, row  ) {
@@ -171,8 +194,75 @@
         },
     ],"group_name_all")
 
+    function itemCrud(more){
 
-    
+        let newHtmlItem = `
+        <div class="row newRow" >
+            <div class="col-xs-3">
+                <div class="form-group row m-b-0">
+                    <label class=" text-lg-right col-form-label"> Item <span class="text-danger"> *</span> </label>
+                    <div class="col-lg-12">
+                        <select required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
+                            <option value="" selected >Items</option>
+                            @foreach( $ayb_items as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="form-group row m-b-0">
+                    <label class=" text-lg-right col-form-label"> Total <span class="text-danger"> *</span> </label>
+                    <div class="col-lg-12">
+                        <input required type="number" id="total" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
+                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="form-group row m-b-0">
+                    <label class=" text-lg-right col-form-label"> tipo <span class="text-danger"> *</span> </label>
+                    <div class="col-lg-12">
+                        <select required id="option" name="option" class="form-control w-100">
+                            <option value="" selected >Opciones</option>
+                            <option value="Cortesia" > Cortesia </option>
+                            <option value="Venta" > Venta </option>
+                        </select>
+                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="form-group row m-b-0">
+                    <label class=" text-lg-right col-form-label"> Destino <span class="text-danger"> *</span> </label>
+                    <div class="col-lg-12">
+                        <select required id="game" name="game" class="form-control w-100">
+                            <option value="" selected >Juegos</option>
+                            <option value="Maquinas" > Maquinas </option>
+                            <option value="Mesas" > Mesas </option>
+                        </select>
+                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        if (more === "+") {
+            $('#items').append(`<label class="newRowLabel text-lg-left col-form-label font-weight-bold"> Pedido #${arrayItems} </label>`)
+            $('#items').append(newHtmlItem)
+            arrayItems = arrayItems+1
+        }
+        if (more === "-") {
+            arrayItems = arrayItems > 2 ? arrayItems-1 : arrayItems 
+            $('#items .newRow:last').remove()
+            $('#items .newRowLabel:last').remove()
+        }
+
+
+    }
+
+
 
 </script>
 @endsection

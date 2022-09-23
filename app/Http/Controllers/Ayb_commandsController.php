@@ -7,6 +7,7 @@ use App\Models\Ayb_command;
 use App\Models\Ayb_item;
 use App\Models\Ayb_item_command;
 use Illuminate\Support\Facades\DB;
+use App\User;
 
 class Ayb_commandsController extends Controller
 {
@@ -19,8 +20,9 @@ class Ayb_commandsController extends Controller
     {
         $ayb_commands = Ayb_command::all();
         $ayb_items = Ayb_item::all();
+        $users = User::all();
         $ayb_item_commands = Ayb_item_command::all();
-        return view('ayb_commands.index')->with('ayb_commands',$ayb_commands)->with('ayb_items',$ayb_items)->with('ayb_item_commands',$ayb_item_commands);
+        return view('ayb_commands.index')->with('ayb_commands',$ayb_commands)->with('ayb_items',$ayb_items)->with('ayb_item_commands',$ayb_item_commands)->with('users',$users);
     }
 
     /**
@@ -41,23 +43,18 @@ class Ayb_commandsController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = new Ayb_command();
-        $current_item->save();
-
-        $current_data = array(
-            "ayb_item_id" => $request["data"]["ayb_item_id"],
-            "ayb_command_id" => $current_item->id,
-            "total" => $request["data"]["total"],
-            "option" => $request["data"]["option"],
-            "game" => $request["data"]["game"],
-            "aprobado" => $request["data"]["aprobado"],
+        $current_data_command = array(
+            "user_id" => $request["data"]["user_id"],
         );
+        $current_item_command = Ayb_command::updateOrCreate($request["id"],$current_data_command);
 
+        $obj = $request["data"]["obj"];
 
-        $current_item = Ayb_item_command::updateOrCreate($request["id"],$current_data);
+        foreach ($obj as $key) {
+            $current_item = Ayb_item_command::create([ 'ayb_item_id' => $key["ayb_item_id"], 'ayb_command_id' => $current_item_command->id, 'total' => $key["total"], 'option' => $key["option"], 'game' => $key["game"] ]);
+        }
 
-
-        if($current_item){
+        if($current_item_command){
             return response()->json([ 'type' => 'success']);
         }else{
             return response()->json([ 'type' => 'error']);
@@ -123,14 +120,10 @@ class Ayb_commandsController extends Controller
         //$query = Ayb_command::where('ayb_item_id','LIKE','%'.$search.'%')->get();
         //$query = Ayb_item_command::all();
 
-        $query = Ayb_item_command::select(DB::raw('ayb_item_commands.*, DATE_FORMAT(ayb_item_commands.created_at, "%Y-%m-%d") AS group_name, ayb_items.name AS item_name'))
-                    ->where('ayb_items.name','LIKE','%'.$search.'%')
-                    ->orWhere('ayb_item_commands.option','LIKE','%'.$search.'%')
-                    ->orWhere('ayb_item_commands.game','LIKE','%'.$search.'%')
-                    ->orWhere('ayb_item_commands.aprobado','LIKE','%'.$search.'%')
-                    ->orWhere('ayb_item_commands.total','LIKE','%'.$search.'%')
-                    ->orWhere('ayb_item_commands.created_at','LIKE','%'.$search.'%')
-                    ->join('ayb_items', 'ayb_item_commands.ayb_item_id', '=', 'ayb_items.id')->get();
+        $query = Ayb_command::select(DB::raw('ayb_commands.*, DATE_FORMAT(ayb_commands.created_at, "%Y-%m-%d") AS group_name, users.name AS user_name'))
+                    ->where('users.name','LIKE','%'.$search.'%')
+                    ->orWhere('ayb_commands.created_at','LIKE','%'.$search.'%')
+                    ->join('users', 'ayb_commands.user_id', '=', 'users.id')->get();
 
 
         /* FIELDS DEFAULTS DATATABLES */
