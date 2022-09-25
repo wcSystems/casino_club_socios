@@ -33,7 +33,7 @@
             title: `${type} Registro`,
             showConfirmButton: false,
             html:`
-                <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                <form id="form-all" class="needs-validation" action="javascript:void(0);"   novalidate>
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
@@ -90,6 +90,17 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Imagen <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <input require type="file" id="image" name="image" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="" >
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         </div>
@@ -109,21 +120,25 @@
     function guardar(id) {
         let validity = document.getElementById('form-all').checkValidity()
         if(validity){
-            let payload = {
-                _token: $("meta[name='csrf-token']").attr("content"),
-                id: { id: id ? id : "" },
-                data: {
-                    name: $('#name').val(),
-                    description: $('#description').val(),
-                    price: $('#price').val(),
-                    sede_id: $('#sede_id').val(),
-                    group_menu_id: $('#group_menu_id').val()
-                }
-            }
+
+                         
+            let payload = new FormData();   
+                payload.append('id',id ? id : "")
+                payload.append('name',$('#name').val())
+                payload.append('description',$('#description').val())
+                payload.append('price',$('#price').val())
+                payload.append('sede_id',$('#sede_id').val())
+                payload.append('group_menu_id',$('#group_menu_id').val())
+                payload.append('image',$('#image').prop('files')[0])
+
             $.ajax({
                 url: "{{ route('ayb_items.store') }}",
                 type: "POST",
                 data: payload,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
                 success: function (res) {
                     if(res.type === 'success'){
                         location.reload();

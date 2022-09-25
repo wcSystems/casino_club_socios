@@ -33,6 +33,60 @@
 	<script src="menu-list-qr/js/plugins.js"></script>
 	<script src="menu-list-qr/js/wow.min.js"></script>
 	<script src="menu-list-qr/js/main.js"></script>
+	<style>
+
+
+
+
+body {
+  /* overflow: hidden; */
+  margin: 0;  
+  /* background: #222; */
+}
+
+#main-img {
+  display: block;
+  border: 1px solid rgba(255,255,255,0.2);
+  filter: grayscale(0);
+  margin: 20px;
+  height: 300px;
+  width: 800px;
+      object-fit: cover;
+      object-position: center center;
+}
+
+#zoom-img {
+  pointer-events: none;
+  position: relative;
+  top: 50%;
+  left: 50%;
+}
+
+#zoom {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  box-shadow: 0 0 0 2px rgba(255,0,0,0.5),
+    5px 5px 10px 5px rgba(0,0,0,0.2);
+  border-radius: 50%;  
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+
+
+
+
+
+	</style>
+
+
+
+
 </head>
 
 <body>
@@ -56,6 +110,19 @@
                                 @foreach ($ayb_items as $item)
                                     <li class="wow fadeInUp" data-wow-duration="300ms" data-wow-delay="300ms">
                                         <div class="item">
+
+										
+
+
+
+											<img id="main-img"  src="{{ url('public/Ayb_item/'.$item->img) }}"/>
+											<div id="zoom">
+												<img id="zoom-img"  />
+											</div>
+
+
+
+
                                             <div class="item-title">
                                                 <h2>{{ $item->name }} </h2>
                                                 <div class="border-bottom"></div>
@@ -76,10 +143,8 @@
 		</div><!-- .containe close -->
 	</section><!-- #price close -->
 
-	<!--
-    CONTACT US  start
-    ============================= -->
-	<section id="contact-us" class="mb-3">
+	
+	<!-- <section id="contact-us" class="mb-3">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
@@ -101,11 +166,59 @@
 						<a class="btn btn-default wow bounceIn" data-wow-duration="500ms" data-wow-delay="1300ms" href="menu-list-qr/#"
 							role="button">Enviar</a>
 					</div>
-				</div><!-- .col-md-12 close -->
-			</div><!-- .row close -->
-		</div><!-- .container close -->
-	</section><!-- #contact-us close -->
+				</div>
+			</div>
+		</div>
+	</section> -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenMax.min.js"></script>
+<script>
+	var zoom    = document.querySelector("#zoom");
+var zoomImg = document.querySelector("#zoom-img");
+var mainImg = document.querySelector("#main-img");
+var enterTL = new TimelineMax({ paused: true });
+var timer   = TweenLite.delayedCall(1, () => enterTL.reverse()).pause();
 
+var cx, cy, ratio;
+
+window.addEventListener("load", init);
+
+function init() {
+  
+  zoomImg.src = mainImg.src;
+  ratio = mainImg.naturalWidth / mainImg.width;
+  resize();
+  
+  TweenLite.set([zoom, zoomImg], { xPercent: -50, yPercent: -50 });
+  TweenLite.set(zoom, { autoAlpha: 0, scale: 0 });
+  
+  enterTL
+    .to(mainImg, 0.5, { filter: "grayscale(1)", "-webkit-filter": "grayscale(1)" }, 0)
+    .to(zoom, 0.5, { autoAlpha: 1, scale: 1 }, 0)
+    
+  window.addEventListener("resize", resize);  
+  mainImg.addEventListener("mouseleave", leaveAction);
+  mainImg.addEventListener("mousemove", moveAction);
+}
+
+function leaveAction() {
+  enterTL.reverse();
+}
+
+function moveAction(e) {
+  enterTL.play();
+  timer.restart(true);
+  TweenLite.set(zoom, { x: e.x, y: e.y });
+  TweenLite.set(zoomImg, { x: (cx - e.x) * ratio, y: (cy - e.y) * ratio }); 
+}
+
+function resize() { 
+  var rect = mainImg.getBoundingClientRect();
+  cx = rect.left + rect.width  / 2;
+  cy = rect.top  + rect.height / 2;
+}
+
+</script>
 </body>
 
 </html>

@@ -40,7 +40,31 @@ class Ayb_itemsController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Ayb_item::updateOrCreate($request["id"],$request["data"]);
+
+
+
+        if($request->file('image')){
+            $file= $request->file('image');
+            $filename= $request["id"].".".$file->getClientOriginalExtension();
+            $file-> move(public_path('public/Ayb_item'), $filename);
+        }
+
+        
+        $data = $request->all();
+        $current_data = array(
+            "name" => $data["name"],
+            "description" => $data["description"],
+            "price" => $data["price"],
+            "sede_id" => $data["sede_id"],
+            "img" => $filename,
+            "group_menu_id" => $data["group_menu_id"],
+        );
+
+        
+
+        $current_item = Ayb_item::updateOrCreate([ 'id' => $data["id"] ], $current_data);
+
+
         if($current_item){
             return response()->json([ 'type' => 'success']);
         }else{

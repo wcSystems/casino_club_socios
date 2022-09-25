@@ -11,6 +11,7 @@ class Ayb_item extends Model
         'price',
         'description',
         'sede_id',
+        'img',
         'group_menu_id',
     ];
 
