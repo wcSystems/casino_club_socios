@@ -33,3 +33,7 @@ Route::get('/emails/service', 'EmailsController@service')->name('emails.service'
 Route::get('/ayb_items/service', 'Ayb_itemsController@service')->name('ayb_items.service');
 Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb_commands.service');
 Route::get('/attlogs/service', 'AttlogsController@service')->name('attlogs.service');
+
+
+// ALL JOINS DATABASE
+Route::post('/ayb_commands/pjoin', 'Ayb_commandsController@pjoin')->name('ayb_commands.pjoin');

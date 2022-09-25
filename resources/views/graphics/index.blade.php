@@ -119,6 +119,19 @@
             </div>
         </div>
     </div>
+    <!-- Tragos Favoritas -->
+    <div class="panel panel-inverse col-sm-12 col-md-12 col-lg-4 col-xl-4 bg-transparent" >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                QR Menu
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="title m-b-md m-auto">
+            {!!QrCode::size(400)->generate('casinosroraima.com/menu') !!}
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 @section('js')

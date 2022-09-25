@@ -11,6 +11,8 @@
 |
 */
 
+use App\Models\Ayb_item;
+
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
 
@@ -114,8 +116,12 @@ Route::middleware(['auth'])->group(function () {
 
     // VIEW - GRAPHICS
     Route::get('/', 'GraphicsController@index')->name("graphics");
-
 });
+
+Route::get("/menu", function(){
+    return view("qr.index")->with('ayb_items',Ayb_item::all());
+ });
+
 Route::get('{any}', function() {
     return redirect('login');
 })->where('any', '.*');

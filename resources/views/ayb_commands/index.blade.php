@@ -120,15 +120,69 @@
                     </div>
                 </form>`
         })
-        /* if(id){
-            let current={!! $ayb_item_commands !!}.find(i=>i.id===id)
-            $("#ayb_item_id").val(current.ayb_item_id)
-            $("#total").val(current.total)
-            $("#option").val(current.option)
-            $("#game").val(current.game)
-            $("#user_id").val(current.user_id)
-        } */
         validateForm()
+    }
+
+    function view(id) {
+        let payload = { _token: $("meta[name='csrf-token']").attr("content"), id: { id: id } }
+        $.ajax({
+            url: "api/ayb_commands/pjoin",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+                res = JSON.parse(res)
+                let html = ``
+                    html += `
+                    <div class="table-responsive">
+                        <table id="data-table-default-stadistic" class=" table table-bordered table-td-valign-middle mt-3" style="width:100% !important">
+                            <thead style="background-color:paleturquoise" >
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Producto</th>
+                                    <th>Destino</th>
+                                    <th>Tipo</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                                res.productos.forEach(element => {
+                                    html +=`
+                                    <tr>
+                                        <td> ${element.id} </td>
+                                        <td> ${element.item_name} </td>
+                                        <td> ${element.game} </td>
+                                        <td> ${element.option} </td>
+                                        <td> ${element.total} </td>
+                                        <td> ${element.price} $ </td>
+                                        <td> ${ element.total * element.price } $ </td>
+                                    </tr>
+                                    `;
+                                });
+                            html += 
+                                `<tr>
+                                    <td colspan="5" > Comanda Autorizada por:  <span class="font-weight-bold">${res.aprobado}<span> </td>
+                                    <th> TOTAL </th>
+                                    <td> ${ res.productos.reduce((sum, i) => (i.total * i.price) + sum , 0) } $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>`;
+
+
+
+
+
+                Swal.fire({
+                    title: `Comanda Nª ${id} - ${ moment( res.fecha ).format("DD-MM-YYYY")  }`,
+                    showConfirmButton: false,
+                    width: '50em',
+                    html: html
+                })
+            }
+        });
+      
     }
     function guardar(id) {
 
@@ -188,7 +242,7 @@
             render: function ( data,type, row  ) {
                 return `
                     <a onclick="elim('ayb_commands',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                    <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
+                    <a onclick="view(${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
                 `;
             }
         },

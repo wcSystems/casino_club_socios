@@ -103,6 +103,14 @@ class Ayb_commandsController extends Controller
      */
     public function destroy($id)
     {
+        $Ayb_commands = Ayb_item_command::where('ayb_command_id','=',$id);
+
+        $Ayb_commands->each(function($item, $key) {
+            $item->delete();
+        });
+
+
+
         $current_item = Ayb_command::find($id);
         if($current_item){
             $current_item->delete();
@@ -143,4 +151,31 @@ class Ayb_commandsController extends Controller
             "aaData" => $query
         ));
     }
+    
+    public function pjoin(Request $request)
+    {
+      
+        $id = $request["id"];
+
+        $list = Ayb_item_command::select(DB::raw('ayb_item_commands.*, ayb_items.name AS item_name, ayb_items.price AS price'))
+                    ->where('ayb_item_commands.ayb_command_id','=',$id)
+                    ->join('ayb_commands', 'ayb_item_commands.ayb_command_id', '=', 'ayb_commands.id')
+                    ->join('ayb_items', 'ayb_item_commands.ayb_item_id', '=', 'ayb_items.id')
+                    ->get();
+
+        $aprobado = Ayb_command::select(DB::raw('users.name, ayb_commands.created_at AS fecha'))
+                        ->where('ayb_commands.id','=',$id)
+                        ->join('users', 'ayb_commands.user_id', '=', 'users.id')
+                        ->first();
+
+        //$list = Ayb_item_command::with($id);
+
+        echo json_encode(array(
+            "productos" => $list,
+            "aprobado" => $aprobado->name,
+            "fecha" => $aprobado->fecha,
+        ));
+    }
+
+
 }
