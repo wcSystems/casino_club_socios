@@ -14,7 +14,7 @@ class CreateAttlogTable extends Migration
     public function up()
     {
         Schema::create('attlogs', function (Blueprint $table) {
-            //$table->bigIncrements('id');
+            $table->bigIncrements('id');
             $table->string('employeeID',50);
             $table->dateTime('authDateTime',6)->nullable();
             $table->date('authDate')->nullable();

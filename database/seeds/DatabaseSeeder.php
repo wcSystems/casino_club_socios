@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(Group_menusTableSeeder::class);
+        $this->call(SedesTableSeeder::class);
         $this->call(LevelsTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(TransportationsTableSeeder::class);
@@ -34,6 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DomainsTableSeeder::class);
         $this->call(EmailsTableSeeder::class);
         $this->call(Ayb_itemsTableSeeder::class);
+        
         factory(Client::class, 1000)->create();
     }
 }

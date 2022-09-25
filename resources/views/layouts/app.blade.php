@@ -271,6 +271,18 @@
                             <span class="text-white">ITEMS A&B</span>
                         </a>
                     </li>
+                    <li id="sedes_nav" class="has-sub closed">
+                        <a href="{{ route('sedes') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">SEDES</span>
+                        </a>
+                    </li>
+                    <li id="group_menus_nav" class="has-sub closed">
+                        <a href="{{ route('group_menus') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">GRUPO DE MENUS</span>
+                        </a>
+                    </li>
                     
 
 

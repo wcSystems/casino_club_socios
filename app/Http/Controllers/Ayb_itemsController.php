@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ayb_item;
+use App\Models\Group_menu;
+use App\Models\Sede;
 
 class Ayb_itemsController extends Controller
 {
@@ -15,7 +17,9 @@ class Ayb_itemsController extends Controller
     public function index()
     {
         $ayb_items = Ayb_item::all();
-        return view('ayb_items.index')->with('ayb_items',$ayb_items);
+        $sedes = Sede::all();
+        $group_menus = Group_menu::all();
+        return view('ayb_items.index')->with('ayb_items',$ayb_items)->with('sedes',$sedes)->with('group_menus',$group_menus);
     }
 
     /**

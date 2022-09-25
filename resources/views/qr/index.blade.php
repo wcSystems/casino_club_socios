@@ -47,9 +47,7 @@
 					<div class="block">
 						<h1 class="heading wow fadeInUp" data-wow-duration="300ms" data-wow-delay="300ms">Nuestro
 							<span>MENU</span> con <span>PRECIOS</span></h1>
-						<p class="wow fadeInUp" data-wow-duration="300ms" data-wow-delay="400ms">Lorem ipsum dolor sit
-							amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-							magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco </p>
+						<p class="wow fadeInUp" data-wow-duration="300ms" data-wow-delay="400ms">Listado de menu Cortesia exclusiva para clientes </p>
 						<div class="pricing-list">
 							
 							<ul>
@@ -63,8 +61,7 @@
                                                 <div class="border-bottom"></div>
                                                 <span>$ {{ $item->price }} </span>
                                             </div>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim&&</p>
+                                            <p>{{ $item->description }}</p>
                                         </div>
                                     </li>
                                 @endforeach
@@ -80,7 +77,7 @@
 	<!--
     CONTACT US  start
     ============================= -->
-	<section id="contact-us">
+	<section id="contact-us" class="mb-3">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">

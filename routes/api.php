@@ -21,6 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/users/service', 'UsersController@service')->name('users.service');
 Route::get('/clients/service', 'ClientsController@service')->name('clients.service');
 Route::get('/levels/service', 'LevelsController@service')->name('levels.service');
+Route::get('/sedes/service', 'SedesController@service')->name('sedes.service');
+Route::get('/group_menus/service', 'GroupmenusController@service')->name('group_menus.service');
 Route::get('/transportations/service', 'TransportationsController@service')->name('transportations.service');
 Route::get('/juices/service', 'JuicesController@service')->name('juices.service');
 Route::get('/foods/service', 'FoodsController@service')->name('foods.service');

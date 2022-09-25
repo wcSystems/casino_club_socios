@@ -38,6 +38,18 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'levels.update',
         'destroy' => 'levels.destroy'
     ]);
+    Route::resource('sedes', 'SedesController')->names([
+        'index' => 'sedes',
+        'create' => 'sedes.create',
+        'update' => 'sedes.update',
+        'destroy' => 'sedes.destroy'
+    ]);
+    Route::resource('group_menus', 'GroupmenusController')->names([
+        'index' => 'group_menus',
+        'create' => 'group_menus.create',
+        'update' => 'group_menus.update',
+        'destroy' => 'group_menus.destroy'
+    ]);
     Route::resource('transportations', 'TransportationsController')->names([
         'index' => 'transportations',
         'create' => 'transportations.create',
@@ -119,7 +131,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get("/menu", function(){
-    return view("qr.index")->with('ayb_items',Ayb_item::all());
+        return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => "6",'group_menu_id' => "2" ])->get() );
  });
 
 Route::get('{any}', function() {

@@ -9,6 +9,9 @@ class Ayb_item extends Model
     protected $fillable = [
         'name',
         'price',
+        'description',
+        'sede_id',
+        'group_menu_id',
     ];
 
     public function item() {
