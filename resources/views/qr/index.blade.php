@@ -59,7 +59,9 @@
                                             <div class="item-title">
                                                 <h2>{{ $item->name }} </h2>
                                                 <div class="border-bottom"></div>
-                                                <span>$ {{ $item->price }} </span>
+												@if( $item->group_menu_id != 2 )
+													<span>$ {{ $item->price }} </span>
+												@endif
                                             </div>
                                             <p>{{ $item->description }}</p>
                                         </div>
