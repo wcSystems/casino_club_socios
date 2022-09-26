@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Ayb_item;
 use App\Models\Group_menu;
 use App\Models\Sede;
+use App\Models\Img_ayb_item;
 
 class Ayb_itemsController extends Controller
 {
@@ -44,10 +45,30 @@ class Ayb_itemsController extends Controller
 
 
         if($request->file('image')){
+            
             $file= $request->file('image');
-            $filename= $request["id"].".".$file->getClientOriginalExtension();
-            $file-> move(public_path('public/Ayb_item'), $filename);
+            $filename= $file->getClientOriginalName();
+            $file-> move(public_path('public/Ayb_item/'.$request["id"]), $filename);
+
+            Img_ayb_item::create(array(
+                'name'  => $filename,
+                'ayb_item_id' => $request["id"]
+            ));
+
         }
+
+        
+
+        /* $imgs = Img_ayb_item::where('ayb_item_id','=',$request["id"]);
+        $imgs->each(function($item, $key) {
+            $item->delete();
+        }); */
+
+
+        
+
+
+
 
         
         $data = $request->all();
@@ -56,7 +77,6 @@ class Ayb_itemsController extends Controller
             "description" => $data["description"],
             "price" => $data["price"],
             "sede_id" => $data["sede_id"],
-            "img" => $filename,
             "group_menu_id" => $data["group_menu_id"],
         );
 

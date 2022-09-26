@@ -131,7 +131,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get("/menu", function(){
-        return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => "6",'group_menu_id' => "2" ])->get() );
+        return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => "6",'group_menu_id' => "2" ])->with('imgs')->get() );
  });
 
 Route::get('{any}', function() {

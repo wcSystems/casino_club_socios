@@ -18,4 +18,8 @@ class Ayb_item extends Model
     public function item() {
         return $this->belongsToMany('App\Models\Ayb_item_command','ayb_item_commands');
     }
+
+    public function imgs() {
+        return $this->hasMany('App\Models\Img_ayb_item');
+    }
 }

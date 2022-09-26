@@ -18,7 +18,6 @@ class CreateAybItemsTable extends Migration
             $table->string('name',100);
             $table->string('description',100);
             $table->string('price',100);
-            $table->string('img',100);
             $table->bigInteger('sede_id')->nullable()->unsigned();
             $table->foreign('sede_id')->references('id')->on('sedes')->onUpdate('cascade');
 
