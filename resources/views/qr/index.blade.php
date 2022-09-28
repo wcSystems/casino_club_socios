@@ -25,7 +25,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="block">
-							<h1 class="heading wow fadeInUp" data-wow-duration="300ms" data-wow-delay="300ms">Nuestro <span>MENU</span> con <span>PRECIOS</span></h1>
+							<h1 class="heading wow fadeInUp" data-wow-duration="300ms" data-wow-delay="300ms">Nuestro <span>MENU</span></h1>
 							<p class="wow fadeInUp p-2" data-wow-duration="300ms" data-wow-delay="400ms">Listado de menu Cortesia exclusiva para clientes </p>
 							
 							<div class="pricing-list py-0">
