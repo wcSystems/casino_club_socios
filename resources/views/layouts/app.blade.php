@@ -193,13 +193,14 @@
                     <li id="ayb_commands_nav" class="has-sub closed">
                         <a href="{{ route('ayb_commands') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">A&B</span>
+                            <span class="text-white">COMANDAS</span>
                         </a>
                     </li>
-                    <li id="users_nav" class="has-sub closed">
-                        <a href="{{ route('users') }}">
+                    
+                    <li id="emails_nav" class="has-sub closed">
+                        <a href="{{ route('emails') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">USUARIOS</span>
+                            <span class="text-white">CORREOS</span>
                         </a>
                     </li>
                     <!-- <li id="attlogs_nav" class="has-sub closed">
@@ -208,14 +209,34 @@
                             <span class="text-white">ASISTENCIA</span>
                         </a>
                     </li> -->
-
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES</li>
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES USUARIOS</li>
+                    <li id="users_nav" class="has-sub closed">
+                        <a href="{{ route('users') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">USUARIOS</span>
+                        </a>
+                    </li>
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES GLOBALES</li>
                     <li id="levels_nav" class="has-sub closed">
                         <a href="{{ route('levels') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">NIVELES</span>
                         </a>
                     </li>
+                    <li id="domains_nav" class="has-sub closed">
+                        <a href="{{ route('domains') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">DOMINIOS</span>
+                        </a>
+                    </li>
+                    <li id="sedes_nav" class="has-sub closed">
+                        <a href="{{ route('sedes') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">SEDES</span>
+                        </a>
+                    </li>
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MARKENTING</li>
+                    
                     
                     <li id="transportations_nav" class="has-sub closed">
                         <a href="{{ route('transportations') }}">
@@ -253,30 +274,16 @@
                             <span class="text-white">MESAS EN VIVO</span>
                         </a>
                     </li>
-                    <li id="domains_nav" class="has-sub closed">
-                        <a href="{{ route('domains') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DOMINIOS</span>
-                        </a>
-                    </li>
-                    <li id="emails_nav" class="has-sub closed">
-                        <a href="{{ route('emails') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CORREOS</span>
-                        </a>
-                    </li>
+                    
+                    
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
                     <li id="ayb_items_nav" class="has-sub closed">
                         <a href="{{ route('ayb_items') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">ITEMS A&B</span>
                         </a>
                     </li>
-                    <li id="sedes_nav" class="has-sub closed">
-                        <a href="{{ route('sedes') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">SEDES</span>
-                        </a>
-                    </li>
+                    
                     <li id="group_menus_nav" class="has-sub closed">
                         <a href="{{ route('group_menus') }}">
                             <i class="fas fa-circle text-white"></i>
