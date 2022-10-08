@@ -13,7 +13,7 @@ class CreateAttlogTable extends Migration
      */
     public function up()
     {
-        Schema::create('attlogs', function (Blueprint $table) {
+        /* Schema::create('attlogs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('employeeID',50);
             $table->dateTime('authDateTime',6)->nullable();
@@ -24,7 +24,7 @@ class CreateAttlogTable extends Migration
             $table->string('deviceSN',50);
             $table->string('personName',50);
             $table->string('cardNo',50);
-        });
+        }); */
     }
 
     /**
@@ -34,6 +34,6 @@ class CreateAttlogTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attlog');
+        //Schema::dropIfExists('attlog');
     }
 }

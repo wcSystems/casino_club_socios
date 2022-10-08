@@ -36,6 +36,11 @@ class DatabaseSeeder extends Seeder
         $this->call(DomainsTableSeeder::class);
         $this->call(EmailsTableSeeder::class);
         $this->call(Ayb_itemsTableSeeder::class);
+        $this->call(Brand_machinesTableSeeder::class);
+        $this->call(Range_machinesTableSeeder::class);
+        $this->call(Associated_machinesTableSeeder::class);
+        $this->call(Value_machinesTableSeeder::class);
+        $this->call(Play_machinesTableSeeder::class);
         
         factory(Client::class, 1000)->create();
     }

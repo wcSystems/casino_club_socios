@@ -275,7 +275,44 @@
                         </a>
                     </li>
                     
-                    
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MAQUINAS</li>
+                    <li id="brand_machines_nav" class="has-sub closed">
+                        <a href="{{ route('brand_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">MARCAS</span>
+                        </a>
+                    </li>
+                    <li id="model_machines_nav" class="has-sub closed">
+                        <a href="{{ route('model_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">MODELOS</span>
+                        </a>
+                    </li>
+                    <li id="range_machines_nav" class="has-sub closed">
+                        <a href="{{ route('range_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">RANGOS</span>
+                        </a>
+                    </li>
+                    <li id="associated_machines_nav" class="has-sub closed">
+                        <a href="{{ route('associated_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">ASOCIADOS</span>
+                        </a>
+                    </li>
+                    <li id="value_machines_nav" class="has-sub closed">
+                        <a href="{{ route('value_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">VALORES</span>
+                        </a>
+                    </li>
+                    <li id="play_machines_nav" class="has-sub closed">
+                        <a href="{{ route('play_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">JUEGOS</span>
+                        </a>
+                    </li>
+
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
                     <li id="ayb_items_nav" class="has-sub closed">
                         <a href="{{ route('ayb_items') }}">

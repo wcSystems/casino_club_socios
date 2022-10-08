@@ -34,7 +34,21 @@ Route::get('/domains/service', 'DomainsController@service')->name('domains.servi
 Route::get('/emails/service', 'EmailsController@service')->name('emails.service');
 Route::get('/ayb_items/service', 'Ayb_itemsController@service')->name('ayb_items.service');
 Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb_commands.service');
-Route::get('/attlogs/service', 'AttlogsController@service')->name('attlogs.service');
+
+
+
+Route::get('/brand_machines/service', 'Brand_machinesController@service')->name('brand_machines.service');
+Route::get('/model_machines/service', 'Model_machinesController@service')->name('model_machines.service');
+Route::get('/range_machines/service', 'Range_machinesController@service')->name('range_machines.service');
+Route::get('/associated_machines/service', 'Associated_machinesController@service')->name('associated_machines.service');
+Route::get('/play_machines/service', 'Play_machinesController@service')->name('play_machines.service');
+Route::get('/value_machines/service', 'Value_machinesController@service')->name('value_machines.service');
+
+
+
+
+
+
 
 
 // ALL JOINS DATABASE

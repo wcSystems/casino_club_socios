@@ -126,6 +126,44 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
 
+    Route::resource('brand_machines', 'Brand_machinesController')->names([
+        'index' => 'brand_machines',
+        'create' => 'brand_machines.create',
+        'update' => 'brand_machines.update',
+        'destroy' => 'brand_machines.destroy'
+    ]);
+    Route::resource('model_machines', 'Model_machinesController')->names([
+        'index' => 'model_machines',
+        'create' => 'model_machines.create',
+        'update' => 'model_machines.update',
+        'destroy' => 'model_machines.destroy'
+    ]);
+    Route::resource('range_machines', 'Range_machinesController')->names([
+        'index' => 'range_machines',
+        'create' => 'range_machines.create',
+        'update' => 'range_machines.update',
+        'destroy' => 'range_machines.destroy'
+    ]);
+    Route::resource('associated_machines', 'Associated_machinesController')->names([
+        'index' => 'associated_machines',
+        'create' => 'associated_machines.create',
+        'update' => 'associated_machines.update',
+        'destroy' => 'associated_machines.destroy'
+    ]);
+    Route::resource('play_machines', 'Play_machinesController')->names([
+        'index' => 'play_machines',
+        'create' => 'play_machines.create',
+        'update' => 'play_machines.update',
+        'destroy' => 'play_machines.destroy'
+    ]);
+    Route::resource('value_machines', 'Value_machinesController')->names([
+        'index' => 'value_machines',
+        'create' => 'value_machines.create',
+        'update' => 'value_machines.update',
+        'destroy' => 'value_machines.destroy'
+    ]);
+
+
     // VIEW - GRAPHICS
     Route::get('/', 'GraphicsController@index')->name("graphics");
 });
