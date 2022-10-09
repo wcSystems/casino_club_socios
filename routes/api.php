@@ -37,6 +37,7 @@ Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb
 
 
 
+Route::get('/all_machines/service', 'All_machinesController@service')->name('all_machines.service');
 Route::get('/brand_machines/service', 'Brand_machinesController@service')->name('brand_machines.service');
 Route::get('/model_machines/service', 'Model_machinesController@service')->name('model_machines.service');
 Route::get('/range_machines/service', 'Range_machinesController@service')->name('range_machines.service');
@@ -44,6 +45,7 @@ Route::get('/associated_machines/service', 'Associated_machinesController@servic
 Route::get('/play_machines/service', 'Play_machinesController@service')->name('play_machines.service');
 Route::get('/value_machines/service', 'Value_machinesController@service')->name('value_machines.service');
 
+Route::post('/all_machines/listmodel', 'All_machinesController@listModel')->name('all_machines.listModel');
 
 
 

@@ -160,6 +160,12 @@
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
+                        <a class="dropdown-item" href="#" onclick="openFullscreen()">
+                            Maximizar
+                        </a>
+                        <a class="dropdown-item" href="#" onclick="closeFullscreen()">
+                            Minimizar
+                        </a>
                     </div>
                 </li>
             </ul>
@@ -276,6 +282,12 @@
                     </li>
                     
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MAQUINAS</li>
+                    <li id="all_machines_nav" class="has-sub closed">
+                        <a href="{{ route('all_machines') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">MAQUINAS</span>
+                        </a>
+                    </li>
                     <li id="brand_machines_nav" class="has-sub closed">
                         <a href="{{ route('brand_machines') }}">
                             <i class="fas fa-circle text-white"></i>
@@ -303,7 +315,7 @@
                     <li id="value_machines_nav" class="has-sub closed">
                         <a href="{{ route('value_machines') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">VALORES</span>
+                            <span class="text-white">DENOMINACIONES</span>
                         </a>
                     </li>
                     <li id="play_machines_nav" class="has-sub closed">
@@ -412,6 +424,14 @@
                         "data": function (d) {[
                             d.search = $('#search').val(),
                             d.search_transportation = $('#search_transportation').val(),
+                            d.search_brands = $('#search_brands').val(),
+                            d.search_sede_machines = $('#search_sede_machines').val(),
+                            d.search_brand_machines = $('#search_brand_machines').val(),
+                            d.search_model_machines = $('#search_model_machines').val(),
+                            d.search_range_machines = $('#search_range_machines').val(),
+                            d.search_associated_machines = $('#search_associated_machines').val(),
+                            d.search_value_machines = $('#search_value_machines').val(),
+                            d.search_play_machines = $('#search_play_machines').val(),
                             d.search_club_vip = $("#search_club_vip:checked").val() ? "1" : undefined,
                             d.search_referido = $("#search_referido:checked").val() ? "1" : undefined,
                             d.search_vive_cerca = $("#search_vive_cerca:checked").val() ? "1" : undefined,
@@ -447,6 +467,16 @@
 
                 $("#search").keyup( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_transportation").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                $("#search_sede_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_brand_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_model_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_range_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_associated_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_value_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_play_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                $("#search_brands").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_club_vip").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_referido").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_vive_cerca").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
@@ -525,6 +555,30 @@
         }
         
       
+        
+        /* View in fullscreen */
+        function openFullscreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        /* Close fullscreen */
+        function closeFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+
     </script>
     @yield('js')
 </body>

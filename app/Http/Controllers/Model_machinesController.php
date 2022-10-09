@@ -102,9 +102,17 @@ class Model_machinesController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        $search_brands = $request->get('search_brands');
         /* QUERY FILTER */
         $query = Model_machine::select(DB::raw('model_machines.*, brand_machines.name AS group_name'))
-                    ->where('model_machines.name','LIKE','%'.$search.'%')
+                    ->orWhere(function($query) use ($search){
+                        $query->orWhere('model_machines.name','LIKE','%'.$search.'%');
+                    })
+                    ->where(function($query) use ($search_brands){
+                        if(!empty($search_brands)){
+                            $query->where('model_machines.brand_machine_id', '=', $search_brands);
+                        }else{};
+                    })
                     ->join('brand_machines', 'model_machines.brand_machine_id', '=', 'brand_machines.id')
                     ->get();
                     

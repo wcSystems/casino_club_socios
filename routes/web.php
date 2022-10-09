@@ -126,6 +126,12 @@ Route::middleware(['auth'])->group(function () {
     ]);
 
 
+    Route::resource('all_machines', 'All_machinesController')->names([
+        'index' => 'all_machines',
+        'create' => 'all_machines.create',
+        'update' => 'all_machines.update',
+        'destroy' => 'all_machines.destroy'
+    ]);
     Route::resource('brand_machines', 'Brand_machinesController')->names([
         'index' => 'brand_machines',
         'create' => 'brand_machines.create',

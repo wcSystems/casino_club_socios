@@ -11,17 +11,16 @@ class Brand_machinesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('brand_machines')->insert(['name' => "Ainsworth"]);
-        DB::table('brand_machines')->insert(['name' => "Aristocrat"]);
-        DB::table('brand_machines')->insert(['name' => "Astro"]);
-        DB::table('brand_machines')->insert(['name' => "Bally"]);
+        DB::table('brand_machines')->insert(['name' => "AINSWORTH"]);
+        DB::table('brand_machines')->insert(['name' => "ARISTOCRAT"]);
+        DB::table('brand_machines')->insert(['name' => "ASTRO"]);
+        DB::table('brand_machines')->insert(['name' => "BALLY"]);
         DB::table('brand_machines')->insert(['name' => "IGT"]);
-        DB::table('brand_machines')->insert(['name' => "Konami"]);
-        DB::table('brand_machines')->insert(['name' => "Novomatic"]);
-        DB::table('brand_machines')->insert(['name' => "Unidesa"]);
-        DB::table('brand_machines')->insert(['name' => "Williams"]);
-        DB::table('brand_machines')->insert(['name' => "Ruleta 1"]);
-        DB::table('brand_machines')->insert(['name' => "Ruleta 2"]);
-        DB::table('brand_machines')->insert(['name' => "Ruleta 3"]);
+        DB::table('brand_machines')->insert(['name' => "KONAMI"]);
+        DB::table('brand_machines')->insert(['name' => "NOVOMATIC"]);
+        DB::table('brand_machines')->insert(['name' => "UNIDESA"]);
+        DB::table('brand_machines')->insert(['name' => "WILLIAMS"]);
+        DB::table('brand_machines')->insert(['name' => "ALFASTREET"]);
+        DB::table('brand_machines')->insert(['name' => "GOLD CLUB"]);
     }
 }

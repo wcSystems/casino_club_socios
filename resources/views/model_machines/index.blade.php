@@ -16,6 +16,20 @@
         </div>
     </div>
     <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                        <select id="search_brands" class="form-control w-100">
+                            <option value="" selected >Todos las marcas</option>
+                            @foreach( $brand_machines as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
                 <thead>
@@ -42,16 +56,16 @@
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Usuario <span class="text-danger"> *</span> </label>
+                                <label class=" text-lg-right col-form-label"> Modelo <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina el titulo aqui..." >
+                                    <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina el modelo aqui..." >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Dominio <span class="text-danger"> *</span> </label>
+                                <label class=" text-lg-right col-form-label"> Marca <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
                                     <select required id="brand_machine_id" class="form-control w-100">
                                         <option value="" selected >Todas las marcas</option>
