@@ -107,13 +107,13 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
-                        <th>Marca</th>
-                        <th>Modelo</th>
-                        <th>Rango</th>
-                        <th>Asociado</th>
-                        <th>Denominacion</th>
-                        <th>Juego</th>
+                        <th>Maquinas</th>
+                        <th>Marcas</th>
+                        <th>Modelos</th>
+                        <th>Rangos</th>
+                        <th>Asociados</th>
+                        <th>Denominaciones</th>
+                        <th>Juegos</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
