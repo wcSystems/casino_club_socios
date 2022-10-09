@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
         $this->call(Value_machinesTableSeeder::class);
         $this->call(Play_machinesTableSeeder::class);
         $this->call(Model_machinesTableSeeder::class);
+        $this->call(All_machinesTableSeeder::class);
         
         factory(Client::class, 1000)->create();
     }

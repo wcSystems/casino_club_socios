@@ -166,7 +166,7 @@ class All_machinesController extends Controller
                     ->join('associated_machines', 'all_machines.associated_machine_id', '=', 'associated_machines.id')
                     ->join('value_machines', 'all_machines.value_machine_id', '=', 'value_machines.id')
                     ->join('play_machines', 'all_machines.play_machine_id', '=', 'play_machines.id')
-                    ->get();
+                    ->orderBy('id', 'DESC')->get();
                     
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
