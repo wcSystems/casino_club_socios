@@ -284,9 +284,9 @@ class All_machinesTableSeeder extends Seeder
         DB::table('all_machines')->insert(['name' => "Nº271",'sede_id' => "6",'brand_machine_id' => "6",'model_machine_id' => "20",'range_machine_id' => "1",'associated_machine_id' => "8",'value_machine_id' => "1",'play_machine_id' => "52"]);
         DB::table('all_machines')->insert(['name' => "Nº272",'sede_id' => "6",'brand_machine_id' => "5",'model_machine_id' => "18",'range_machine_id' => "1",'associated_machine_id' => "6",'value_machine_id' => "1",'play_machine_id' => "53"]);
         DB::table('all_machines')->insert(['name' => "Nº273",'sede_id' => "6",'brand_machine_id' => "5",'model_machine_id' => "18",'range_machine_id' => "1",'associated_machine_id' => "6",'value_machine_id' => "1",'play_machine_id' => "53"]);
-        DB::table('all_machines')->insert(['name' => "R-1",'sede_id' => "6",'brand_machine_id' => "10",'model_machine_id' => "31",'range_machine_id' => "1",'associated_machine_id' => "9",'value_machine_id' => "3",'play_machine_id' => "54"]);
+        DB::table('all_machines')->insert(['name' => "R-1",'sede_id' => "6",'brand_machine_id' => "10",'model_machine_id' => "31",'range_machine_id' => "1",'associated_machine_id' => "11",'value_machine_id' => "3",'play_machine_id' => "54"]);
         DB::table('all_machines')->insert(['name' => "R-2",'sede_id' => "6",'brand_machine_id' => "10",'model_machine_id' => "32",'range_machine_id' => "1",'associated_machine_id' => "9",'value_machine_id' => "1",'play_machine_id' => "54"]);
-        DB::table('all_machines')->insert(['name' => "R-3",'sede_id' => "6",'brand_machine_id' => "10",'model_machine_id' => "31",'range_machine_id' => "1",'associated_machine_id' => "9",'value_machine_id' => "3",'play_machine_id' => "54"]);
+        DB::table('all_machines')->insert(['name' => "R-3",'sede_id' => "6",'brand_machine_id' => "10",'model_machine_id' => "31",'range_machine_id' => "1",'associated_machine_id' => "11",'value_machine_id' => "3",'play_machine_id' => "54"]);
 
     }
 }
