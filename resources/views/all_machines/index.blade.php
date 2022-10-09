@@ -119,11 +119,120 @@
                 </thead>
             </table>
         </div>
+
+        
+
     </div>
 </div>
+
+<div class="row">
+    <!-- Sedes -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Sedes
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="sede_data"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Rangos -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Rangos
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="range_data"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Asociados -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Asociados
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="associated_data"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Denominaciones -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Denominaciones
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="value_data"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Marcas -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-4  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Marcas
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="brand_data"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Modelos -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-4  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Modelos
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="model_data"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Juegos -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-4  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Juegos
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="play_data"></canvas>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
 @endsection
 @section('js')
 <script>
+
+    let charts = {!! $charts !!}
+    const sede_data = new Chart(document.getElementById('sede_data'),{ type:'pie',data: charts.sede_data});
+    const brand_data = new Chart(document.getElementById('brand_data'),{ type:'pie',data: charts.brand_data});
+    const model_data = new Chart(document.getElementById('model_data'),{ type:'pie',data: charts.model_data});
+    const range_data = new Chart(document.getElementById('range_data'),{ type:'pie',data: charts.range_data});
+    const associated_data = new Chart(document.getElementById('associated_data'),{ type:'pie',data: charts.associated_data});
+    const value_data = new Chart(document.getElementById('value_data'),{ type:'pie',data: charts.value_data});
+    const play_data = new Chart(document.getElementById('play_data'),{ type:'pie',data: charts.play_data});
+
     $('#all_machines_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({

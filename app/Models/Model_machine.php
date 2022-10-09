@@ -10,4 +10,8 @@ class Model_machine extends Model
         'brand_machine_id',
         'name',
     ];
+
+    public function machines() {
+        return $this->hasMany('App\Models\All_machine');
+    }
 }
