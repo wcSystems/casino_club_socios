@@ -18,12 +18,6 @@ class CreateUsersTable extends Migration
             $table->string('email');
             $table->string('password');
             $table->string('name',100);
-            $table->string('celular',10)->nullable();
-            $table->string('cedula',11);
-            $table->date('nacimiento');
-            $table->bigInteger('level_id')->nullable()->unsigned();
-            $table->foreign('level_id')->references('id')->on('levels')->onUpdate('cascade');
-            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             
