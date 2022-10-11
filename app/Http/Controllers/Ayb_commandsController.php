@@ -128,10 +128,16 @@ class Ayb_commandsController extends Controller
         //$query = Ayb_command::where('ayb_item_id','LIKE','%'.$search.'%')->get();
         //$query = Ayb_item_command::all();
 
-        $query = Ayb_command::select(DB::raw('ayb_commands.*, DATE_FORMAT(ayb_commands.created_at, "%Y-%m-%d") AS group_name, users.name AS user_name'))
+        $query = Ayb_command::select(DB::raw('ayb_commands.*, ayb_commands.created_at AS group_name, users.name AS user_name'))
                     ->where('users.name','LIKE','%'.$search.'%')
                     ->orWhere('ayb_commands.created_at','LIKE','%'.$search.'%')
                     ->join('users', 'ayb_commands.user_id', '=', 'users.id')->get();
+
+        $query->each(function ($item) {
+            $item->group_name = DATE_FORMAT($item->created_at, "Y-m-d");
+        });
+
+
 
 
         /* FIELDS DEFAULTS DATATABLES */
