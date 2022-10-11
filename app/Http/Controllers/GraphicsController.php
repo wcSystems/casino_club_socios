@@ -7,14 +7,14 @@ use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use App\Models\Client_view;
+//use App\Models\Client_view;
 use App\Models\Client;
 
 class GraphicsController extends Controller
 {
     public function index()
     {
-        $charts = array();
+        /* $charts = array();
         $charts["club_vip"] = [
             'labels' => DB::table('count_client_club_vip_views')->pluck('name'),
             'datasets' => [
@@ -156,6 +156,7 @@ class GraphicsController extends Controller
             ] 
         ];
         $charts = json_encode($charts);
-        return view('graphics.index')->with('charts',$charts); 
+        return view('graphics.index')->with('charts',$charts);  */
+        return view('users.index');
     }
 }

@@ -178,12 +178,12 @@
 
                     
                     <li class="nav-header" style="color: #fff !important">MODULOS</li>
-                    <li id="graphics_nav" class="has-sub closed">
+                    <!-- <li id="graphics_nav" class="has-sub closed">
                         <a href="{{ route('graphics') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">GRAFICOS</span>
                         </a>
-                    </li>
+                    </li> -->
                     <li id="clients_nav" class="has-sub closed">
                         <a href="{{ route('clients') }}">
                             <i class="fas fa-circle text-white"></i>
@@ -209,12 +209,12 @@
                             <span class="text-white">CORREOS</span>
                         </a>
                     </li>
-                    <!-- <li id="attlogs_nav" class="has-sub closed">
+                    <li id="attlogs_nav" class="has-sub closed">
                         <a href="{{ route('attlogs') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">ASISTENCIA</span>
                         </a>
-                    </li> -->
+                    </li>
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES USUARIOS</li>
                     <li id="users_nav" class="has-sub closed">
                         <a href="{{ route('users') }}">
@@ -576,6 +576,92 @@
             } else if (document.msExitFullscreen) { /* IE11 */
                 document.msExitFullscreen();
             }
+        }
+
+        function dataTableAttlog(url,columns,group_name_all) {
+            $(document).ready(function() {
+                let table = $('#data-table-default').DataTable({
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                    responsive: true,
+                    processing: true,
+                    lengthChange: true,
+                    columns: columns,
+                    drawCallback: function (settings) {
+                        if(group_name_all){
+                            var api = this.api();
+                            var rows = api.rows({ page: 'current' }).nodes();
+                            var last = null;
+                            api.rows({ page: 'current' }).data().each(function (data, i) {
+                                if (last !== data.authDate) {
+                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data.authDate + "<span class='font-weight-bold'> ( "+ moment(data.authDate).format('dddd') +" ) </span>"+ '</td></tr>');
+                                    last = data.authDate;
+                                }
+                            });
+                        }
+                    },
+
+
+
+
+
+
+
+                    ajax: {
+                        "url": url,
+                        "data": function (d) {[
+                            d.search = $('#search').val(),
+                            d.start = $('#start').val(),
+                            d.end = $('#end').val(),
+                            d.search_transportation = $('#search_transportation').val(),
+                            d.search_club_vip = $("#search_club_vip:checked").val() ? "1" : undefined,
+                            d.search_referido = $("#search_referido:checked").val() ? "1" : undefined,
+                            d.search_vive_cerca = $("#search_vive_cerca:checked").val() ? "1" : undefined,
+                            d.search_trabaja_cerca = $("#search_trabaja_cerca:checked").val() ? "1" : undefined,
+                            d.search_solo_de_paso = $("#search_solo_de_paso:checked").val() ? "1" : undefined,
+                            d.search_descuento = $("#search_descuento:checked").val() ? "1" : undefined,
+                            d.search_puntos_por_canje = $("#search_puntos_por_canje:checked").val() ? "1" : undefined,
+                            d.search_ticket_souvenirs = $("#search_ticket_souvenirs:checked").val() ? "1" : undefined,
+                            d.search_machine = $("#search_machine:checked").val() ? "1" : undefined,
+                            d.search_table = $("#search_table:checked").val() ? "1" : undefined,
+                        ]}
+                    },
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "emptyTable":  "Sin datos disponibles",
+                        "zeroRecords": "Ningun resultado encontrado",
+                        "info": "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+                        "infoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "infoEmpty": "Ningun valor disponible",
+                        "loadingRecords": "Cargando...",
+                        "processing":     "Procesando...",
+                        "search":     "Buscar",
+                        "paginate": {
+                            "first":      "Primero",
+                            "last":       "Ultimo",
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                    }
+                }).on( 'processing.dt', function ( e, settings, processing ) {
+                    if(processing){ console.log() }else{ }
+                });
+
+                $("#search").keyup( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#start").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#end").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_transportation").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_club_vip").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_referido").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_vive_cerca").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_trabaja_cerca").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_solo_de_paso").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_descuento").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_puntos_por_canje").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_ticket_souvenirs").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_ticket_machine").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_ticket_table").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+            });
+            
         }
 
 
