@@ -9,6 +9,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 //use App\Models\Client_view;
 use App\Models\Client;
+use App\User;
+use App\Models\Level;
+use Illuminate\Support\Facades\Auth;
 
 class GraphicsController extends Controller
 {
@@ -157,6 +160,8 @@ class GraphicsController extends Controller
         ];
         $charts = json_encode($charts);
         return view('graphics.index')->with('charts',$charts);  */
-        return view('users.index');
+        $users = User::all();
+        $levels = Level::all();
+        return view('users.index')->with('users',$users)->with('id',Auth::id())->with('levels',$levels);;
     }
 }
