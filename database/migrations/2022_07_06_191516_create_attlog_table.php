@@ -34,6 +34,6 @@ class CreateAttlogTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attlog');
+        Schema::dropIfExists('attlogs');
     }
 }

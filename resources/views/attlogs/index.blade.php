@@ -113,7 +113,8 @@
         { data: 'authDate' },
         {
             render: function ( data,type, row,all  ) {
-                return "<span class='font-weight-bold'>Entrada: </span>" +row.first+" "+" <span class='font-weight-bold'>Salida: </span>"+ row.last;
+                //return "<span class='font-weight-bold'>Entrada: </span>" +row.first+" "+" <span class='font-weight-bold'>Salida: </span>"+ row.last;
+                return "<span class='font-weight-bold'>Entrada: </span>" +row.authDate+" "+" <span class='font-weight-bold'>Salida: </span>"+ row.authDate;
             }
         },
        

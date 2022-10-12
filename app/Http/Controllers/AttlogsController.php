@@ -15,7 +15,7 @@ class AttlogsController extends Controller
      */
     public function index()
     {
-        $attlogs = Attlog::orderBy('id', 'desc')->get();
+        $attlogs = Attlog::all();
         return view('attlogs.index')->with('attlogs',$attlogs);
     }
 
@@ -93,7 +93,7 @@ class AttlogsController extends Controller
         $end = $request->get('end');
 
         /* QUERY FILTER */
-        $query = DB::table('attlog')
+        $query = DB::table('attlogs')
         
         ->orWhere(function($query) use ($search){
             $query->orWhere('employeeID','LIKE','%'.$search.'%');

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attlog extends Model
 {
-    protected $table = 'attlog';
+    protected $table = 'attlogs';
 
     protected $fillable = [
         'employeeID',
