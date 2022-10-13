@@ -50,6 +50,31 @@
 @endsection
 @section('js')
 <script>
+
+
+    var username = "admin";
+    var password = "Cas1n01234";  
+    const token = `${username}:${password}`;
+    let url1 = "http://192.168.5.181/ISAPI/Security/userCheck"
+    let url2 = "http://192.168.5.181/ISAPI/AccessControl/UserInfo/Search?format=json"
+    let data2 = {
+        "UserInfoSearchCond":{
+            "searchID":"0",
+            "searchResultPosition":0,
+            "maxResults":30
+        }
+    }
+    $.ajax({
+        url: url1,
+        type: 'GET',
+        crossDomain: true,
+        dataType: 'jsonp',
+        success: function(res) { console.log(res) },
+        error: function(res) { console.log(res) }
+    });
+
+
+
     $('#attlogs_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({
