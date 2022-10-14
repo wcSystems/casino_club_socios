@@ -26,10 +26,13 @@
     },
     "dependencies": {
         "chart.js": "^3.8.0",
+        "crypto-md5": "^1.0.0",
         "filepond": "^4.30.4",
         "jspdf": "^2.5.1",
         "jspdf-autotable": "^3.5.25",
         "moment": "^2.29.3",
+        "node-fetch": "^3.2.10",
+        "postman-request": "^2.88.1-postman.31",
         "tableexport": "^5.2.0",
         "xlsx": "file:sheetjs/xlsx-0.18.9.tgz"
     }

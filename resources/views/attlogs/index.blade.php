@@ -47,14 +47,17 @@
         </div>
     </div>
 </div>
+
 @endsection
 @section('js')
+<script type="application/javascript" src="/js/digest-fetch-master/digest-fetch.js"></script>
 <script>
-
+    // In browser
+const DigestFetch = window.DigestFetch;
+const RequestPostman = window.RequestPostman;
 
     var username = "admin";
-    var password = "Cas1n01234";  
-    const token = `${username}:${password}`;
+    var password = "Cas1n01234";
     let url1 = "http://192.168.5.181/ISAPI/Security/userCheck"
     let url2 = "http://192.168.5.181/ISAPI/AccessControl/UserInfo/Search?format=json"
     let data2 = {
@@ -64,14 +67,34 @@
             "maxResults":30
         }
     }
-    $.ajax({
+
+    const options = {
+        method: 'get',
+        /* headers: {
+            'Client-ID': 'jglmao8u28qo1p9wltqne325i7xh3u',
+            'Authorization': 'Bearer 4xau27m6liukizor4z2l8mlb7vbpjk',
+        } */
+    }
+    //const client = new DigestFetch(username, password,  { algorithm: 'MD5' })
+    //client.fetch(url1, options).then(res => res.json).then(console.dir)
+
+
+
+
+
+    /* $.ajax({
         url: url1,
         type: 'GET',
         crossDomain: true,
         dataType: 'jsonp',
         success: function(res) { console.log(res) },
         error: function(res) { console.log(res) }
-    });
+    }); */
+
+
+
+
+
 
 
 

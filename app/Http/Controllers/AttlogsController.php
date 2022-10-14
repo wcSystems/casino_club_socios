@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Attlog;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
+
 
 class AttlogsController extends Controller
 {
@@ -15,8 +17,35 @@ class AttlogsController extends Controller
      */
     public function index()
     {
-        $attlogs = Attlog::all();
-        return view('attlogs.index')->with('attlogs',$attlogs);
+
+        $body =  [
+            "UserInfoSearchCond" =>
+            [
+                "searchID" => "0",
+                "searchResultPosition" => 0,
+                "maxResults" => 30
+            ]
+        ];
+
+        $client = new Client();
+        $res = $client->post('http://192.168.5.181/ISAPI/AccessControl/UserInfo/Search?format=json' ,[
+            'auth' =>  ['admin', 'Cas1n01234','digest'],
+            'body' => json_encode($body)
+        ]);
+        
+
+        echo $res->getStatusCode();
+        echo $res->getBody();
+
+
+
+
+        
+
+
+
+        /* $attlogs = Attlog::all();
+        return view('attlogs.index')->with('attlogs',$attlogs); */
     }
 
     /**
