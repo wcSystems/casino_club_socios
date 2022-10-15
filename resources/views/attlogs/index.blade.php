@@ -37,10 +37,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Cedula</th>
+                        <!-- <th>Cedula</th -->>
                         <th>Nombre y Apellido</th>
                         <th>Fecha</th>
                         <th>Hora de Marcaje</th>
+                        <th>Foto</th>
                     </tr>
                 </thead>
             </table>
@@ -52,49 +53,8 @@
 @section('js')
 <script type="application/javascript" src="/js/digest-fetch-master/digest-fetch.js"></script>
 <script>
-    // In browser
-const DigestFetch = window.DigestFetch;
-const RequestPostman = window.RequestPostman;
-
-    var username = "admin";
-    var password = "Cas1n01234";
-    let url1 = "http://192.168.5.181/ISAPI/Security/userCheck"
-    let url2 = "http://192.168.5.181/ISAPI/AccessControl/UserInfo/Search?format=json"
-    let data2 = {
-        "UserInfoSearchCond":{
-            "searchID":"0",
-            "searchResultPosition":0,
-            "maxResults":30
-        }
-    }
-
-    const options = {
-        method: 'get',
-        /* headers: {
-            'Client-ID': 'jglmao8u28qo1p9wltqne325i7xh3u',
-            'Authorization': 'Bearer 4xau27m6liukizor4z2l8mlb7vbpjk',
-        } */
-    }
-    //const client = new DigestFetch(username, password,  { algorithm: 'MD5' })
-    //client.fetch(url1, options).then(res => res.json).then(console.dir)
-
-
-
-
-
-    /* $.ajax({
-        url: url1,
-        type: 'GET',
-        crossDomain: true,
-        dataType: 'jsonp',
-        success: function(res) { console.log(res) },
-        error: function(res) { console.log(res) }
-    }); */
-
-
-
-
-
+    let attlogs = {!! $attlogs !!}
+    console.log(attlogs)
 
 
 
@@ -127,6 +87,28 @@ const RequestPostman = window.RequestPostman;
         }
         validateForm()
     }
+    function preview(params) {
+       
+
+        params = $(`#img-preview-${params}`).data("img")
+        
+        Swal.fire({
+            title: `Foto`,
+            showConfirmButton: false,
+            html:`
+                <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <div class="col-lg-12">
+                                    <img src="${params}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>`
+        })
+    }
     function guardar(id) {
         let validity = document.getElementById('form-all').checkValidity()
         if(validity){
@@ -156,13 +138,24 @@ const RequestPostman = window.RequestPostman;
                 return all.row+1;
             }
         },
-        { data: 'employeeID' },
-        { data: 'personName' },
-        { data: 'authDate' },
+        //{ data: 'employeeID' },
+        { data: 'name' },
         {
             render: function ( data,type, row,all  ) {
-                //return "<span class='font-weight-bold'>Entrada: </span>" +row.first+" "+" <span class='font-weight-bold'>Salida: </span>"+ row.last;
-                return "<span class='font-weight-bold'>Entrada: </span>" +row.authDate+" "+" <span class='font-weight-bold'>Salida: </span>"+ row.authDate;
+                
+                return moment(row.time).format('YYYY-MM-DD');
+            }
+        },
+        {
+            render: function ( data,type, row,all  ) {
+                return "<span class='font-weight-bold'>Entrada: </span>" +moment(row.time).format('h:mm:ss a')+" "+" <span class='font-weight-bold'>Salida: </span>"+ moment(row.time).format('h:mm:ss a');
+            }
+        },
+        {
+            render: function ( data,type, row  ) {
+                return `
+                    <a onclick="preview(${row.serialNo})" id="img-preview-${row.serialNo}" data-img="${row.pictureURL}" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-img"></i></a>
+                `;
             }
         },
        

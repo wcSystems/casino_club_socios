@@ -46,7 +46,12 @@ Route::get('/associated_machines/service', 'Associated_machinesController@servic
 Route::get('/play_machines/service', 'Play_machinesController@service')->name('play_machines.service');
 Route::get('/value_machines/service', 'Value_machinesController@service')->name('value_machines.service');
 
-Route::post('/all_machines/listmodel', 'All_machinesController@listModel')->name('all_machines.listModel');
+
+
+
+
+// ISAPI
+Route::post('/isapi/userCheck', 'isapiController@userCheck')->name('isapi.userCheck');
 
 
 

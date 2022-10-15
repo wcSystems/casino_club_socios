@@ -593,7 +593,7 @@
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
                                 if (last !== data.authDate) {
-                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data.authDate + "<span class='font-weight-bold'> ( "+ moment(data.authDate).format('dddd') +" ) </span>"+ '</td></tr>');
+                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + moment(data.time).format('YYYY-MM-DD') + "<span class='font-weight-bold'> ( "+ moment(data.time).format('dddd') +" ) </span>"+ '</td></tr>');
                                     last = data.authDate;
                                 }
                             });
