@@ -15,32 +15,12 @@ class AttlogsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    
+
     public function index()
     {
-        $host_PUBLIC = "http://190.121.239.210:8061/";
-        $host_PRIVATE = "http://192.168.5.181/";
-        $host = "http://190.121.239.210:8061/";
-        $url2 = "ISAPI/AccessControl/AcsEvent?format=json";
-        $body2 =  [
-            "AcsEventCond"=> [
-                "searchID"=> "0",
-                "searchResultPosition"=> 0,
-                "maxResults"=> 100000,
-                "major"=> 5,
-                "minor"=> 75,
-                "startTime"=> "2022-01-01T00:00:00+00:00",
-                "endTime"=> "2022-12-31T23:59:00+00:00"
-            ]
-        ];
-
-        $client = new Client();
-        $attlogs = $client->post($host_PUBLIC.$url2 ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
-            'body' => json_encode($body2),
-        ])->getBody()->getContents();
-
-        return view('attlogs.index')->with('attlogs',$attlogs);
-        
+        return view('attlogs.index');
     }
 
     /**
@@ -134,42 +114,74 @@ class AttlogsController extends Controller
 
 
 
-        $host_PUBLIC = "http://190.121.239.210:8061/";
-        $host_PRIVATE = "http://192.168.5.181/";
-        $host = "http://190.121.239.210:8061/";
-        $url1 = "ISAPI/AccessControl/UserInfo/Search?format=json";
-        $url2 = "ISAPI/AccessControl/AcsEvent?format=json";
 
-        $bod1 =  [
-            "UserInfoSearchCond" =>
-            [
-                "searchID" => "0",
-                "searchResultPosition" => 0,
-                "maxResults" => 30
-            ]
-        ];
-        $body2 =  [
-            "AcsEventCond"=> [
-                "searchID"=> "1",
-                "searchResultPosition"=> 0,
-                "maxResults"=> 1000,
-                "major"=> 5,
-                "minor"=> 75,
-                "startTime"=> "2021-07-13T00:00:00+07:00",
-                "endTime"=> "2022-10-15T16:18:47+07:00",
-                "thermometryUnit"=>"celcius",
-                "currTemperature"=>1
-            ]
-        ];
 
-        $res = new Client();
-        $query = json_decode($res->post($host_PUBLIC.$url2 ,[
+        //$host = "http://190.121.239.210:8061/";
+        $host = "http://192.168.5.181/";
+
+
+
+
+
+
+
+        $resC = new Client();
+        $totalMatches = json_decode($resC->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
-            'body' => json_encode($body2),
+            'body' => json_encode([
+                "AcsEventCond"=> [
+                    "searchID"=> "1",
+                    "searchResultPosition"=> 0,
+                    "maxResults"=> 1,
+                    "major"=> 5,
+                    "minor"=> 75,
+                    "startTime"=> "2022-01-01T00:00:00+00:00",
+                    "endTime"=> "2022-12-31T23:59:00+0:00"
+                ]
+            ]),
             'headers' => [
                 'X-Frame-Options' => 'SAMEORIGIN',
             ]
-        ])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
+        ])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
+
+
+
+
+
+
+
+        set_time_limit(240);
+        $totalMatches = round($totalMatches/30, 0, PHP_ROUND_HALF_DOWN);
+        
+        $query = [];
+        $searchResultPosition = 0;
+        for ($i=0; $i < $totalMatches ; $i++) { 
+            $res = new Client();
+            $query2 = json_decode($res->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
+                'auth' =>  ['admin', 'Cas1n01234','digest'],
+                'body' => json_encode([
+                    "AcsEventCond"=> [
+                        "searchID"=> "1",
+                        "searchResultPosition"=> $searchResultPosition,
+                        "maxResults"=> 30,
+                        "major"=> 5,
+                        "minor"=> 75,
+                        "startTime"=> "2022-01-01T00:00:00+00:00",
+                        "endTime"=> "2022-12-31T23:59:00+0:00"
+                    ]
+                ]),
+                'headers' => [
+                    'X-Frame-Options' => 'SAMEORIGIN',
+                ]
+            ])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
+            $query = array_merge( $query , $query2 );
+            $searchResultPosition +=30;
+        }
+
+
+
+        $query_reverse = array_reverse($query);
+
 
 
 
@@ -179,14 +191,14 @@ class AttlogsController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count($query);
-        $totalRecordswithFilter = count($query);
+        $totalRecords = count($query_reverse);
+        $totalRecordswithFilter = count($query_reverse);
 
         echo json_encode(array(
             "draw" => intval($draw),
             "iTotalRecords" => $totalRecords,
             "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $query
+            "aaData" => $query_reverse
         ));
     }
 

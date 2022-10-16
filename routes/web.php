@@ -178,6 +178,6 @@ Route::get("/menu", function(){
         return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => "6",'group_menu_id' => "2" ])->with('imgs')->get() );
  });
 
-Route::get('{any}', function() {
+/* Route::get('{any}', function() {
     return redirect('login');
-})->where('any', '.*');
+})->where('any', '.*'); */
