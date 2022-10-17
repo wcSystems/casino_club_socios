@@ -51,7 +51,7 @@ Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name(
 
 
 // ISAPI
-Route::post('/isapi/userCheck', 'isapiController@userCheck')->name('isapi.userCheck');
+Route::get('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
 
 
 

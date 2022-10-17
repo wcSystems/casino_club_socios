@@ -41,7 +41,6 @@
                         <th>Nombre y Apellido</th>
                         <th>Fecha</th>
                         <th>Hora de Marcaje</th>
-                        <th>Foto</th>
                     </tr>
                 </thead>
             </table>
@@ -51,76 +50,28 @@
 
 @endsection
 @section('js')
-<script type="application/javascript" src="/js/digest-fetch-master/digest-fetch.js"></script>
 <script>
-  
-
-
+    
     $('#attlogs_nav').removeClass("closed").addClass("active").addClass("expand")
-   
-    function preview(params) {
-      /*   params = $(`#preview-${params}`).data("preview");
-        
-
-        fetch(params,{
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-                "Authorization": `Basic ${btoa("admin:Cas1n01234")}`
-            }
-        })
-        .then((response) => response.json())
-  .then((data) => console.log(data)); */
-
-
-
-
-
-        /* Swal.fire({
-                title: `FOTO`,
-                showConfirmButton: false,
-                html:`
-                    <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group row m-b-0">
-                                    <div class="col-lg-12">
-                                        <img id="img-one" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>`
-            }) */
-
-        
-    }
-   
     dataTableAttlog("{{route('attlogs.service')}}",[
         { data: 'serialNo' },
         { data: 'employeeNoString' },
         { data: 'name' },
+        { data: 'date' },
         {
             render: function ( data,type, row,all  ) {
-                
-                return moment(row.time).format('YYYY-MM-DD');
+                let first_pictureURL = row.first_pictureURL.slice(7);
+                let last_pictureURL = row.last_pictureURL.slice(7);
+                    first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;
+                    last_pictureURL = `http://admin:Cas1n01234@${last_pictureURL}`;
+                return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
+                        <a href='${first_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                        <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
+                        <a href='${last_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
+                       
             }
         },
-        {
-            render: function ( data,type, row,all  ) {
-                return "<span class='font-weight-bold'>Entrada: </span>" +moment(row.time).format('h:mm:ss a')+" "+" <span class='font-weight-bold'>Salida: </span>"+ moment(row.time).format('h:mm:ss a');
-            }
-        },
-        {
-            render: function ( data,type, row  ) {
-                let img = row.pictureURL.slice(7);
-                    img = `http://admin:Cas1n01234@${img}`;
-                    /* <a onclick="preview(${row.serialNo})" id="preview-${row.serialNo}" data-preview="${img}" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a> */
-                return `
-                    <a href="${img}" target="_blank" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-camera"></i></a>
-                `;
-            }
-        },
-       
     ],"group_name_all")
+    $.ajax({url: "{{route('isapi.getEvent')}}"});
 </script>
 @endsection

@@ -92,98 +92,27 @@ class AttlogsController extends Controller
     public function service(Request $request)
     {
         /* FIELDS TO FILTER */
-        /* $search = $request->get('search');
+        $search = $request->get('search');
         $start = $request->get('start');
-        $end = $request->get('end'); */
+        $end = $request->get('end');
 
         /* QUERY FILTER */
-        /* $query = DB::table('attlogs')
-        
+        $query = DB::table('attlogs')
         ->orWhere(function($query) use ($search){
-            $query->orWhere('employeeID','LIKE','%'.$search.'%');
-            $query->orWhere('personName','LIKE','%'.$search.'%');
-            $query->orWhere('authDate','LIKE','%'.$search.'%');
-            $query->orWhere('authTime','LIKE','%'.$search.'%');
-        })->select('employeeID', 'personName', 'authDate')->selectRaw('MIN(authTime) AS first, MAX(authTime) AS last')
-        ->groupBy('authDate','employeeID','personName')
-        ->orderBy('authDate', 'DESC')
-        ->whereBetween('authDate', [$start, $end])
-        ->get(); */
-
-        
-
-
-
-
-
-        $host = "http://190.121.239.210:8061/";
-        ///$host = "http://192.168.5.181/";
-
-
-
-
-
-
-
-        $resC = new Client();
-        $totalMatches = json_decode($resC->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
-            'body' => json_encode([
-                "AcsEventCond"=> [
-                    "searchID"=> "1",
-                    "searchResultPosition"=> 0,
-                    "maxResults"=> 1,
-                    "major"=> 5,
-                    "minor"=> 75,
-                    "startTime"=> "2022-01-01T00:00:00+00:00",
-                    "endTime"=> "2022-12-31T23:59:00+0:00"
-                ]
-            ]),
-            'headers' => [
-                'X-Frame-Options' => 'SAMEORIGIN',
-            ]
-        ])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
-
-
-
-
-
-
-
-        set_time_limit(240);
-        $totalMatches = round($totalMatches/30, 0, PHP_ROUND_HALF_DOWN);
-        
-        $query = [];
-        $searchResultPosition = 0;
-        for ($i=0; $i < $totalMatches ; $i++) { 
-            $res = new Client();
-            $query2 = json_decode($res->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
-                'auth' =>  ['admin', 'Cas1n01234','digest'],
-                'body' => json_encode([
-                    "AcsEventCond"=> [
-                        "searchID"=> "1",
-                        "searchResultPosition"=> $searchResultPosition,
-                        "maxResults"=> 30,
-                        "major"=> 5,
-                        "minor"=> 75,
-                        "startTime"=> "2022-01-01T00:00:00+00:00",
-                        "endTime"=> "2022-12-31T23:59:00+0:00"
-                    ]
-                ]),
-                'headers' => [
-                    'X-Frame-Options' => 'SAMEORIGIN',
-                ]
-            ])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
-            $query = array_merge( $query , $query2 );
-            $searchResultPosition +=30;
-        }
-
-
-
-        $query_reverse = array_reverse($query);
-
-
-
+            $query->orWhere('employeeNoString','LIKE','%'.$search.'%');
+            $query->orWhere('name','LIKE','%'.$search.'%');
+            $query->orWhere('time','LIKE','%'.$search.'%');
+        })->select('employeeNoString', 'name', 'time','serialNo','pictureURL')
+        ->selectRaw('
+            MIN(time) AS first, 
+            MAX(time) AS last, 
+            MIN(pictureURL) AS first_pictureURL, 
+            MAX(pictureURL) AS last_pictureURL, 
+            STR_TO_DATE(time, "%Y-%m-%D") AS date
+        ')
+        ->groupBy('date','employeeNoString','name')
+        //->whereBetween('date', [$start, $end])
+        ->get();
 
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -191,14 +120,14 @@ class AttlogsController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count($query_reverse);
-        $totalRecordswithFilter = count($query_reverse);
+        $totalRecords = count($query);
+        $totalRecordswithFilter = count($query);
 
         echo json_encode(array(
             "draw" => intval($draw),
             "iTotalRecords" => $totalRecords,
             "iTotalDisplayRecords" => $totalRecordswithFilter,
-            "aaData" => $query_reverse
+            "aaData" => $query
         ));
     }
 

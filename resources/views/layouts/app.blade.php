@@ -585,6 +585,7 @@
                     responsive: true,
                     processing: true,
                     lengthChange: true,
+                    order: [[0, 'desc']],
                     columns: columns,
                     drawCallback: function (settings) {
                         if(group_name_all){
@@ -592,9 +593,9 @@
                             var rows = api.rows({ page: 'current' }).nodes();
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
-                                if (last !== data.authDate) {
-                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + moment(data.time).format('YYYY-MM-DD') + "<span class='font-weight-bold'> ( "+ moment(data.time).format('dddd') +" ) </span>"+ '</td></tr>');
-                                    last = data.authDate;
+                                if (last !== data.date) {
+                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dddd') +" ) </span>"+ '</td></tr>');
+                                    last = data.date;
                                 }
                             });
                         }
@@ -664,7 +665,7 @@
             
         }
 
-
+        
     </script>
     @yield('js')
 </body>

@@ -9,14 +9,10 @@ class Attlog extends Model
     protected $table = 'attlogs';
 
     protected $fillable = [
-        'employeeID',
-        'authDateTime',
-        'authDate',
-        'authTime',
-        'direction',
-        'deviceName',
-        'deviceSN',
-        'personName',
-        'cardNo',
+        'serialNo',
+        'name',
+        'time',
+        'employeeNoString',
+        'pictureURL'
     ];
 }

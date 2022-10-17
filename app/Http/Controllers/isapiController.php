@@ -4,19 +4,53 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Models\Attlog;
 
 class isapiController extends Controller
 {
-    private $host = "http://192.168.5.181/";
-    private $username = "admin";
-    private $password = "Cas1n01234";
-
-    public function getimg(Request $request)
+    public function getEvent()
     {
-        $res = new Client();
-        $query = json_decode($res->get($request["url"] ,[
-            'auth' =>  [$this->username, $this->password,'digest'],
-        ])->getBody()->getContents(), TRUE);
-        return $query;
+        //$host = "http://190.121.239.210:8061/";
+        $host = "http://192.168.5.181/";
+        //set_time_limit(1200000000);
+        $resC = new Client();
+
+        $totalMatches = json_decode($resC->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
+            'auth' =>  ['admin', 'Cas1n01234','digest'],
+            'body' => json_encode([
+                "AcsEventCond"=> [
+                    "searchID"=> "1",
+                    "searchResultPosition"=> 0,
+                    "maxResults"=> 1,
+                    "major"=> 5,
+                    "minor"=> 75,
+                    "startTime"=> "2022-01-01T00:00:00+00:00",
+                    "endTime"=> "2022-12-31T23:59:00+0:00"
+                ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
+        
+        $totalMatches30 = floor($totalMatches/30);
+        $searchResultPosition = count(Attlog::all());
+        
+        if( $totalMatches > $searchResultPosition ){
+            for ($i=0; $i < $totalMatches30 ; $i++) {
+                $res = new Client();
+                $query2 = json_decode($res->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
+                    'auth' =>  ['admin', 'Cas1n01234','digest'],
+                    'body' => json_encode([
+                        "AcsEventCond"=> [
+                            "searchID"=> "1",
+                            "searchResultPosition"=> $searchResultPosition,
+                            "maxResults"=> 30,
+                            "major"=> 5,
+                            "minor"=> 75,
+                            "startTime"=> "2022-01-01T00:00:00+00:00",
+                            "endTime"=> "2022-12-31T23:59:00+0:00"
+                        ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
+                $searchResultPosition +=30;
+                foreach ($query2 as $key => $value) { Attlog::create($value); }
+            }
+            
+            
+        }
     }
 }
