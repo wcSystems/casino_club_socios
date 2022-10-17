@@ -72,6 +72,9 @@
             }
         },
     ],"group_name_all")
-    $.ajax({url: "{{route('isapi.getEvent')}}"});
+    
+    fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(data => {
+        $.ajax({ type: "POST", url: "{{route('isapi.getEvent')}}", data: data });
+    })    
 </script>
 @endsection

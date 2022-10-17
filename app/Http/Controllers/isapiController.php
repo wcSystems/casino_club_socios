@@ -8,13 +8,16 @@ use App\Models\Attlog;
 
 class isapiController extends Controller
 {
-    public function getEvent()
+    public function getEvent(Request $request)
     {
-        //$host = "http://190.121.239.210:8061/";
-        $host = "http://192.168.5.181/";
-        //set_time_limit(1200000000);
+        $host = "";
+        if( $request["ip"] == "190.121.239.210" ){
+            $host = "http://192.168.5.181/";
+        }else{
+            $host = "http://190.121.239.210:8061/";
+        }
+        
         $resC = new Client();
-
         $totalMatches = json_decode($resC->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
