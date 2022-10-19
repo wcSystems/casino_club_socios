@@ -241,6 +241,12 @@
                             <span class="text-white">SEDES</span>
                         </a>
                     </li>
+                    <li id="sexs_nav" class="has-sub closed">
+                        <a href="{{ route('sexs') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">SEXOS</span>
+                        </a>
+                    </li>
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MARKENTING</li>
                     
                     
@@ -337,6 +343,26 @@
                         <a href="{{ route('group_menus') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">GRUPO DE MENUS</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES RRHH</li>
+                    <li id="employees_nav" class="has-sub closed">
+                        <a href="{{ route('employees') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">EMPLEADOS</span>
+                        </a>
+                    </li>
+                    <li id="departments_nav" class="has-sub closed">
+                        <a href="{{ route('departments') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">DEPARTAMENTOS</span>
+                        </a>
+                    </li>
+                    <li id="positions_nav" class="has-sub closed">
+                        <a href="{{ route('positions') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">CARGOS</span>
                         </a>
                     </li>
                     

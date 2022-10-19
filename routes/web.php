@@ -169,6 +169,34 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'value_machines.destroy'
     ]);
 
+    Route::resource('sexs', 'SexsController')->names([
+        'index' => 'sexs',
+        'create' => 'sexs.create',
+        'update' => 'sexs.update',
+        'destroy' => 'sexs.destroy'
+    ]);
+
+    Route::resource('departments', 'DepartmentsController')->names([
+        'index' => 'departments',
+        'create' => 'departments.create',
+        'update' => 'departments.update',
+        'destroy' => 'departments.destroy'
+    ]);
+
+    Route::resource('positions', 'PositionsController')->names([
+        'index' => 'positions',
+        'create' => 'positions.create',
+        'update' => 'positions.update',
+        'destroy' => 'positions.destroy'
+    ]);
+
+    Route::resource('employees', 'EmployeesController')->names([
+        'index' => 'employees',
+        'create' => 'employees.create',
+        'update' => 'employees.update',
+        'destroy' => 'employees.destroy'
+    ]);
+
 
     // VIEW - GRAPHICS
     Route::get('/', 'GraphicsController@index')->name("graphics");
@@ -178,6 +206,6 @@ Route::get("/menu", function(){
         return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => "6",'group_menu_id' => "2" ])->with('imgs')->get() );
  });
 
-/* Route::get('{any}', function() {
+Route::get('{any}', function() {
     return redirect('login');
-})->where('any', '.*'); */
+})->where('any', '.*');

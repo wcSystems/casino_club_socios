@@ -35,9 +35,6 @@ Route::get('/emails/service', 'EmailsController@service')->name('emails.service'
 Route::get('/ayb_items/service', 'Ayb_itemsController@service')->name('ayb_items.service');
 Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb_commands.service');
 Route::get('/attlogs/service', 'AttlogsController@service')->name('attlogs.service');
-
-
-
 Route::get('/all_machines/service', 'All_machinesController@service')->name('all_machines.service');
 Route::get('/brand_machines/service', 'Brand_machinesController@service')->name('brand_machines.service');
 Route::get('/model_machines/service', 'Model_machinesController@service')->name('model_machines.service');
@@ -45,19 +42,24 @@ Route::get('/range_machines/service', 'Range_machinesController@service')->name(
 Route::get('/associated_machines/service', 'Associated_machinesController@service')->name('associated_machines.service');
 Route::get('/play_machines/service', 'Play_machinesController@service')->name('play_machines.service');
 Route::get('/value_machines/service', 'Value_machinesController@service')->name('value_machines.service');
+Route::get('/sexs/service', 'SexsController@service')->name('sexs.service');
+Route::get('/departments/service', 'DepartmentsController@service')->name('departments.service');
+Route::get('/positions/service', 'PositionsController@service')->name('positions.service');
+Route::get('/employees/service', 'EmployeesController@service')->name('employees.service');
 
-Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');
+
+
+
 
 
 
 // ISAPI
 Route::post('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
+Route::post('/isapi/addOrUpdateEmployee', 'isapiController@addOrUpdateEmployee')->name('isapi.addOrUpdateEmployee');
+Route::post('/isapi/elimEmployee', 'isapiController@elimEmployee')->name('isapi.elimEmployee');
 
-
-
-
-
-
+// list
+Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');
 
 // ALL JOINS DATABASE
 Route::post('/ayb_commands/pjoin', 'Ayb_commandsController@pjoin')->name('ayb_commands.pjoin');

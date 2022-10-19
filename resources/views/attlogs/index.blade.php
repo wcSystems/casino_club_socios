@@ -51,30 +51,37 @@
 @endsection
 @section('js')
 <script>
-    
+    $.ajax({ type: "POST", url: "{{route('isapi.getEvent')}}", data: {ip: "190.121.239.210"} });
     $('#attlogs_nav').removeClass("closed").addClass("active").addClass("expand")
-    dataTableAttlog("{{route('attlogs.service')}}",[
-        { data: 'serialNo' },
-        { data: 'employeeNoString' },
-        { data: 'name' },
-        { data: 'date' },
-        {
-            render: function ( data,type, row,all  ) {
-                let first_pictureURL = row.first_pictureURL.slice(7);
-                let last_pictureURL = row.last_pictureURL.slice(7);
-                    first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;
-                    last_pictureURL = `http://admin:Cas1n01234@${last_pictureURL}`;
-                return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
-                        <a href='${first_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
-                        <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
-                        <a href='${last_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
-                       
-            }
-        },
-    ],"group_name_all")
-    
-    fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(data => {
-        $.ajax({ type: "POST", url: "{{route('isapi.getEvent')}}", data: data });
-    })    
+
+    fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(ipify => {
+        dataTableAttlog("{{route('attlogs.service')}}",[
+            { data: 'serialNo' },
+            { data: 'employeeNoString' },
+            { data: 'name' },
+            { data: 'date' },
+            {
+                render: function ( data,type, row,all  ) { 
+
+                        let first_pictureURL = row.first_pictureURL.slice(7);
+                        let last_pictureURL = row.last_pictureURL.slice(7);
+
+                        if(ipify.ip == "190.121.239.210"){
+                            first_pictureURL = first_pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
+                            last_pictureURL = last_pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
+                        }
+
+                        first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;
+                        last_pictureURL = `http://admin:Cas1n01234@${last_pictureURL}`;
+                        return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
+                                <a href='${first_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                                <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
+                                <a href='${last_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
+                        
+                }
+            },
+        ],"group_name_all")
+    }) 
+       
 </script>
 @endsection
