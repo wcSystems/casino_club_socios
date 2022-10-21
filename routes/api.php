@@ -54,9 +54,14 @@ Route::get('/employees/service', 'EmployeesController@service')->name('employees
 
 
 // ISAPI
+//POST
 Route::post('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
 Route::post('/isapi/addOrUpdateEmployee', 'isapiController@addOrUpdateEmployee')->name('isapi.addOrUpdateEmployee');
 Route::post('/isapi/elimEmployee', 'isapiController@elimEmployee')->name('isapi.elimEmployee');
+Route::post('/isapi/uploadEmployees', 'isapiController@uploadEmployees')->name('isapi.uploadEmployees');
+
+//GET
+Route::get('/isapi/captureImgEmployee', 'isapiController@captureImgEmployee')->name('isapi.captureImgEmployee');
 
 // list
 Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');

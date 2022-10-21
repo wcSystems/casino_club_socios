@@ -81,6 +81,7 @@ class isapiController extends Controller
         ])->getBody()->getContents(), TRUE);
 
         if( $current['statusCode'] == 1 ){
+            $current_delete = Employee::where("employeeNo","=",$request["data"]["employeeNo"])->delete();
             $current_item = Employee::updateOrCreate($request["id"],$request["data"]);
             if($current_item){
                 return response()->json([ 'type' => 'success']);
@@ -120,6 +121,85 @@ class isapiController extends Controller
         }
 
         return $current;
+     
+    }
+
+    public function uploadEmployees(Request $request)
+    {
+        
+        $host = "http://192.168.5.181/";
+        //$host = "http://190.121.239.210:8061/";
+
+        foreach ($request["upload"] as $key => $value) {
+            $resC = new Client();
+            $current = json_decode($resC->put($host."ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+                'auth' =>  ['admin', 'Cas1n01234','digest'],
+                'body' => json_encode([
+                    "UserInfo"=> [
+                        "employeeNo" =>$value["employeeNo"],
+                        "name" =>$value["name"],
+                        "userType" =>"normal",
+                        "Valid"=>[
+                            "enable"=> true,
+                            "beginTime"=>"2000-01-01T00:00:00",
+                            "endTime"=>"2035-01-01T00:00:00"
+                        ],
+                        "PersonInfoExtends"=>[[
+                            "value"=> "{sexo:".$value['sex_id'].",departamento:".$value['department_id'].",cargo:".$value['position_id'].",sede:".$value['sede_id'].",nacimiento:".$value['nacimiento']."}"
+                        ]],
+                    ]])
+            ])->getBody()->getContents(), TRUE);
+
+            if( $current['statusCode'] == 1 ){
+                $current_delete = Employee::where("employeeNo","=",$value["employeeNo"])->delete();
+                $current_item = Employee::Create($value);
+                
+            }
+        }
+
+        /* if($current_item){
+            return response()->json([ 'type' => 'success']);
+        }else{
+            return response()->json([ 'type' => 'error']);
+        } */
+     
+    }
+
+    public function captureImgEmployee()
+    {
+        
+        $host = "http://192.168.5.181/";
+        //$host = "http://190.121.239.210:8061/";
+
+            $resC = new Client();
+            $current = $resC->post($host."ISAPI/AccessControl/CaptureFaceData" ,[
+                
+                'auth' =>  ['admin', 'Cas1n01234','digest'],
+                
+                'headers' => [
+                    'Content-Type' => 'multipart/form-data; boundary=<frontier>',
+                ],
+                'body' => '<CaptureFaceDataCond version="2.0" xmlns="http://www.isapi.org/ver20/XMLSchema"><captureInfrared>false</captureInfrared><dataType>binary</dataType></CaptureFaceDataCond>'
+            ])->getBody()->getContents();
+
+            /* $base64 = base64_encode($current);
+            $mime = "image/jpg";
+            $img = ('data:' . $mime . ';base64,' . $base64);
+            return "<img id='imgISAPI' src=$img >"; */
+
+
+            return $current;
+
+            /* if( $current['statusCode'] == 1 ){
+                $current_delete = Employee::where("employeeNo","=",$value["employeeNo"])->delete();
+                $current_item = Employee::Create($value);
+            } */
+
+        /* if($current_item){
+            return response()->json([ 'type' => 'success']);
+        }else{
+            return response()->json([ 'type' => 'error']);
+        } */
      
     }
 }

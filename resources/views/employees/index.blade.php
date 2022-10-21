@@ -1,8 +1,26 @@
 @extends('layouts.app')
+@section('css')
+<style>
+    input[type="file"] {
+    display: none;
+}
+</style>
+@endsection
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
+        <div class="panel-heading-btn">
+            <label  class="d-flex btn btn-1 btn-info m-0">
+                <input id="file_upload" type="file"/>
+                <i class="m-auto fa fa-lg fa-file"></i>
+            </label>
+        </div>
+        <div class="panel-heading-btn mx-2">
+            <label onclick="uploadFile()" class="d-flex btn btn-1 btn-info m-0">
+                <i class="m-auto fa fa-lg fa-arrow-up"></i>
+            </label>
+        </div>
         <div class="panel-heading-btn">
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
@@ -25,8 +43,43 @@
 </div>
 @endsection
 @section('js')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.min.js"></script>  
 <script>
     $('#employees_nav').removeClass("closed").addClass("active").addClass("expand")
+    function uploadFile() {
+        let files = document.getElementById('file_upload').files;
+        if(files.length==0){
+          alert("Archivo no valido");
+          return;
+        }
+        let filename = files[0].name;
+        let extension = filename.substring(filename.lastIndexOf(".")).toUpperCase();
+        if (extension == '.XLS' || extension == '.XLSX') {
+            excelFileToJSON(files[0]);
+        }else{
+            alert("Seleccione un archivode excel valido");
+        }
+    }
+    function excelFileToJSON(file){
+        try {
+            let reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = function(e) {
+                let data = e.target.result;
+                let workbook = XLSX.read(data, {
+                    type : 'binary'
+                });
+                let result = {};
+                workbook.SheetNames.forEach(function(sheetName) {
+                    let roa = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    if (roa.length > 0) { result[sheetName] = roa; }
+                });
+                uploadEmployees(result)
+            }
+        }catch(e){
+            console.error(e);
+        }
+      }
     function modal(type,id) {
         Swal.fire({
             title: `${type} Registro`,
@@ -34,6 +87,12 @@
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                     <div class="row">
+                    <div class="panel-heading-btn mx-2">
+                        <label onclick="viewImg()" class="d-flex btn btn-1 btn-info m-0">
+                            <i class="m-auto fa fa-lg fa-arrow-up"></i>
+                            <img id="imgISAPI" />
+                        </label>
+                    </div>
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger"> *</span> </label>
@@ -135,6 +194,43 @@
             $("#position_id").val(current.position_id)
         }
         validateForm()
+    }
+    function uploadEmployees(params) {
+        $.ajax({
+            url: "{{ route('isapi.uploadEmployees') }}",
+            type: "POST",
+            data: params,
+            success: function (res) {
+                if(res.type === 'success'){
+                    location.reload();
+                }
+            }
+        });
+    }
+    function viewImg() {
+        $.ajax({
+            url: "{{ route('isapi.captureImgEmployee') }}",
+            success: function (res) {
+                let add = ` <xmp>
+                                <catalog>
+                                    <cd>
+                                        <title>Empire Burlesque</title>
+                                        <artist>Bob Dylan</artist>
+                                        <country>USA</country>
+                                        <country>Columbia</country>
+                                        <price>10.90</price>
+                                        <year>1985</year>
+                                    </cd>
+                                </catalog>
+                            </xmp>`;
+                //$("#imgISAPI").replaceWith(res)
+                let imgXml = res
+                console.log(imgXml)
+               /*  if(res.type === 'success'){
+                    location.reload();
+                } */
+            }
+        });
     }
     function guardar(id) {
         let validity = document.getElementById('form-all').checkValidity()
