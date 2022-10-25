@@ -66,5 +66,8 @@ Route::get('/isapi/captureImgEmployee', 'isapiController@captureImgEmployee')->n
 // list
 Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');
 
+// history
+Route::post('/employees/history', 'EmployeesController@history')->name('employees.history');
+
 // ALL JOINS DATABASE
 Route::post('/ayb_commands/pjoin', 'Ayb_commandsController@pjoin')->name('ayb_commands.pjoin');

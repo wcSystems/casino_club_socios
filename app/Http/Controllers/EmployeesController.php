@@ -8,6 +8,8 @@ use App\Models\Sex;
 use App\Models\Department;
 use App\Models\Position;
 use App\Models\Sede;
+use App\Models\Attlog;
+use Illuminate\Support\Facades\DB;
 
 class EmployeesController extends Controller
 {
@@ -125,6 +127,31 @@ class EmployeesController extends Controller
             "iTotalDisplayRecords" => $totalRecordswithFilter,
             "aaData" => $query
         ));
+    }
+
+
+    public function history(Request $request)
+    {
+        $id = $request["id"];
+        $current_item = Employee::find($id);
+        $search = $current_item->employeeNo;
+
+        $query = DB::table('attlogs')
+        ->orWhere(function($query) use ($search){
+            $query->orWhere('employeeNoString','LIKE','%'.$search.'%');
+        })
+        ->select('*')
+        ->selectRaw('
+            STR_TO_DATE(time, "%Y-%m-%D") AS date
+        ')
+        ->get();
+
+
+        return $query;
+
+
+
+     
     }
 
 }

@@ -284,7 +284,62 @@
                     });
                 }
             });
-        };
+    };
+
+    function view(params) {
+        fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(ipify => {
+            $.ajax({
+                url: "{{ route('employees.history') }}",
+                type: "POST",
+                data: { id: params },
+                success: function (res) {
+                    let htmlTemplate = `
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table id="data-table-default-view" class="table table-bordered table-td-valign-middle" style="width:100% !important">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Hora de Marcaje</th>
+                                        <th>Foto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+                                    res.forEach(element => {
+
+                                        let pictureURL = element.pictureURL.slice(7);
+                                        if(ipify.ip == "190.121.239.210"){ pictureURL = pictureURL.replace("190.121.239.210:8061", "192.168.5.181");}
+                                        pictureURL = `http://admin:Cas1n01234@${pictureURL}`;
+
+                                        htmlTemplate +=`
+                                        <tr>
+                                            <td>${element.date}</td>
+                                            <td>${moment(element.time).format('h:mm:ss a')}</td>
+                                            <td>
+                                                <a href='${pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                                            </td>
+                                        </tr>
+                                        `;
+                                    });
+                                htmlTemplate+=
+                                `</tbody>
+                            </table>
+                        </div>
+                    </div>`;
+                    Swal.fire({
+                        title: `Registros`,
+                        showConfirmButton: false,
+                        html: htmlTemplate,
+                        width: '80em',
+                    })
+
+                    dataTableView()
+                }
+            });
+        }) 
+        
+    }
+
     dataTable("{{route('employees.service')}}",[
         {
             render: function ( data,type, row,all  ) {
@@ -297,9 +352,58 @@
                 return `
                     <a onclick="elim(${row.id},${row.employeeNo})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                     <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
+                    <a onclick="view(${row.id})" style="color: var(--global-2)" class="btn btn-green btn-icon btn-circle"><i class="fas fa-eye"></i></a>
                 `;
             }
         },
     ])
+
+
+    function dataTableView() {
+            $(document).ready(function() {
+                let table = $('#data-table-default-view').DataTable({
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                    responsive: true,
+                    processing: true,
+                    lengthChange: true,
+                    order: [[0, 'desc']],
+                    drawCallback: function (settings) {
+                            var api = this.api();
+                            var rows = api.rows({ page: 'current' }).nodes();
+                            var last = null;
+                            api.rows({ page: 'current' }).data().each(function (data, i) {
+                                if (last !== data[0]) {
+                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data[0] + "<span class='font-weight-bold'> ( "+ moment(data[0]).format('dddd') +" ) </span>"+ '</td></tr>');
+                                    last = data[0];
+                                }
+                            });
+                    },
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "emptyTable":  "Sin datos disponibles",
+                        "zeroRecords": "Ningun resultado encontrado",
+                        "info": "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+                        "infoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "infoEmpty": "Ningun valor disponible",
+                        "loadingRecords": "Cargando...",
+                        "processing":     "Procesando...",
+                        "search":     "Buscar",
+                        "paginate": {
+                            "first":      "Primero",
+                            "last":       "Ultimo",
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                    }
+                }).on( 'processing.dt', function ( e, settings, processing ) {
+                    if(processing){ console.log() }else{ }
+                });
+
+                $("#search").keyup( () =>{ $('#data-table-default-view').DataTable().ajax.reload() });
+            });
+            
+        }
+
+
 </script>
 @endsection
