@@ -19,6 +19,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert(['name' => "Milena Fontao",'email' => 'mfontao','password' => bcrypt('12345678'),'level_id' => '1']);
         DB::table('users')->insert(['name' => "Nicole Jimenez",'email' => 'njimenez','password' => bcrypt('12345678'),'level_id' => '1']);
         DB::table('users')->insert(['name' => "Wilson Aponte",'email' => 'waponte','password' => bcrypt('12345678'),'level_id' => '1']);
+        DB::table('users')->insert(['name' => "Luis Aldana",'email' => 'laldana','password' => bcrypt('12345678'),'level_id' => '1']);
         
     }
 }

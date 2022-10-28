@@ -60,13 +60,8 @@ class isapiController extends Controller
 
     public function getEvent(Request $request)
     {
-        
-        //$host = "http://190.121.239.210:8061/";
-        $host = "http://192.168.5.181/";
-        
-        
         $resC = new Client();
-        $totalMatches = json_decode($resC->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
+        $totalMatches = json_decode($resC->post("http://190.121.239.210:8061/ISAPI/AccessControl/AcsEvent?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "AcsEventCond"=> [
@@ -85,7 +80,7 @@ class isapiController extends Controller
         if( $totalMatches > $searchResultPosition ){
             for ($i=0; $i < $totalMatches30 ; $i++) {
                 $res = new Client();
-                $query2 = json_decode($res->post($host."ISAPI/AccessControl/AcsEvent?format=json" ,[
+                $query2 = json_decode($res->post("http://190.121.239.210:8061/ISAPI/AccessControl/AcsEvent?format=json" ,[
                     'auth' =>  ['admin', 'Cas1n01234','digest'],
                     'body' => json_encode([
                         "AcsEventCond"=> [

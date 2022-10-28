@@ -51,10 +51,16 @@
 @endsection
 @section('js')
 <script>
-    $.ajax({ type: "POST", url: "{{route('isapi.getEvent')}}", data: {ip: "190.121.239.210"} });
     $('#attlogs_nav').removeClass("closed").addClass("active").addClass("expand")
+    $.ajax({ url: "{{route('isapi.getEvent')}}"});
 
     fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(ipify => {
+
+        
+            
+    
+        
+
         dataTableAttlog("{{route('attlogs.service')}}",[
             { data: 'serialNo' },
             { data: 'employeeNoString' },
