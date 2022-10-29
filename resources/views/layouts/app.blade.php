@@ -458,6 +458,14 @@
                             d.search_associated_machines = $('#search_associated_machines').val(),
                             d.search_value_machines = $('#search_value_machines').val(),
                             d.search_play_machines = $('#search_play_machines').val(),
+
+                            d.search_sede_employees = $('#search_sede_employees').val(),
+                            d.search_department_employees = $('#search_department_employees').val(),
+                            d.search_position_employees = $('#search_position_employees').val(),
+                            d.search_sex_employees = $('#search_sex_employees').val(),
+
+                            
+
                             d.search_club_vip = $("#search_club_vip:checked").val() ? "1" : undefined,
                             d.search_referido = $("#search_referido:checked").val() ? "1" : undefined,
                             d.search_vive_cerca = $("#search_vive_cerca:checked").val() ? "1" : undefined,
@@ -501,6 +509,17 @@
                 $("#search_associated_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_value_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_play_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                
+
+
+                $("#search_sede_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_department_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_position_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_sex_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                
+
+
 
                 $("#search_brands").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_club_vip").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
@@ -650,6 +669,11 @@
                             d.search_ticket_souvenirs = $("#search_ticket_souvenirs:checked").val() ? "1" : undefined,
                             d.search_machine = $("#search_machine:checked").val() ? "1" : undefined,
                             d.search_table = $("#search_table:checked").val() ? "1" : undefined,
+
+                            d.search_sede_attlogs = $('#search_sede_attlogs').val(),
+                            d.search_department_attlogs = $('#search_department_attlogs').val(),
+                            d.search_position_attlogs = $('#search_position_attlogs').val(),
+                            d.search_sex_attlogs = $('#search_sex_attlogs').val(),
                         ]}
                     },
                     language: {
@@ -687,6 +711,11 @@
                 $("#search_ticket_souvenirs").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_ticket_machine").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_ticket_table").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                $("#search_sede_attlogs").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_department_attlogs").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_position_attlogs").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_sex_attlogs").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
             });
             
         }
