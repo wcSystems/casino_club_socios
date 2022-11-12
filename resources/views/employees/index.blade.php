@@ -358,7 +358,11 @@
                                     res.forEach(element => {
 
                                         let pictureURL = element.pictureURL.slice(7);
-                                        if(ipify.ip == "190.121.239.210"){ pictureURL = pictureURL.replace("190.121.239.210:8061", "192.168.5.181");}
+                                        if(ipify.ip == "190.121.239.210"){ 
+                                            pictureURL = pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
+                                        }else{
+                                            pictureURL = pictureURL.replace("192.168.5.181", "190.121.239.210:8061");
+                                        }
                                         pictureURL = `http://admin:Cas1n01234@${pictureURL}`;
 
                                         htmlTemplate +=`

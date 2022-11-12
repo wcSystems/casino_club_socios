@@ -202,9 +202,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', 'GraphicsController@index')->name("graphics");
 });
 
-Route::get("/menu", function(){
-        return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => "6",'group_menu_id' => "2" ])->with('imgs')->get() );
+// VIEW - MENU DINAMIC
+Route::get("/menu/{menu_id}/{sede_id}", function($menu_id, $sede_id){
+        return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => $sede_id,'group_menu_id' => $menu_id ])->with('imgs')->get() );
  });
+
+
 
 Route::get('{any}', function() {
     return redirect('login');

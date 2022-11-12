@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Client;
 use App\User;
 use App\Models\Level;
+use App\Models\Group_menu;
+use App\Models\Sede;
 use Illuminate\Support\Facades\Auth;
 
 class GraphicsController extends Controller
 {
     public function index()
     {
-        /* $charts = array();
+        $charts = array();
         $charts["club_vip"] = [
             'labels' => DB::table('count_client_club_vip_views')->pluck('name'),
             'datasets' => [
@@ -159,9 +161,9 @@ class GraphicsController extends Controller
             ] 
         ];
         $charts = json_encode($charts);
-        return view('graphics.index')->with('charts',$charts);  */
-        $users = User::all();
-        $levels = Level::all();
-        return view('users.index')->with('users',$users)->with('id',Auth::id())->with('levels',$levels);;
+        $group_menus = Group_menu::all();
+        $sedes = Sede::all();
+        return view('graphics.index')->with('charts',$charts)->with('group_menus',$group_menus)->with('sedes',$sedes); 
+        
     }
 }

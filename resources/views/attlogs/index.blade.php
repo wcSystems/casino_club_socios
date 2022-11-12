@@ -125,6 +125,9 @@
                         if(ipify.ip == "190.121.239.210"){
                             first_pictureURL = first_pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
                             last_pictureURL = last_pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
+                        }else{
+                            first_pictureURL = first_pictureURL.replace("192.168.5.181", "190.121.239.210:8061");
+                            last_pictureURL = last_pictureURL.replace("1192.168.5.181", "190.121.239.210:8061");
                         }
 
                         first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;

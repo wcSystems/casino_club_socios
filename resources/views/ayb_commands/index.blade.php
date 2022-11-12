@@ -113,9 +113,9 @@
 
 
                         <div class="col-sm-12" style="margin-top:20px">
-                            <button onclick="itemCrud('-')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Quitar </button>
+                            <button onclick="itemCrud('-')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> - </button>
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
-                            <button onclick="itemCrud('+')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Agregar </button>
+                            <button onclick="itemCrud('+')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> + </button>
                         </div>
                     </div>
                 </form>`

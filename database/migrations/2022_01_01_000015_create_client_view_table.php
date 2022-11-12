@@ -13,7 +13,7 @@ class CreateClientViewTable extends Migration
      */
     public function up()
     {
-        /* DB::statement("
+        DB::statement("
             CREATE OR REPLACE VIEW count_client_club_vip_views AS
             (
                 SELECT IF(club_vip=1,'Si',IF(club_vip=0,'No','Otros')) AS name, COUNT(*) AS total
@@ -136,7 +136,7 @@ class CreateClientViewTable extends Migration
                 ON client_drinks.drink_id = drinks.id
                 GROUP BY drink_id
             )
-        "); */
+        ");
     }
 
     /**

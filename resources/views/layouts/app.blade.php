@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Casinos Roraima</title>
+    <title>WISI</title>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta content="" name="description" />
     <meta content="" name="author" />
@@ -178,12 +178,12 @@
 
                     
                     <li class="nav-header" style="color: #fff !important">MODULOS</li>
-                    <!-- <li id="graphics_nav" class="has-sub closed">
+                    <li id="graphics_nav" class="has-sub closed">
                         <a href="{{ route('graphics') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">GRAFICOS</span>
                         </a>
-                    </li> -->
+                    </li>
                     <li id="clients_nav" class="has-sub closed">
                         <a href="{{ route('clients') }}">
                             <i class="fas fa-circle text-white"></i>

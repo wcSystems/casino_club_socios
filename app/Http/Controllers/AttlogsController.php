@@ -115,11 +115,30 @@ class AttlogsController extends Controller
 
         /* QUERY FILTER */
         $query = DB::table('attlogs')
-            ->selectRaw('employeeNoString, employees.name, employees.sede_id, sedes.name AS sedes_name, employees.department_id, departments.name AS departments_name ,  employees.position_id, positions.name AS positions_name, employees.sex_id, sexs.name AS sexs_name, serialNo, pictureURL, time, MIN(time) AS first, MAX(time) AS last, MIN(pictureURL) AS first_pictureURL, MAX(pictureURL) AS last_pictureURL, STR_TO_DATE(time, "%Y-%m-%D") AS date')
+            ->selectRaw('
+                attlogs.employeeNoString, 
+                employees.name, 
+                employees.sede_id, 
+                sedes.name AS sedes_name, 
+                employees.department_id, 
+                departments.name AS departments_name ,  
+                employees.position_id, 
+                positions.name AS positions_name, 
+                employees.sex_id, 
+                sexs.name AS sexs_name, 
+                attlogs.serialNo, 
+                attlogs.pictureURL, 
+                attlogs.time, 
+                MIN(attlogs.time) AS first, 
+                MAX(attlogs.time) AS last, 
+                MIN(attlogs.pictureURL) AS first_pictureURL, 
+                MAX(attlogs.pictureURL) AS last_pictureURL, 
+                STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date
+            ')
             ->orWhere(function($query) use ($search){
-                $query->orWhere('employeeNoString','LIKE','%'.$search.'%');
+                $query->orWhere('attlogs.employeeNoString','LIKE','%'.$search.'%');
                 $query->orWhere('employees.name','LIKE','%'.$search.'%');
-                $query->orWhere('time','LIKE','%'.$search.'%');
+                $query->orWhere('attlogs.time','LIKE','%'.$search.'%');
             })
             ->where(function($query) use ($search_sede_attlogs, $search_department_attlogs, $search_position_attlogs, $search_sex_attlogs){
                 if(!empty($search_sede_attlogs)){
@@ -136,7 +155,7 @@ class AttlogsController extends Controller
                 }else{};
             })
             ->groupBy('date','employeeNoString','employees.name')
-            ->whereBetween('time', [$start, $end])
+            ->whereBetween('attlogs.time', [$start, $end])
             ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
             ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
             ->join('departments', 'employees.department_id', '=', 'departments.id')
@@ -144,36 +163,7 @@ class AttlogsController extends Controller
             ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
             ->get();
 
-
-
-        /* $query = Employee::select(DB::raw('employees.*, sedes.name AS sedes_name, departments.name AS departments_name, positions.name AS positions_name, sexs.name AS sexs_name'))
-                    ->orWhere(function($query) use ($search){
-                        $query->orWhere('employees.name','LIKE','%'.$search.'%');
-                    })
-                    ->where(function($query) use ($search_sede_employees, $search_department_employees, $search_position_employees, $search_sex_employees){
-                        if(!empty($search_sede_employees)){
-                            $query->where('employees.sede_id', '=', $search_sede_employees);
-                        }else{};
-                        if(!empty($search_department_employees)){
-                            $query->where('employees.department_id', '=', $search_department_employees);
-                        }else{};
-                        if(!empty($search_position_employees)){
-                            $query->where('employees.position_id', '=', $search_position_employees);
-                        }else{};
-                        if(!empty($search_sex_employees)){
-                            $query->where('employees.sex_id', '=', $search_sex_employees);
-                        }else{};
-                    })
-                    ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
-                    ->join('departments', 'employees.department_id', '=', 'departments.id')
-                    ->join('positions', 'employees.position_id', '=', 'positions.id')
-                    ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
-                    ->orderBy('id', 'ASC')->get(); */
-
-
-
-
-
+            
 
 
         $draw = $request->get('draw');
