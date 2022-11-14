@@ -57,20 +57,11 @@ class Ayb_itemsController extends Controller
 
         }
 
-        
-
         /* $imgs = Img_ayb_item::where('ayb_item_id','=',$request["id"]);
         $imgs->each(function($item, $key) {
             $item->delete();
         }); */
 
-
-        
-
-
-
-
-        
         $data = $request->all();
         $current_data = array(
             "name" => $data["name"],

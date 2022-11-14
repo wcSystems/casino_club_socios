@@ -37,6 +37,18 @@
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                     <div class="row">
+
+                        
+
+                            <div class="mx-auto">
+                                <label class="d-flex m-0">
+                                    <img id="imgUser" class="rounded-circle" src="{{ url('public/users/${id}.jpg') }}" onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
+                                    <input require onchange="viewImg(this)" type="file" id="image" name="image" style="display:none" >
+                                </label>
+                            </div>
+                        
+
+
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Usuario <span class="text-danger"> *</span> </label>
@@ -96,21 +108,27 @@
     function guardar(id) {
         let validity = document.getElementById('form-all').checkValidity()
         if(validity){
-            let payload = {
-                _token: $("meta[name='csrf-token']").attr("content"),
-                id: { id: id ? id : "" },
-                data: {
-                    email: $('#email').val(),
-                    name: $('#name').val(),
-                    password: $('#password').val(),
-                    level_id: $('#level').val()
-                }
-            }
+            
+
+
+            let payload = new FormData();   
+                payload.append('id',id ? id : "")
+                payload.append('name',$('#name').val())
+                payload.append('email',$('#email').val())
+                payload.append('password',$('#password').val())
+                payload.append('level_id',$('#level').val())
+                payload.append('image',$('#image').prop('files')[0])
+
             $.ajax({
                 url: "{{ route('users.store') }}",
                 type: "POST",
                 data: payload,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
                 success: function (res) {
+                    console.log(res)
                     if(res.type === 'success'){
                         location.reload();
                     }
@@ -119,8 +137,25 @@
                     }
                 }
             });
+
+
+
+
+
         }
     }
+
+    function viewImg(input) {
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imgUser').attr('src', e.target.result).width(200).height(200);
+                $("#btnChangeIMG").addClass("d-none")
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     dataTable("{{route('users.service')}}",[
         {
             render: function ( data,type, row,all  ) {
@@ -129,14 +164,11 @@
         },
         { data: 'name' },
         { data: 'email' },
-        { data: 'level_id' },
+        { data: 'level_name' },
         {
             render: function ( data,type, row  ) {
-                let render = `` 
-                if( {!! $id !!}  != row.id  ){
-                    render +=  `<a onclick="elim('users',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>`
-                }
-                render += `<a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>`
+                let render = `<a onclick="elim('users',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
+                              <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>`
                 return render;
             }
         },

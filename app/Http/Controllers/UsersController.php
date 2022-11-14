@@ -37,24 +37,30 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-
-        $exist = User::where('email', $request["data"]["email"])->count() > 0;
-        if($exist){
-            return response()->json([ 'type' => 'repeat']);
-        }else{
+        if($request["id"]){
             $current_data = array(
-                "email" => $request["data"]["email"],
-                "name" => $request["data"]["name"],
-                "level_id" => $request["data"]["level_id"],
-                "password" => bcrypt($request["data"]["password"]),
+                "email" => $request["email"],
+                "name" => $request["name"],
+                "level_id" => $request["level_id"],
+                "password" => bcrypt($request["password"]),
             );
-            $current_item = User::updateOrCreate($request["id"],$current_data);
+            $current_item = User::updateOrCreate([ 'id' => $request["id"] ],$current_data);
             if($current_item){
+                if($request->file('image')){
+                    $file= $request->file('image');
+                    $ext= $file->getClientOriginalExtension();
+                    $file-> move(public_path('public/users/'), $current_item->id.".jpg");
+                }
                 return response()->json([ 'type' => 'success']);
             }else{
                 return response()->json([ 'type' => 'error']);
             }
-        }
+        }else{
+            $exist = User::where('email', $request["email"])->count() > 0;
+            if($exist){
+                return response()->json([ 'type' => 'repeat']);
+            }
+        } 
     }
 
     /**
@@ -113,15 +119,13 @@ class UsersController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         
-        /* QUERY FILTER */
-        //$query = User::where('name','LIKE','%'.$search.'%')->get();
-
-
-        $query = DB::table('users')
+        $query = User::select(DB::raw('users.*, levels.name AS level_name'))
         ->orWhere(function($query) use ($search){
-            $query->orWhere('email','LIKE','%'.$search.'%');
-            $query->orWhere('name','LIKE','%'.$search.'%');
-        })->where('id', '!=', Auth::id()) 
+            $query->orWhere('users.email','LIKE','%'.$search.'%');
+            $query->orWhere('users.name','LIKE','%'.$search.'%');
+            $query->orWhere('levels.name','LIKE','%'.$search.'%');
+        })
+        ->join('levels', 'users.level_id', '=', 'levels.id')
         ->get();
 
 

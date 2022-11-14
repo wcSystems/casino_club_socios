@@ -137,12 +137,12 @@
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                     <div class="row">
-                    <div class="panel-heading-btn mx-2">
-                        <label onclick="viewImg()" class="d-flex btn btn-1 btn-info m-0">
-                            <i class="m-auto fa fa-lg fa-arrow-up"></i>
-                            <img id="imgISAPI" />
-                        </label>
-                    </div>
+                        <div class="panel-heading-btn mx-2">
+                            <label onclick="viewImg()" class="d-flex btn btn-1 btn-info m-0">
+                                <i class="m-auto fa fa-lg fa-arrow-up"></i>
+                                <img id="imgISAPI" />
+                            </label>
+                        </div>
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger"> *</span> </label>

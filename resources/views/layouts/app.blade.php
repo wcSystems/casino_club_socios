@@ -7,6 +7,12 @@
     <meta content="" name="description" />
     <meta content="" name="author" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+
+    <link rel="apple-touch-icon" href="{{asset('img/logo_wisi.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('img/logo_wisi.png')}}">
+
+
     <style>
         :root {
 
@@ -126,7 +132,7 @@
         .page-item.disabled .page-link{
             opacity: 0.7 !important;
         }
-
+        .header .navbar-user img{float:left;width:30px;height:30px;margin:-5px 0px -5px 0;-webkit-border-radius:30px;border-radius:30px}
 
         
     </style>
@@ -149,7 +155,7 @@
                 <li class="dropdown navbar-user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <div class="image image-icon bg-black text-grey-darker">
-                            <i class="fa fa-user"></i>
+                            <img class="rounded-circle" src="{{ url('public/users/'.Auth::user()->id.'.jpg') }}" onerror="this.onerror=null;this.src='public/users/null.jpg';"  />
                         </div>
                         <span class="d-none d-md-inline">{{ Auth::user()->name }}</span> <b class="caret"></b>
                     </a>

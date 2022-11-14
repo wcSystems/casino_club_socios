@@ -7,6 +7,11 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta content="" name="description" />
     <meta content="" name="author" />
+
+    <link rel="apple-touch-icon" href="{{asset('img/logo_wisi.png')}}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('img/logo_wisi.png')}}">
+
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="{{ asset('css/transparent/app.min.css') }}" rel="stylesheet" />
     <style>
