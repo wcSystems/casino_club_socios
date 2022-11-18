@@ -117,6 +117,13 @@
             padding: .12rem !important;
             font-size: 1rem !important;
         }
+
+        #data-table-default-schedule > thead > tr > th:nth-child(n),
+        #data-table-default-schedule > tbody > tr:nth-child(n) > th:nth-child(n),
+        #data-table-default-schedule > tbody > tr:nth-child(n) > td:nth-child(n)
+        {
+            font-size: 0.8rem !important;
+        }
         
         .dataTables_wrapper.dt-bootstrap4 .dataTables_paginate .pagination .paginate_button.active a{
             background-color: #000 !important;
@@ -645,7 +652,7 @@
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
                                 if (last !== data.date) {
-                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dddd') +" ) </span>"+ '</td></tr>');
+                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dd') +" ) </span>"+ '</td></tr>');
                                     last = data.date;
                                 }
                             });

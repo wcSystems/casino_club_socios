@@ -33,6 +33,7 @@
 @section('js')
 <script>
     $('#associated_machines_nav').removeClass("closed").addClass("active").addClass("expand")
+    
     function modal(type,id) {
         Swal.fire({
             title: `${type} Registro`,

@@ -13,7 +13,7 @@ class isapiController extends Controller
     public function getEvent(Request $request)
     {
         $resC = new Client();
-        $totalMatches = json_decode($resC->post("http://190.121.239.210:8061/ISAPI/AccessControl/AcsEvent?format=json" ,[
+        $totalMatches = json_decode($resC->post("http://192.168.5.181/ISAPI/AccessControl/AcsEvent?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "AcsEventCond"=> [
@@ -32,7 +32,7 @@ class isapiController extends Controller
         if( $totalMatches > $searchResultPosition ){
             for ($i=0; $i < $totalMatches30 ; $i++) {
                 $res = new Client();
-                $query2 = json_decode($res->post("http://190.121.239.210:8061/ISAPI/AccessControl/AcsEvent?format=json" ,[
+                $query2 = json_decode($res->post("http://192.168.5.181/ISAPI/AccessControl/AcsEvent?format=json" ,[
                     'auth' =>  ['admin', 'Cas1n01234','digest'],
                     'body' => json_encode([
                         "AcsEventCond"=> [
@@ -55,7 +55,7 @@ class isapiController extends Controller
     public function addOrUpdateEmployee(Request $request)
     {
         $resC = new Client();
-        $current = json_decode($resC->put("http://190.121.239.210:8061/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+        $current = json_decode($resC->put("http://192.168.5.181/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "UserInfo"=> [
@@ -90,7 +90,7 @@ class isapiController extends Controller
     public function elimEmployee(Request $request)
     {
         $resC = new Client();
-        $current = json_decode($resC->put("http://190.121.239.210:8061/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
+        $current = json_decode($resC->put("http://192.168.5.181/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "UserInfoDelCond"=> [
@@ -118,7 +118,7 @@ class isapiController extends Controller
     {
         foreach ($request["upload"] as $key => $value) {
             $resC = new Client();
-            $current = json_decode($resC->put("http://190.121.239.210:8061/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+            $current = json_decode($resC->put("http://192.168.5.181/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
                 'auth' =>  ['admin', 'Cas1n01234','digest'],
                 'body' => json_encode([
                     "UserInfo"=> [
@@ -154,7 +154,7 @@ class isapiController extends Controller
     public function captureImgEmployee()
     {
             $resC = new Client();
-            $current = $resC->post("http://190.121.239.210:8061/ISAPI/AccessControl/CaptureFaceData" ,[
+            $current = $resC->post("http://192.168.5.181/ISAPI/AccessControl/CaptureFaceData" ,[
                 
                 'auth' =>  ['admin', 'Cas1n01234','digest'],
                 

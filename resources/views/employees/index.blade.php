@@ -394,6 +394,425 @@
         
     }
 
+    function createSchedule(id) {
+        let current_employee={!! $employees !!}.find(i=>i.id===id)
+        let current_month=moment().format('MM')
+        let current_year=moment().format('YYYY')
+        let days_in_month=moment().daysInMonth();
+
+        let html = ``;
+            html +=`
+                <form id="form-all-schedule" class="needs-validation" action="javascript:void(0);" novalidate>
+                    <div class="row">
+                        <div class="col-12 m-auto">
+                            <div class="col-md-4 col-sm-4">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label font-weight-bold"> Horas de trabajo <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12 my-1">
+                                        <select required id="horas_trabajo" class="form-control w-100">
+                                            <option value="" selected >Seleccione</option>
+                                            <option value="8" > 08 Horas </option>
+                                            <option value="12" > 12 Horas </option>
+                                        </select>
+                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 m-auto">
+                            <label class=" text-lg-right col-form-label font-weight-bold"> Horario ${moment().format('MMMM')}</span> </label>
+                        </div>
+                        `;
+                        for (let index = 1; index <= days_in_month; index++) {
+                            html +=`
+                                <div class="col-md-2 col-sm-2">
+                                    <div class="form-group row m-b-0">
+                                        <label class=" text-lg-right col-form-label font-weight-bold"> ${index} <span class="text-danger"> *</span> </label>
+                                        <div class="col-lg-12 my-1">
+                                            <select id="${index}_hora_entrada" class="form-control w-100">
+
+                                                <option value="00:00-L" class="font-weight-bold" selected >LIBRE</option>
+
+                                                <optgroup label="Diurno">
+                                                    <option value="06:00-D" > 06:00 AM </option>
+                                                    <option value="08:00-D" > 08:00 AM </option>
+                                                    <option value="09:00-D" > 09:00 AM </option>
+                                                    <option value="11:30-D" > 11:30 AM </option>
+                                                    <option value="12:00-D" > 12:00 AM </option>
+                                                    <option value="13:00-D" > 01:00 PM </option>
+                                                    <option value="16:00-D" > 04:00 PM </option>
+                                                    <option value="18:00-D" > 06:00 PM </option>
+                                                    <option value="20:00-D" > 08:00 PM </option>
+                                                </optgroup>
+
+                                                <optgroup label="Nocturno">
+                                                    <option value="06:00-N" > 06:00 AM</option>
+                                                    <option value="08:00-N" > 08:00 AM</option>
+                                                    <option value="09:00-N" > 09:00 AM</option>
+                                                    <option value="11:30-N" > 11:30 AM</option>
+                                                    <option value="12:00-N" > 12:00 AM</option>
+                                                    <option value="13:00-N" > 01:00 PM</option>
+                                                    <option value="16:00-N" > 04:00 PM</option>
+                                                    <option value="18:00-N" > 06:00 PM</option>
+                                                    <option value="20:00-N" > 08:00 PM</option>
+                                                </optgroup>
+
+                                                
+
+                                            </select>
+                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            `; 
+                        }
+                html +=`
+                        <div class="col-sm-12" style="margin-top:20px">
+                            <button onclick="guardarSchedule(${id},${current_month},${current_year},${days_in_month})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                        </div>
+                    </div>
+                </form>
+                `;
+
+        Swal.fire({
+            title: `${current_employee.name}`,
+            showConfirmButton: false,
+            width: '80em',
+            html:html
+        })
+        validateForm()
+    }
+
+    function guardarSchedule(employee_id,current_month,current_year,days_in_month) {
+        let newArr = []
+        for (let index = 1; index <= days_in_month; index++) {
+            newArr.push({
+                employee_id: employee_id,
+                hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
+                horas_trabajo: $("#horas_trabajo").val(),
+                turno: $(`#${index}_hora_entrada`).val().slice(6),
+                year: current_year,
+                month: current_month,
+                day: index,
+                date: moment(`${current_year}-${current_month}-${index}`).format('YYYY-MM-DD'),
+            })
+        }
+
+        let validity = document.getElementById('form-all-schedule').checkValidity()
+        if(validity){
+            let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr, employee_id: employee_id }
+            $.ajax({
+                url: "{{ route('schedule_templates.store') }}",
+                type: "POST",
+                data: payload,
+                success: function (res) {
+                    console.log(res)
+                    /* if(res.type === 'success'){
+                        location.reload();
+                    } */
+                }
+            });
+        }
+
+
+    }
+
+    function viewSchedule(employee_id) {
+        $.ajax({
+            url: "{{ route('schedule_templates.viewSchedule') }}",
+            type: "POST",
+            data: { employee_id: employee_id },
+            success: function (res) {
+                console.log(res)
+                let current={!! $employees !!}.find(i=>i.id===employee_id)
+                let current_data_filter=res.query.filter(i=>i.employee_id==employee_id)
+                let html = ``;
+                res.data.forEach(element => {
+                    let days_in_month=moment(element.month).daysInMonth();
+                    html += `
+                        <div class="table-responsive">
+                            <table id="data-table-default-schedule" class=" table table-bordered table-td-valign-middle mt-3" style="width:100% !important">
+                                <thead style="background-color:paleturquoise;" >
+                                    <tr>
+                                        <th class="text-center text-uppercase font-weight-bold" colspan=${days_in_month+5}>${moment(element.month).format('MMMM')} ${element.year}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th  colspan=3 style="background-color:paleturquoise;">Dia</th>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            html += `<td class="font-weight-bold"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                        }
+                                        html += `
+                                    </tr>
+
+
+                                    <tr>
+                                        <th colspan=3 style="background-color:paleturquoise"> Horario </th>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            res.all_data.forEach(element2 => {
+                                                if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                    if( element2.turno == "L" ){
+                                                        html += `<td rowspan="5" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
+                                                    }
+                                                    if( element2.turno == "D" ){
+                                                        html += `<td style="color:#6CC773 !important" class="font-weight-bold" >${element2.turno}${element2.horas_trabajo}H <br /> ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                    }
+                                                    if( element2.turno == "N" ){
+                                                        html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >${element2.turno}${element2.horas_trabajo}H <br /> ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        html += `
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan=3 style="background-color:paleturquoise"> Marcajes </th>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            res.all_data.forEach(element2 => {
+                                                let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
+                                                let current_find_plus = current_data_filter.find(i=>i.date== moment(element2.year+"-"+element2.month+"-"+element2.day).add('days', 1).format('YYYY-MM-DD'))
+                                                
+                                                if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                    
+                                                        if( element2.turno == "D" ){
+                                                            if(current_find != undefined){
+                                                                html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br />${ moment(current_find.last).format('h:mm:ss a') }</td>`
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "N" ){
+                                                            if(current_find_plus != undefined){
+                                                                html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br />${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "L" ){
+                                                            html += ``
+                                                        }
+                                                    
+                                                    
+                                                }
+                                            });
+                                        }
+                                        html += `
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan=3 style="background-color:paleturquoise"> Retardo </th>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            res.all_data.forEach(element2 => {
+                                                let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
+                                                let current_find_plus = current_data_filter.find(i=>i.date== moment(element2.year+"-"+element2.month+"-"+element2.day).add('days', 1).format('YYYY-MM-DD'))
+                                                
+                                                if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                    
+                                                        if( element2.turno == "D" ){
+                                                            if(current_find != undefined){
+                                                                let hora_entrada = moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada)
+                                                                let hora_marcada = moment(current_find.first)
+                                                                let duration = moment.duration(hora_entrada.diff(hora_marcada))
+                                                                if( hora_marcada>hora_entrada ){
+                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
+                                                                }else{
+                                                                    html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
+                                                                }
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "N" ){
+                                                            if(current_find_plus != undefined){
+                                                                let hora_entrada = moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada)
+                                                                let hora_marcada = moment(current_find.last)
+                                                                let duration = moment.duration(hora_entrada.diff(hora_marcada))
+                                                                if( hora_marcada>hora_entrada ){
+                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
+                                                                }else{
+                                                                    html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
+                                                                }
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "L" ){
+                                                            html += ``
+                                                        }
+                                                    
+                                                    
+                                                }
+                                            });
+                                        }
+                                        html += `
+                                    </tr>
+                                   
+
+                                    <tr>
+                                        <th colspan=3 style="background-color:paleturquoise"> Trabajado </th>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            res.all_data.forEach(element2 => {
+                                                let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
+                                                let current_find_plus = current_data_filter.find(i=>i.date== moment(element2.year+"-"+element2.month+"-"+element2.day).add('days', 1).format('YYYY-MM-DD'))
+                                                
+                                                if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                    
+                                                        if( element2.turno == "D" ){
+                                                            if(current_find != undefined){
+                                                                let hora_entrada = moment(current_find.first)
+                                                                let hora_salida = moment(current_find.last)
+                                                                let duration = moment.duration(hora_entrada.diff(hora_salida))
+                                                                if( hora_entrada<hora_salida ){
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
+                                                                }else{
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
+                                                                }
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "N" ){
+                                                            if(current_find_plus != undefined){
+                                                                let hora_entrada = moment(current_find.last)
+                                                                let hora_salida = moment(current_find_plus.first)
+                                                                let duration = moment.duration(hora_entrada.diff(hora_salida))
+                                                                if( hora_entrada<hora_salida ){
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
+                                                                }else{
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
+                                                                }
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "L" ){
+                                                            html += ``
+                                                        }
+                                                    
+                                                    
+                                                }
+                                            });
+                                        }
+                                        html += `
+                                    </tr>
+
+                                    
+                                    <tr>
+                                        <th colspan=3 style="background-color:paleturquoise"> Sobretiempo </th>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            res.all_data.forEach(element2 => {
+                                                let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
+                                                let current_find_plus = current_data_filter.find(i=>i.date== moment(element2.year+"-"+element2.month+"-"+element2.day).add('days', 1).format('YYYY-MM-DD'))
+                                                
+                                                if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                    
+                                                        if( element2.turno == "D" ){
+                                                            if(current_find != undefined){
+                                                                let hora_entrada = moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada)
+                                                                let hora_marcada = moment(current_find.first)
+                                                                let duration = moment.duration(hora_entrada.diff(hora_marcada))
+
+                                                                let hora_marcada_entrada = moment(current_find.first)
+                                                                let hora_marcada_salida = moment(current_find.last)
+                                                                let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
+                                                                let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
+                                                                let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
+                                                                let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
+                                                                
+                                                                //trabajado
+                                                                let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
+                                                               
+                                                                if( total_segundo_marcada ==  0 ){
+                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${element2.horas_trabajo}H </td>`
+                                                                }else{
+                                                                        let hora = (duration._data.hours) * 3600
+                                                                        let minuto = (duration._data.minutes) * 60
+                                                                        let segundo = (duration._data.seconds)
+                                                                        let total_segundo = 0
+
+                                                                        if( hora_marcada>hora_entrada ){
+                                                                            
+                                                                            if( element2.horas_trabajo*3600 > ( total_segundo_marcada - ( hora+minuto+segundo ) )){
+                                                                                total_segundo = element2.horas_trabajo*3600 - ( total_segundo_marcada - ( hora+minuto+segundo ) )
+                                                                            }else{
+                                                                                total_segundo = ( total_segundo_marcada + ( hora+minuto+segundo ) ) - element2.horas_trabajo*3600
+                                                                            }
+                                                                            let hora_sobretiempo = Math.floor(total_segundo / 3600)+":"+Math.floor((total_segundo / 60) % 60)+":"+total_segundo % 60
+                                                                            html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${ hora_sobretiempo }</td>`
+
+                                                                        }else{
+                                                                            if(element2.horas_trabajo*3600>( total_segundo_marcada + ( hora+minuto+segundo ) )){
+                                                                                total_segundo = element2.horas_trabajo*3600 - ( total_segundo_marcada + ( hora+minuto+segundo ) )
+                                                                            }else{
+                                                                                total_segundo = ( total_segundo_marcada + ( hora+minuto+segundo ) ) - element2.horas_trabajo*3600
+                                                                            }
+                                                                            
+                                                                            let hora_sobretiempo = Math.floor(total_segundo / 3600)+":"+Math.floor((total_segundo / 60) % 60)+":"+total_segundo % 60
+                                                                            html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${ hora_sobretiempo }</td>`
+                                                                        }
+                                                                        
+                                                                }
+                                                                
+
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "N" ){
+                                                            if(current_find_plus != undefined){
+                                                                html += `<td></td>`
+                                                            }else{
+                                                                html += `<td></td>`
+                                                            }
+                                                        }
+                                                        if( element2.turno == "L" ){
+                                                            html += ``
+                                                        }
+                                                    
+                                                    
+                                                }
+                                            });
+                                        }
+                                        html += `
+                                    </tr>
+
+                                    
+
+
+                                    <tr>
+                                        <th colspan=3 style="background-color:paleturquoise"> Trabajador </th>
+                                        <td colspan=${days_in_month}> ${current.name} </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <button onclick="excelExport('schedule_templates')" class="d-flex btn btn-1 btn-secondary mx-1">
+                            <i class="m-auto fas fa-lg fa-file-excel"></i>
+                        </button>
+                        <button onclick="pdfExport('schedule_templates')" class="d-flex btn btn-1 btn-secondary mx-1">
+                            <i class="m-auto fas fa-lg fa-file-pdf"></i>
+                        </button>
+                    `
+                });
+                        
+
+                Swal.fire({
+                    title: `Horarios`,
+                    showConfirmButton: true,
+                    width: "95%",
+                    showCloseButton: true,
+                    confirmButtonText: 'Ok',
+                    html: html
+                })
+            }
+        });
+    }
+
     dataTable("{{route('employees.service')}}",[
         {
             render: function ( data,type, row,all  ) {
@@ -407,11 +826,27 @@
                     <a onclick="elim(${row.id},${row.employeeNo})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                     <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
                     <a onclick="view(${row.id})" style="color: var(--global-2)" class="btn btn-green btn-icon btn-circle"><i class="fas fa-eye"></i></a>
+                    <a onclick="createSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-info btn-icon btn-circle"><i class="fas fa-calendar"></i></a>
+                    <a onclick="viewSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle"><i class="fas fa-calendar"></i></a>
                 `;
             }
         },
     ])
 
+    function excelExport(title,dl,fn) {
+            let user = {!! Auth::user() !!}
+            var elt = document.getElementById('data-table-default-schedule');
+            var wb = XLSX.utils.table_to_book(elt, { sheet: "Horarios" });
+            return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+            XLSX.writeFile(wb, fn || ( user.name+'-'+title+'-'+moment().format('MMMM Do YYYY, h:mm:ss a')+'.'+('xlsx' || 'xlsx')));
+        }
+        function pdfExport(title) {
+                let user = {!! Auth::user() !!}
+                var doc = new jsPDF()
+                doc.autoTable({ html: '#data-table-default-schedule' })
+                doc.save(`${user.name}-${title}-${moment().format('MMMM Do YYYY, h:mm:ss a')}.pdf`)
+        }
 
     function dataTableView() {
             $(document).ready(function() {

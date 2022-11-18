@@ -196,6 +196,12 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'employees.update',
         'destroy' => 'employees.destroy'
     ]);
+    Route::resource('schedule_templates', 'Schedule_templatesController')->names([
+        'index' => 'schedule_templates',
+        'create' => 'schedule_templates.create',
+        'update' => 'schedule_templates.update',
+        'destroy' => 'schedule_templates.destroy'
+    ]);
 
 
     // VIEW - GRAPHICS

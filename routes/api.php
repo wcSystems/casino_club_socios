@@ -62,6 +62,7 @@ Route::post('/isapi/uploadEmployees', 'isapiController@uploadEmployees')->name('
 
 //GET
 Route::get('/isapi/captureImgEmployee', 'isapiController@captureImgEmployee')->name('isapi.captureImgEmployee');
+Route::post('/schedule_templates/viewSchedule', 'Schedule_templatesController@viewSchedule')->name('schedule_templates.viewSchedule');
 
 // list
 Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');
