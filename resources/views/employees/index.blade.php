@@ -540,22 +540,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+
+
+
+
                                     <tr>
                                         <th  colspan=3 style="background-color:paleturquoise;">Dia</th>`
                                         for (let index = 1; index <= days_in_month; index++) {
-                                            html += `<td class="font-weight-bold"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                            html += `<td class="font-weight-bold" style="background-color:paleturquoise;"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
                                         }
                                         html += `
                                     </tr>
-
-
                                     <tr>
                                         <th colspan=3 style="background-color:paleturquoise"> Horario </th>`
                                         for (let index = 1; index <= days_in_month; index++) {
                                             res.all_data.forEach(element2 => {
                                                 if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
                                                     if( element2.turno == "L" ){
-                                                        html += `<td rowspan="5" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
+                                                        html += `<td rowspan="4" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
                                                     }
                                                     if( element2.turno == "D" ){
                                                         html += `<td style="color:#6CC773 !important" class="font-weight-bold" >${element2.turno}${element2.horas_trabajo}H <br /> ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
@@ -568,7 +570,6 @@
                                         }
                                         html += `
                                     </tr>
-
                                     <tr>
                                         <th colspan=3 style="background-color:paleturquoise"> Marcajes </th>`
                                         for (let index = 1; index <= days_in_month; index++) {
@@ -580,16 +581,26 @@
                                                     
                                                         if( element2.turno == "D" ){
                                                             if(current_find != undefined){
-                                                                html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br />${ moment(current_find.last).format('h:mm:ss a') }</td>`
+                                                                if(current_find.last !== current_find.first ){
+                                                                    html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br />${ moment(current_find.last).format('h:mm:ss a') }</td>`
+                                                                }
+                                                                if(current_find.last == current_find.first ){
+                                                                    html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br /> NO REGISTRO SALIDA </td>`
+                                                                }
                                                             }else{
-                                                                html += `<td></td>`
+                                                                html += `<td rowspan="3" class="text-uppercase font-weight-bold"> NO MARCO </td>`
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
                                                             if(current_find_plus != undefined){
-                                                                html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br />${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
+                                                                if(current_find_plus.first !== current_find.last ){
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br />${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
+                                                                }
+                                                                if(current_find_plus.first == current_find.last ){
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br /> NO REGISTRO SALIDA </td>`
+                                                                }
                                                             }else{
-                                                                html += `<td></td>`
+                                                                html += `<td rowspan="3" class="text-uppercase font-weight-bold"> NO MARCO </td>`
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
@@ -602,56 +613,6 @@
                                         }
                                         html += `
                                     </tr>
-
-                                    <tr>
-                                        <th colspan=3 style="background-color:paleturquoise"> Retardo </th>`
-                                        for (let index = 1; index <= days_in_month; index++) {
-                                            res.all_data.forEach(element2 => {
-                                                let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
-                                                let current_find_plus = current_data_filter.find(i=>i.date== moment(element2.year+"-"+element2.month+"-"+element2.day).add('days', 1).format('YYYY-MM-DD'))
-                                                
-                                                if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
-                                                    
-                                                        if( element2.turno == "D" ){
-                                                            if(current_find != undefined){
-                                                                let hora_entrada = moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada)
-                                                                let hora_marcada = moment(current_find.first)
-                                                                let duration = moment.duration(hora_entrada.diff(hora_marcada))
-                                                                if( hora_marcada>hora_entrada ){
-                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
-                                                                }else{
-                                                                    html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
-                                                                }
-                                                            }else{
-                                                                html += `<td></td>`
-                                                            }
-                                                        }
-                                                        if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
-                                                                let hora_entrada = moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada)
-                                                                let hora_marcada = moment(current_find.last)
-                                                                let duration = moment.duration(hora_entrada.diff(hora_marcada))
-                                                                if( hora_marcada>hora_entrada ){
-                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
-                                                                }else{
-                                                                    html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
-                                                                }
-                                                            }else{
-                                                                html += `<td></td>`
-                                                            }
-                                                        }
-                                                        if( element2.turno == "L" ){
-                                                            html += ``
-                                                        }
-                                                    
-                                                    
-                                                }
-                                            });
-                                        }
-                                        html += `
-                                    </tr>
-                                   
-
                                     <tr>
                                         <th colspan=3 style="background-color:paleturquoise"> Trabajado </th>`
                                         for (let index = 1; index <= days_in_month; index++) {
@@ -669,10 +630,10 @@
                                                                 if( hora_entrada<hora_salida ){
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
                                                                 }else{
-                                                                    html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ERROR  </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
@@ -683,10 +644,10 @@
                                                                 if( hora_entrada<hora_salida ){
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
                                                                 }else{
-                                                                    html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours}:${duration._data.minutes}:${duration._data.seconds}  </td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ERROR  </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
@@ -699,8 +660,6 @@
                                         }
                                         html += `
                                     </tr>
-
-                                    
                                     <tr>
                                         <th colspan=3 style="background-color:paleturquoise"> Sobretiempo </th>`
                                         for (let index = 1; index <= days_in_month; index++) {
@@ -712,9 +671,6 @@
                                                     
                                                         if( element2.turno == "D" ){
                                                             if(current_find != undefined){
-                                                                let hora_entrada = moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada)
-                                                                let hora_marcada = moment(current_find.first)
-                                                                let duration = moment.duration(hora_entrada.diff(hora_marcada))
 
                                                                 let hora_marcada_entrada = moment(current_find.first)
                                                                 let hora_marcada_salida = moment(current_find.last)
@@ -725,48 +681,49 @@
                                                                 
                                                                 //trabajado
                                                                 let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
-                                                               
+                                                                let total_plantilla = element2.horas_trabajo*3600
+
                                                                 if( total_segundo_marcada ==  0 ){
                                                                     html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${element2.horas_trabajo}H </td>`
                                                                 }else{
-                                                                        let hora = (duration._data.hours) * 3600
-                                                                        let minuto = (duration._data.minutes) * 60
-                                                                        let segundo = (duration._data.seconds)
-                                                                        let total_segundo = 0
-
-                                                                        if( hora_marcada>hora_entrada ){
-                                                                            
-                                                                            if( element2.horas_trabajo*3600 > ( total_segundo_marcada - ( hora+minuto+segundo ) )){
-                                                                                total_segundo = element2.horas_trabajo*3600 - ( total_segundo_marcada - ( hora+minuto+segundo ) )
-                                                                            }else{
-                                                                                total_segundo = ( total_segundo_marcada + ( hora+minuto+segundo ) ) - element2.horas_trabajo*3600
-                                                                            }
-                                                                            let hora_sobretiempo = Math.floor(total_segundo / 3600)+":"+Math.floor((total_segundo / 60) % 60)+":"+total_segundo % 60
-                                                                            html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${ hora_sobretiempo }</td>`
-
-                                                                        }else{
-                                                                            if(element2.horas_trabajo*3600>( total_segundo_marcada + ( hora+minuto+segundo ) )){
-                                                                                total_segundo = element2.horas_trabajo*3600 - ( total_segundo_marcada + ( hora+minuto+segundo ) )
-                                                                            }else{
-                                                                                total_segundo = ( total_segundo_marcada + ( hora+minuto+segundo ) ) - element2.horas_trabajo*3600
-                                                                            }
-                                                                            
-                                                                            let hora_sobretiempo = Math.floor(total_segundo / 3600)+":"+Math.floor((total_segundo / 60) % 60)+":"+total_segundo % 60
-                                                                            html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${ hora_sobretiempo }</td>`
-                                                                        }
-                                                                        
+                                                                    if( total_segundo_marcada > total_plantilla ){
+                                                                        html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${ Math.floor((total_segundo_marcada-total_plantilla) / 3600)+":"+Math.floor(((total_segundo_marcada-total_plantilla) / 60) % 60)+":"+(total_segundo_marcada-total_plantilla) % 60 }</td>`
+                                                                    }
+                                                                    if( total_segundo_marcada < total_plantilla ){
+                                                                        html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${ Math.floor((total_plantilla-total_segundo_marcada) / 3600)+":"+Math.floor(((total_plantilla-total_segundo_marcada) / 60) % 60)+":"+(total_plantilla-total_segundo_marcada) % 60 }</td>`
+                                                                    }
                                                                 }
-                                                                
 
                                                             }else{
-                                                                html += `<td></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
                                                             if(current_find_plus != undefined){
-                                                                html += `<td></td>`
+
+                                                                let hora_marcada_entrada = moment(current_find.last)
+                                                                let hora_marcada_salida = moment(current_find_plus.first)
+                                                                let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
+                                                                let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
+                                                                let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
+                                                                let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
+                                                                
+                                                                //trabajado
+                                                                let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
+                                                                let total_plantilla = element2.horas_trabajo*3600
+
+                                                                if( total_segundo_marcada ==  0 ){
+                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${element2.horas_trabajo}H </td>`
+                                                                }else{
+                                                                    if( total_segundo_marcada > total_plantilla ){
+                                                                        html += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> ${ Math.floor((total_segundo_marcada-total_plantilla) / 3600)+":"+Math.floor(((total_segundo_marcada-total_plantilla) / 60) % 60)+":"+(total_segundo_marcada-total_plantilla) % 60 }</td>`
+                                                                    }
+                                                                    if( total_segundo_marcada < total_plantilla ){
+                                                                        html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> ${ Math.floor((total_plantilla-total_segundo_marcada) / 3600)+":"+Math.floor(((total_plantilla-total_segundo_marcada) / 60) % 60)+":"+(total_plantilla-total_segundo_marcada) % 60 }</td>`
+                                                                    }
+                                                                }
                                                             }else{
-                                                                html += `<td></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
@@ -780,14 +737,15 @@
                                         html += `
                                     </tr>
 
-                                    
+
+
+
 
 
                                     <tr>
                                         <th colspan=3 style="background-color:paleturquoise"> Trabajador </th>
                                         <td colspan=${days_in_month}> ${current.name} </td>
                                     </tr>
-
                                 </tbody>
                             </table>
                         </div>
