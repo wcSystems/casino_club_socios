@@ -579,7 +579,7 @@
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
+                                                            if(current_find_plus != undefined && current_find != undefined){
                                                                 if(current_find_plus.first !== current_find.last ){
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') } - ${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
                                                                 }
@@ -624,7 +624,7 @@
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
+                                                            if(current_find_plus != undefined && current_find != undefined){
                                                                 let hora_entrada = moment(current_find.last)
                                                                 let hora_salida = moment(current_find_plus.first)
                                                                 let duration = moment.duration(hora_entrada.diff(hora_salida))
@@ -686,7 +686,7 @@
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
+                                                            if(current_find_plus != undefined && current_find != undefined){
 
                                                                 let hora_marcada_entrada = moment(current_find.last)
                                                                 let hora_marcada_salida = moment(current_find_plus.first)
