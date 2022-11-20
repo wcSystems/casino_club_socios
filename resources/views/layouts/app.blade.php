@@ -118,10 +118,10 @@
             font-size: 1rem !important;
         }
 
-        #data-table-default-schedule > thead > tr > th:nth-child(n),
-        #data-table-default-schedule > tbody > tr:nth-child(n) > th:nth-child(n),
-        #data-table-default-schedule > tbody > tr:nth-child(n) > td:nth-child(n)
-        {
+        .data-table-default-schedule > thead > tr > th:nth-child(n),
+        .data-table-default-schedule > tbody > tr:nth-child(n) > th:nth-child(n),
+        .data-table-default-schedule > tbody > tr:nth-child(n) > td:nth-child(n)
+        {   
             font-size: 0.8rem !important;
         }
         

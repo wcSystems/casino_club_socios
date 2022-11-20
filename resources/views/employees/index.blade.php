@@ -440,8 +440,8 @@
                     let current_data= ( current.find(i=>i.day==index) != undefined ) ? current.find(i=>i.day==index)  : {} ;
                     html +=`
                     <div class="col-md-2 col-sm-2">
-                        <div class="form-group row m-b-0">
-                            <label class=" text-lg-right col-form-label font-weight-bold"> ${index} <span class="text-danger"> *</span> </label>
+                        <div class="form-group row m-b-0 m-2">
+                            <label class=" text-lg-right col-form-label font-weight-bold"> ${ moment($("#month_year").val().slice(0,4)+"-"+$("#month_year").val().slice(5)+"-"+index).format('dd') }(${moment($("#month_year").val().slice(0,4)+"-"+$("#month_year").val().slice(5)+"-"+index).format('DD')}) <span class="text-danger"> *</span> </label>
                             <input type="hidden" id="${index}_id" name="${index}_id" value="${current_data.id}" >
                             <div class="col-lg-12 my-1">
                                 <select id="${index}_hora_entrada" class="form-control w-100" >
@@ -520,17 +520,10 @@
                     let days_in_month=moment(element.month).daysInMonth();
                     html += `
                         <div class="table-responsive">
-                            <table id="data-table-default-schedule-${element.year}-${element.month}" class=" table table-bordered table-td-valign-middle mt-3" style="width:100% !important">
+                            <table id="data-table-default-schedule-${element.year}-${element.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
                                 <thead style="background-color:paleturquoise;" >
                                     <tr>
-                                        <td  colspan=${days_in_month+1} class="font-weight-bold" style="background-color:paleturquoise;"> ${ moment(element.year+"-"+element.month).format('MMMM') }  </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="font-weight-bold"  style="background-color:paleturquoise;">Dia</td>`
-                                        for (let index = 1; index <= days_in_month; index++) {
-                                            html += `<td class="font-weight-bold" style="background-color:paleturquoise;"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
-                                        }
-                                        html += `
+                                        <th class="text-center text-uppercase font-weight-bold" colspan=${days_in_month+1}>${moment(element.month).format('MMMM')} ${element.year}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -538,20 +531,26 @@
 
 
 
-                                    
                                     <tr>
-                                        <td class="font-weight-bold"  style="background-color:paleturquoise"> Horario </td>`
+                                        <td class="font-weight-bold" style="background-color:paleturquoise;">Dia</td>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            html += `<td class="font-weight-bold" style="background-color:paleturquoise;width:150px !important"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                        }
+                                        html += `
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-bold" style="background-color:paleturquoise"> Horario </td>`
                                         for (let index = 1; index <= days_in_month; index++) {
                                             res.all_data.forEach(element2 => {
                                                 if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
                                                     if( element2.turno == "L" ){
-                                                        html += `<td  class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
+                                                        html += `<td rowspan="4" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
                                                     }
                                                     if( element2.turno == "D" ){
-                                                        html += `<td style="color:#F5CBA7 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        html += `<td style="color:#6CC773 !important" class="font-weight-bold" >( ${element2.turno} ) ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
                                                     }
                                                     if( element2.turno == "N" ){
-                                                        html += `<td style="color:#424949 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >( ${element2.turno} ) ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
                                                     }
                                                 }
                                             });
@@ -570,29 +569,29 @@
                                                         if( element2.turno == "D" ){
                                                             if(current_find != undefined){
                                                                 if(current_find.last !== current_find.first ){
-                                                                    html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br />${ moment(current_find.last).format('h:mm:ss a') }</td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') } - ${ moment(current_find.last).format('h:mm:ss a') }</td>`
                                                                 }
                                                                 if(current_find.last == current_find.first ){
-                                                                    html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br /> NO REGISTRO SALIDA </td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') } </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td  class="text-uppercase font-weight-bold"> NO MARCO </td>`
+                                                                html += `<td rowspan="3" class="text-uppercase font-weight-bold"> NO MARCO </td>`
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined && current_find != undefined ){
+                                                            if(current_find_plus != undefined){
                                                                 if(current_find_plus.first !== current_find.last ){
-                                                                    html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br />${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') } - ${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
                                                                 }
                                                                 if(current_find_plus.first == current_find.last ){
-                                                                    html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br /> NO REGISTRO SALIDA </td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') } </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td  class="text-uppercase font-weight-bold"> NO MARCO </td>`
+                                                                html += `<td rowspan="3" class="text-uppercase font-weight-bold"> NO MARCO </td>`
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
-                                                            html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                            html += ``
                                                         }
                                                     
                                                     
@@ -618,28 +617,28 @@
                                                                 if( hora_entrada<hora_salida ){
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
                                                                 }else{
-                                                                    html += `<td class="text-uppercase font-weight-bold"> ERROR  </td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold"> SALIDA NO MARCADA  </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined && current_find != undefined ){
+                                                            if(current_find_plus != undefined){
                                                                 let hora_entrada = moment(current_find.last)
                                                                 let hora_salida = moment(current_find_plus.first)
                                                                 let duration = moment.duration(hora_entrada.diff(hora_salida))
                                                                 if( hora_entrada<hora_salida ){
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${duration._data.hours*-1}:${duration._data.minutes*-1}:${duration._data.seconds*-1}  </td>`
                                                                 }else{
-                                                                    html += `<td class="text-uppercase font-weight-bold"> ERROR  </td>`
+                                                                    html += `<td class="text-uppercase font-weight-bold"> SALIDA NO MARCADA  </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
-                                                            html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                            html += ``
                                                         }
                                                     
                                                     
@@ -683,11 +682,11 @@
                                                                 }
 
                                                             }else{
-                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined && current_find != undefined ){
+                                                            if(current_find_plus != undefined){
 
                                                                 let hora_marcada_entrada = moment(current_find.last)
                                                                 let hora_marcada_salida = moment(current_find_plus.first)
@@ -711,11 +710,11 @@
                                                                     }
                                                                 }
                                                             }else{
-                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                                html += ``
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
-                                                            html += `<td class="text-uppercase font-weight-bold"></td>`
+                                                            html += ``
                                                         }
                                                     
                                                     
@@ -730,29 +729,30 @@
 
 
 
-                                    
+                                    <tr>
+                                        <td class="font-weight-bold" style="background-color:paleturquoise"> Trabajador </td>
+                                        <td colspan=${days_in_month} class="text-left font-weight-bold">
+                                            <button onclick="excelExport('schedule_templates')" class="btn btn-secondary rounded-circle mx-1" style="width:40px;height:40px"> <i class="m-auto fas fa-lg fa-file-excel"></i> </button>
+                                            <button onclick="pdfExport('schedule_templates')" class="btn btn-secondary rounded-circle mx-1" style="width:40px;height:40px"> <i class="m-auto fas fa-lg fa-file-pdf"></i> </button>
+                                            ${current.name} 
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <button onclick="excelExport('schedule_templates')" class="d-flex btn btn-1 btn-secondary mx-1">
-                            <i class="m-auto fas fa-lg fa-file-excel"></i>
-                        </button>
-                        <button onclick="pdfExport('schedule_templates')" class="d-flex btn btn-1 btn-secondary mx-1">
-                            <i class="m-auto fas fa-lg fa-file-pdf"></i>
-                        </button>
                     `
                 });
                 Swal.fire({
                     title: `Horarios`,
                     showConfirmButton: true,
                     showCloseButton: true,
-                    width: "80rem",
+                    width: "95%",
                     confirmButtonText: 'Ok',
                     html: html
                 })
-                res.data.forEach(element => {
+                /* res.data.forEach(element => {
                     dataScheduleView(element.year,element.month)
-                });
+                }); */
                 
             }
         });
