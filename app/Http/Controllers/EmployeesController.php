@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\Sede;
 use App\Models\Attlog;
+use App\Models\Schedule_template;
 use Illuminate\Support\Facades\DB;
 
 class EmployeesController extends Controller
@@ -25,9 +26,10 @@ class EmployeesController extends Controller
         $departments = Department::all();
         $positions = Position::all();
         $sedes = Sede::all();
+        $schedule_templates = Schedule_template::all();
         return view('employees.index')
             ->with('employees',$employees)
-
+            ->with('schedule_templates',$schedule_templates)
             ->with('sexs',$sexs)
             ->with('departments',$departments)
             ->with('positions',$positions)

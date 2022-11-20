@@ -10,10 +10,14 @@ use App\Models\Employee;
 
 class isapiController extends Controller
 {
+    private $IP_PLC_MARCAJE = "http://192.168.5.181";
+    //private $IP_PLC_MARCAJE = "http://190.121.239.210:8061";
+    
+
     public function getEvent(Request $request)
     {
         $resC = new Client();
-        $totalMatches = json_decode($resC->post("http://190.121.239.210:8061/ISAPI/AccessControl/AcsEvent?format=json" ,[
+        $totalMatches = json_decode($resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "AcsEventCond"=> [
@@ -32,7 +36,7 @@ class isapiController extends Controller
         if( $totalMatches > $searchResultPosition ){
             for ($i=0; $i < $totalMatches30 ; $i++) {
                 $res = new Client();
-                $query2 = json_decode($res->post("http://190.121.239.210:8061/ISAPI/AccessControl/AcsEvent?format=json" ,[
+                $query2 = json_decode($res->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
                     'auth' =>  ['admin', 'Cas1n01234','digest'],
                     'body' => json_encode([
                         "AcsEventCond"=> [
@@ -55,7 +59,7 @@ class isapiController extends Controller
     public function addOrUpdateEmployee(Request $request)
     {
         $resC = new Client();
-        $current = json_decode($resC->put("http://190.121.239.210:8061/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+        $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "UserInfo"=> [
@@ -90,7 +94,7 @@ class isapiController extends Controller
     public function elimEmployee(Request $request)
     {
         $resC = new Client();
-        $current = json_decode($resC->put("http://190.121.239.210:8061/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
+        $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "UserInfoDelCond"=> [
@@ -118,7 +122,7 @@ class isapiController extends Controller
     {
         foreach ($request["upload"] as $key => $value) {
             $resC = new Client();
-            $current = json_decode($resC->put("http://190.121.239.210:8061/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+            $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
                 'auth' =>  ['admin', 'Cas1n01234','digest'],
                 'body' => json_encode([
                     "UserInfo"=> [
@@ -142,19 +146,12 @@ class isapiController extends Controller
                 
             }
         }
-
-        /* if($current_item){
-            return response()->json([ 'type' => 'success']);
-        }else{
-            return response()->json([ 'type' => 'error']);
-        } */
-     
     }
 
     public function captureImgEmployee()
     {
             $resC = new Client();
-            $current = $resC->post("http://190.121.239.210:8061/ISAPI/AccessControl/CaptureFaceData" ,[
+            $current = $resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/CaptureFaceData" ,[
                 
                 'auth' =>  ['admin', 'Cas1n01234','digest'],
                 
@@ -163,25 +160,6 @@ class isapiController extends Controller
                 ],
                 'body' => '<CaptureFaceDataCond version="2.0" xmlns="http://www.isapi.org/ver20/XMLSchema"><captureInfrared>false</captureInfrared><dataType>binary</dataType></CaptureFaceDataCond>'
             ])->getBody()->getContents();
-
-            /* $base64 = base64_encode($current);
-            $mime = "image/jpg";
-            $img = ('data:' . $mime . ';base64,' . $base64);
-            return "<img id='imgISAPI' src=$img >"; */
-
-
             return $current;
-
-            /* if( $current['statusCode'] == 1 ){
-                $current_delete = Employee::where("employeeNo","=",$value["employeeNo"])->delete();
-                $current_item = Employee::Create($value);
-            } */
-
-        /* if($current_item){
-            return response()->json([ 'type' => 'success']);
-        }else{
-            return response()->json([ 'type' => 'error']);
-        } */
-     
     }
 }

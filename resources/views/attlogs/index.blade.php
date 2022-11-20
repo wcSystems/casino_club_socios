@@ -104,13 +104,6 @@
     $('#attlogs_nav').removeClass("closed").addClass("active").addClass("expand")
     $.ajax({ url: "{{route('isapi.getEvent')}}"});
 
-    fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(ipify => {
-
-        
-            
-    
-        
-
         dataTableAttlog("{{route('attlogs.service')}}",[
             { data: 'serialNo' },
             { data: 'employeeNoString' },
@@ -121,15 +114,6 @@
 
                         let first_pictureURL = row.first_pictureURL.slice(7);
                         let last_pictureURL = row.last_pictureURL.slice(7);
-
-                        if(ipify.ip == "190.121.239.210"){
-                            first_pictureURL = first_pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
-                            last_pictureURL = last_pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
-                        }else{
-                            first_pictureURL = first_pictureURL.replace("192.168.5.181", "190.121.239.210:8061");
-                            last_pictureURL = last_pictureURL.replace("1192.168.5.181", "190.121.239.210:8061");
-                        }
-
                         first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;
                         last_pictureURL = `http://admin:Cas1n01234@${last_pictureURL}`;
                         return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
@@ -140,7 +124,6 @@
                 }
             },
         ],"group_name_all")
-    }) 
        
 </script>
 @endsection

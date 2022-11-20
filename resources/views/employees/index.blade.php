@@ -337,7 +337,6 @@
     };
 
     function view(params) {
-        fetch('https://api.ipify.org/?format=json').then(results => results.json()).then(ipify => {
             $.ajax({
                 url: "{{ route('employees.history') }}",
                 type: "POST",
@@ -358,11 +357,7 @@
                                     res.forEach(element => {
 
                                         let pictureURL = element.pictureURL.slice(7);
-                                        if(ipify.ip == "190.121.239.210"){ 
-                                            pictureURL = pictureURL.replace("190.121.239.210:8061", "192.168.5.181");
-                                        }else{
-                                            pictureURL = pictureURL.replace("192.168.5.181", "190.121.239.210:8061");
-                                        }
+                                       
                                         pictureURL = `http://admin:Cas1n01234@${pictureURL}`;
 
                                         htmlTemplate +=`
@@ -390,128 +385,120 @@
                     dataTableView()
                 }
             });
-        }) 
         
     }
 
     function createSchedule(id) {
-        let current_employee={!! $employees !!}.find(i=>i.id===id)
-        let current_month=moment().format('MM')
-        let current_year=moment().format('YYYY')
-        let days_in_month=moment().daysInMonth();
-
         let html = ``;
             html +=`
-                <form id="form-all-schedule" class="needs-validation" action="javascript:void(0);" novalidate>
-                    <div class="row">
-                        <div class="col-12 m-auto">
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label font-weight-bold"> Horas de trabajo <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12 my-1">
-                                        <select required id="horas_trabajo" class="form-control w-100">
-                                            <option value="" selected >Seleccione</option>
-                                            <option value="8" > 08 Horas </option>
-                                            <option value="12" > 12 Horas </option>
-                                        </select>
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
+            <form id="form-all-schedule" class="needs-validation" action="javascript:void(0);" novalidate>
+                <div class="row">
+                    <div class="col-12 m-auto">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label font-weight-bold"> Horas de trabajo <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12 my-1">
+                                    <select required id="horas_trabajo" class="form-control w-100">
+                                        <option value="" selected >Seleccione</option>
+                                        <option value="8" > 08 Horas </option>
+                                        <option value="12" > 12 Horas </option>
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 m-auto">
-                            <label class=" text-lg-right col-form-label font-weight-bold"> Horario ${moment().format('MMMM')}</span> </label>
-                        </div>
-                        `;
-                        for (let index = 1; index <= days_in_month; index++) {
-                            html +=`
-                                <div class="col-md-2 col-sm-2">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label font-weight-bold"> ${index} <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12 my-1">
-                                            <select id="${index}_hora_entrada" class="form-control w-100">
-
-                                                <option value="00:00-L" class="font-weight-bold" selected >LIBRE</option>
-
-                                                <optgroup label="Diurno">
-                                                    <option value="06:00-D" > 06:00 AM </option>
-                                                    <option value="08:00-D" > 08:00 AM </option>
-                                                    <option value="09:00-D" > 09:00 AM </option>
-                                                    <option value="11:30-D" > 11:30 AM </option>
-                                                    <option value="12:00-D" > 12:00 AM </option>
-                                                    <option value="13:00-D" > 01:00 PM </option>
-                                                    <option value="16:00-D" > 04:00 PM </option>
-                                                    <option value="18:00-D" > 06:00 PM </option>
-                                                    <option value="20:00-D" > 08:00 PM </option>
-                                                </optgroup>
-
-                                                <optgroup label="Nocturno">
-                                                    <option value="06:00-N" > 06:00 AM</option>
-                                                    <option value="08:00-N" > 08:00 AM</option>
-                                                    <option value="09:00-N" > 09:00 AM</option>
-                                                    <option value="11:30-N" > 11:30 AM</option>
-                                                    <option value="12:00-N" > 12:00 AM</option>
-                                                    <option value="13:00-N" > 01:00 PM</option>
-                                                    <option value="16:00-N" > 04:00 PM</option>
-                                                    <option value="18:00-N" > 06:00 PM</option>
-                                                    <option value="20:00-N" > 08:00 PM</option>
-                                                </optgroup>
-
-                                                
-
-                                            </select>
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-
-
-                                    </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Año y mes <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <input required type="month" id="month_year" value="${moment().format("YYYY")}-${moment().format("MM")}" name="month_year" onchange="monthYearChange(${id})" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="" >
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
-                            `; 
-                        }
-                html +=`
-                        <div class="col-sm-12" style="margin-top:20px">
-                            <button onclick="guardarSchedule(${id},${current_month},${current_year},${days_in_month})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                            </div>
                         </div>
                     </div>
-                </form>
-                `;
-
-        Swal.fire({
-            title: `${current_employee.name}`,
-            showConfirmButton: false,
-            width: '80em',
-            html:html
-        })
+                    <div id="daysOfMonth" class="row"></div>`
+                    html +=`
+                    <div class="col-sm-12" style="margin-top:20px">
+                        <button onclick="guardarSchedule(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                    </div>
+                </div>
+            </form>`;
+        Swal.fire({ title: {!! $employees !!}.find(i=>i.id===id).name, showConfirmButton: false, width: '80em', html:html })
+        monthYearChange(id)
         validateForm()
     }
 
-    function guardarSchedule(employee_id,current_month,current_year,days_in_month) {
+    function monthYearChange(employee_id) {
+        let current={!! $schedule_templates !!}.filter(i=>i.employee_id==employee_id).filter(i=>i.year==$("#month_year").val().slice(0,4)).filter(i=>i.month==$("#month_year").val().slice(5))
+        let days_in_month=moment( $("#month_year").val().slice(5) ).daysInMonth();
+        let html = ``
+            html +=`
+            <div id="daysOfMonth" class="row">
+                <div class="col-12 m-auto"><label class=" text-lg-right col-form-label font-weight-bold"> Horario ${ moment($("#month_year").val().slice(5)).format('MMMM') } ${ $("#month_year").val().slice(0,4) }</span> </label></div>`;
+                for (let index = 1; index <= days_in_month; index++) {
+                    let current_data= ( current.find(i=>i.day==index) != undefined ) ? current.find(i=>i.day==index)  : {} ;
+                    html +=`
+                    <div class="col-md-2 col-sm-2">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label font-weight-bold"> ${index} <span class="text-danger"> *</span> </label>
+                            <input type="hidden" id="${index}_id" name="${index}_id" value="${current_data.id}" >
+                            <div class="col-lg-12 my-1">
+                                <select id="${index}_hora_entrada" class="form-control w-100" >
+                                    <option value="00:00-L" class="font-weight-bold"  >LIBRE</option>
+                                    <optgroup label="Diurno">
+                                        <option value="06:00-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "06:00-D" ? "selected" : "" } > 06:00 AM </option>
+                                        <option value="08:00-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "08:00-D" ? "selected" : "" } > 08:00 AM </option>
+                                        <option value="09:00-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "09:00-D" ? "selected" : "" } > 09:00 AM </option>
+                                        <option value="11:30-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "11:30-D" ? "selected" : "" } > 11:30 AM </option>
+                                    </optgroup>
+                                    <optgroup label="Nocturno">
+                                        <option value="12:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "12:00-N" ? "selected" : "" } > 12:00 PM</option>
+                                        <option value="13:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "13:00-N" ? "selected" : "" } > 01:00 PM</option>
+                                        <option value="16:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "16:00-N" ? "selected" : "" } > 04:00 PM</option>
+                                        <option value="18:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "18:00-N" ? "selected" : "" } > 06:00 PM</option>
+                                        <option value="20:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "20:00-N" ? "selected" : "" } > 08:00 PM</option>
+                                    </optgroup>
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>`; 
+                }
+                html +=`
+            </div>`
+        $("#daysOfMonth").replaceWith(html)
+    }
+
+    function guardarSchedule(employee_id) {
         let newArr = []
+        let days_in_month=moment( $("#month_year").val().slice(5) ).daysInMonth();
         for (let index = 1; index <= days_in_month; index++) {
             newArr.push({
-                employee_id: employee_id,
-                hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
-                horas_trabajo: $("#horas_trabajo").val(),
-                turno: $(`#${index}_hora_entrada`).val().slice(6),
-                year: current_year,
-                month: current_month,
-                day: index,
-                date: moment(`${current_year}-${current_month}-${index}`).format('YYYY-MM-DD'),
+                id: { id: $(`#${index}_id`).val() != "undefined" ? $(`#${index}_id`).val() : "" },
+                schedule: {
+                    employee_id: employee_id,
+                    hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
+                    horas_trabajo: $("#horas_trabajo").val(),
+                    turno: $(`#${index}_hora_entrada`).val().slice(6),
+                    year: $("#month_year").val().slice(0,4),
+                    month: $("#month_year").val().slice(5),
+                    day: index,
+                    date: moment(`${$("#month_year").val().slice(0,4)}-${$("#month_year").val().slice(5)}-${index}`).format('YYYY-MM-DD'),
+                }
             })
         }
-
         let validity = document.getElementById('form-all-schedule').checkValidity()
         if(validity){
-            let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr, employee_id: employee_id }
+            let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr  }
             $.ajax({
                 url: "{{ route('schedule_templates.store') }}",
                 type: "POST",
                 data: payload,
                 success: function (res) {
-                    console.log(res)
-                    /* if(res.type === 'success'){
+                    if(res.type === 'success'){
                         location.reload();
-                    } */
+                    }
                 }
             });
         }
@@ -533,10 +520,17 @@
                     let days_in_month=moment(element.month).daysInMonth();
                     html += `
                         <div class="table-responsive">
-                            <table id="data-table-default-schedule" class=" table table-bordered table-td-valign-middle mt-3" style="width:100% !important">
+                            <table id="data-table-default-schedule-${element.year}-${element.month}" class=" table table-bordered table-td-valign-middle mt-3" style="width:100% !important">
                                 <thead style="background-color:paleturquoise;" >
                                     <tr>
-                                        <th class="text-center text-uppercase font-weight-bold" colspan=${days_in_month+5}>${moment(element.month).format('MMMM')} ${element.year}</th>
+                                        <td  colspan=${days_in_month+1} class="font-weight-bold" style="background-color:paleturquoise;"> ${ moment(element.year+"-"+element.month).format('MMMM') }  </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-weight-bold"  style="background-color:paleturquoise;">Dia</td>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            html += `<td class="font-weight-bold" style="background-color:paleturquoise;"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                        }
+                                        html += `
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -544,26 +538,20 @@
 
 
 
+                                    
                                     <tr>
-                                        <th  colspan=3 style="background-color:paleturquoise;">Dia</th>`
-                                        for (let index = 1; index <= days_in_month; index++) {
-                                            html += `<td class="font-weight-bold" style="background-color:paleturquoise;"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
-                                        }
-                                        html += `
-                                    </tr>
-                                    <tr>
-                                        <th colspan=3 style="background-color:paleturquoise"> Horario </th>`
+                                        <td class="font-weight-bold"  style="background-color:paleturquoise"> Horario </td>`
                                         for (let index = 1; index <= days_in_month; index++) {
                                             res.all_data.forEach(element2 => {
                                                 if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
                                                     if( element2.turno == "L" ){
-                                                        html += `<td rowspan="4" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
+                                                        html += `<td  class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
                                                     }
                                                     if( element2.turno == "D" ){
-                                                        html += `<td style="color:#6CC773 !important" class="font-weight-bold" >${element2.turno}${element2.horas_trabajo}H <br /> ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        html += `<td style="color:#F5CBA7 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
                                                     }
                                                     if( element2.turno == "N" ){
-                                                        html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >${element2.turno}${element2.horas_trabajo}H <br /> ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        html += `<td style="color:#424949 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
                                                     }
                                                 }
                                             });
@@ -571,7 +559,7 @@
                                         html += `
                                     </tr>
                                     <tr>
-                                        <th colspan=3 style="background-color:paleturquoise"> Marcajes </th>`
+                                        <td class="font-weight-bold"  style="background-color:paleturquoise"> Marcajes </td>`
                                         for (let index = 1; index <= days_in_month; index++) {
                                             res.all_data.forEach(element2 => {
                                                 let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
@@ -588,11 +576,11 @@
                                                                     html += `<td class="text-uppercase font-weight-bold">${ moment(current_find.first).format('h:mm:ss a') }<br /> NO REGISTRO SALIDA </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td rowspan="3" class="text-uppercase font-weight-bold"> NO MARCO </td>`
+                                                                html += `<td  class="text-uppercase font-weight-bold"> NO MARCO </td>`
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
+                                                            if(current_find_plus != undefined && current_find != undefined ){
                                                                 if(current_find_plus.first !== current_find.last ){
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br />${ moment(current_find_plus.first).format('h:mm:ss a') }</td>`
                                                                 }
@@ -600,11 +588,11 @@
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') }<br /> NO REGISTRO SALIDA </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td rowspan="3" class="text-uppercase font-weight-bold"> NO MARCO </td>`
+                                                                html += `<td  class="text-uppercase font-weight-bold"> NO MARCO </td>`
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
-                                                            html += ``
+                                                            html += `<td class="text-uppercase font-weight-bold"></td>`
                                                         }
                                                     
                                                     
@@ -614,7 +602,7 @@
                                         html += `
                                     </tr>
                                     <tr>
-                                        <th colspan=3 style="background-color:paleturquoise"> Trabajado </th>`
+                                        <td class="font-weight-bold" style="background-color:paleturquoise"> Trabajado </td>`
                                         for (let index = 1; index <= days_in_month; index++) {
                                             res.all_data.forEach(element2 => {
                                                 let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
@@ -633,11 +621,11 @@
                                                                     html += `<td class="text-uppercase font-weight-bold"> ERROR  </td>`
                                                                 }
                                                             }else{
-                                                                html += ``
+                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
+                                                            if(current_find_plus != undefined && current_find != undefined ){
                                                                 let hora_entrada = moment(current_find.last)
                                                                 let hora_salida = moment(current_find_plus.first)
                                                                 let duration = moment.duration(hora_entrada.diff(hora_salida))
@@ -647,11 +635,11 @@
                                                                     html += `<td class="text-uppercase font-weight-bold"> ERROR  </td>`
                                                                 }
                                                             }else{
-                                                                html += ``
+                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
-                                                            html += ``
+                                                            html += `<td class="text-uppercase font-weight-bold"></td>`
                                                         }
                                                     
                                                     
@@ -661,7 +649,7 @@
                                         html += `
                                     </tr>
                                     <tr>
-                                        <th colspan=3 style="background-color:paleturquoise"> Sobretiempo </th>`
+                                        <td class="font-weight-bold" style="background-color:paleturquoise"> Sobretiempo </td>`
                                         for (let index = 1; index <= days_in_month; index++) {
                                             res.all_data.forEach(element2 => {
                                                 let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
@@ -695,11 +683,11 @@
                                                                 }
 
                                                             }else{
-                                                                html += ``
+                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
-                                                            if(current_find_plus != undefined){
+                                                            if(current_find_plus != undefined && current_find != undefined ){
 
                                                                 let hora_marcada_entrada = moment(current_find.last)
                                                                 let hora_marcada_salida = moment(current_find_plus.first)
@@ -723,11 +711,11 @@
                                                                     }
                                                                 }
                                                             }else{
-                                                                html += ``
+                                                                html += `<td class="text-uppercase font-weight-bold"></td>`
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
-                                                            html += ``
+                                                            html += `<td class="text-uppercase font-weight-bold"></td>`
                                                         }
                                                     
                                                     
@@ -742,10 +730,7 @@
 
 
 
-                                    <tr>
-                                        <th colspan=3 style="background-color:paleturquoise"> Trabajador </th>
-                                        <td colspan=${days_in_month}> ${current.name} </td>
-                                    </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -757,16 +742,18 @@
                         </button>
                     `
                 });
-                        
-
                 Swal.fire({
                     title: `Horarios`,
                     showConfirmButton: true,
-                    width: "95%",
                     showCloseButton: true,
+                    width: "80rem",
                     confirmButtonText: 'Ok',
                     html: html
                 })
+                res.data.forEach(element => {
+                    dataScheduleView(element.year,element.month)
+                });
+                
             }
         });
     }
@@ -791,7 +778,7 @@
         },
     ])
 
-    function excelExport(title,dl,fn) {
+        function excelExport(title,dl,fn) {
             let user = {!! Auth::user() !!}
             var elt = document.getElementById('data-table-default-schedule');
             var wb = XLSX.utils.table_to_book(elt, { sheet: "Horarios" });
@@ -806,7 +793,40 @@
                 doc.save(`${user.name}-${title}-${moment().format('MMMM Do YYYY, h:mm:ss a')}.pdf`)
         }
 
-    function dataTableView() {
+    
+        function dataScheduleView(year,month) {
+            $(document).ready(function() {
+                let table = $(`#data-table-default-schedule-${year}-${month}`).DataTable({
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                    //responsive: true,
+                    processing: true,
+                    lengthChange: true,
+                    scrollX: true,
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "emptyTable":  "Sin datos disponibles",
+                        "zeroRecords": "Ningun resultado encontrado",
+                        "info": "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+                        "infoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "infoEmpty": "Ningun valor disponible",
+                        "loadingRecords": "Cargando...",
+                        "processing":     "Procesando...",
+                        "search":     "Buscar",
+                        "paginate": {
+                            "first":      "Primero",
+                            "last":       "Ultimo",
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                    }
+                }).on( 'processing.dt', function ( e, settings, processing ) {
+                    if(processing){ console.log() }else{ }
+                });
+                $("#search").keyup( () =>{ $('#data-table-default-schedule').DataTable().ajax.reload() });
+            });
+        }
+
+        function dataTableView() {
             $(document).ready(function() {
                 let table = $('#data-table-default-view').DataTable({
                     lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
@@ -845,12 +865,9 @@
                 }).on( 'processing.dt', function ( e, settings, processing ) {
                     if(processing){ console.log() }else{ }
                 });
-
                 $("#search").keyup( () =>{ $('#data-table-default-view').DataTable().ajax.reload() });
             });
-            
         }
-
 
 </script>
 @endsection

@@ -36,12 +36,8 @@ class Schedule_templatesController extends Controller
      */
     public function store(Request $request)
     {
-        $all_data = Schedule_template::where('employee_id','=',$request["employee_id"]);
-        $all_data->each(function($item, $key) {
-            $item->delete();
-        });
         foreach ($request["data"] as $key => $value) {
-            Schedule_template::create($value);
+            Schedule_template::updateOrCreate($value["id"],$value["schedule"]);
         }
         return response()->json([ 'type' => 'success']);
     }
