@@ -529,10 +529,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
-
-
-
                                     <tr>
                                         <td class="font-weight-bold" style="background-color:paleturquoise;">Dia</td>`
                                         for (let index = 1; index <= days_in_month; index++) {
@@ -725,18 +721,68 @@
                                         }
                                         html += `
                                     </tr>
-
-
-
-
-
-
                                     <tr>
                                         <td class="font-weight-bold" style="background-color:paleturquoise"> Trabajador </td>
                                         <td colspan=${days_in_month} class="text-left font-weight-bold">
                                             <button onclick="excelExport('schedule_templates')" class="btn btn-secondary rounded-circle mx-1" style="width:40px;height:40px"> <i class="m-auto fas fa-lg fa-file-excel"></i> </button>
-                                            <button onclick="pdfExport('schedule_templates')" class="btn btn-secondary rounded-circle mx-1" style="width:40px;height:40px"> <i class="m-auto fas fa-lg fa-file-pdf"></i> </button>
-                                            ${current.name} 
+                                            <button onclick="pdfExport('schedule_templates')" class="btn btn-secondary rounded-circle mx-1" style="width:40px;height:40px"> <i class="m-auto fas fa-lg fa-file-pdf"></i> </button>`
+                                            let current_turno_d = 0
+                                            let current_turno_n = 0
+                                            let current_turno_l = 0
+                                            let sobretiempoP = 0
+                                            let sobretiempoN = 0
+                                            let sobretiempoT = ""
+                                            for (let index = 1; index <= days_in_month; index++) {
+                                                res.all_data.forEach(element2 => {
+                                                    let current_find = current_data_filter.find(i=>i.date==moment(element2.year+"-"+element2.month+"-"+element2.day).format('YYYY-MM-DD'))
+                                                    let current_find_plus = current_data_filter.find(i=>i.date== moment(element2.year+"-"+element2.month+"-"+element2.day).add('days', 1).format('YYYY-MM-DD'))
+                                                    if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                        if( element2.turno == "D" ){
+                                                            current_turno_d = current_turno_d+1
+                                                            if(current_find != undefined){
+                                                                let hora_marcada_entrada = moment(current_find.first)
+                                                                let hora_marcada_salida = moment(current_find.last)
+                                                                let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
+                                                                let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
+                                                                let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
+                                                                let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
+                                                                let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
+                                                                let total_plantilla = element2.horas_trabajo*3600
+                                                                if( total_segundo_marcada ==  0 ){ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }else{
+                                                                    if( total_segundo_marcada > total_plantilla ){ sobretiempoP = ( sobretiempoP + (total_segundo_marcada-total_plantilla) ) }
+                                                                    if( total_segundo_marcada < total_plantilla ){ sobretiempoN = ( sobretiempoN + (total_plantilla-total_segundo_marcada) ) }
+                                                                }
+                                                            }else{ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }
+                                                        }
+                                                        if( element2.turno == "N" ){
+                                                            current_turno_n = current_turno_n+1
+                                                            if(current_find_plus != undefined && current_find != undefined){
+                                                                let hora_marcada_entrada = moment(current_find.last)
+                                                                let hora_marcada_salida = moment(current_find_plus.first)
+                                                                let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
+                                                                let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
+                                                                let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
+                                                                let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
+                                                                let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
+                                                                let total_plantilla = element2.horas_trabajo*3600
+                                                                if( total_segundo_marcada ==  0 ){ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }else{
+                                                                    if( total_segundo_marcada > total_plantilla ){ sobretiempoP = ( sobretiempoP + (total_segundo_marcada-total_plantilla) ) }
+                                                                    if( total_segundo_marcada < total_plantilla ){ sobretiempoN = ( sobretiempoN + (total_plantilla-total_segundo_marcada) ) }
+                                                                }
+                                                            }else{ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }
+                                                        }
+                                                        if( element2.turno == "L" ){  current_turno_l = current_turno_l+1  }
+                                                    }
+                                                });
+                                            }
+                                            if(sobretiempoP > sobretiempoN ){
+                                                sobretiempoT = `+${ Math.floor((sobretiempoP-sobretiempoN) / 3600) +":"+Math.floor(((sobretiempoP-sobretiempoN) / 60) % 60)+":"+(sobretiempoP-sobretiempoN) % 60 }H`
+                                            }
+                                            if(sobretiempoN > sobretiempoP ){
+                                                sobretiempoT = `-${ Math.floor((sobretiempoN-sobretiempoP) / 3600) +":"+Math.floor(((sobretiempoN-sobretiempoP) / 60) % 60)+":"+(sobretiempoN-sobretiempoP) % 60 }H`
+                                            }
+                                            html += ` 
+                                            ${current.name} - Diurnos: ( ${current_turno_d} ) - Nocturnos: ( ${current_turno_n} ) - Libres: ( ${current_turno_l} ) - Sobretiempo: ${sobretiempoT}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -791,7 +837,11 @@
         }
         function pdfExport(title) {
                 let user = {!! Auth::user() !!}
-                var doc = new jsPDF()
+                var doc = new jsPDF({
+                    orientation: 'l', 
+                    unit: 'cm', 
+                    format: [240, 5000]
+                })
                 doc.autoTable({ html: '#data-table-default-schedule' })
                 doc.save(`${user.name}-${title}-${moment().format('MMMM Do YYYY, h:mm:ss a')}.pdf`)
         }
