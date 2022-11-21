@@ -729,8 +729,20 @@
                                             let current_turno_d = 0
                                             let current_turno_n = 0
                                             let current_turno_l = 0
-                                            let sobretiempoP = 0
-                                            let sobretiempoN = 0
+
+                                            let sobretiempoPD = 0
+                                            let sobretiempoND = 0
+                                            let sobretiempoPN = 0
+                                            let sobretiempoNN = 0
+
+                                            let sobretiempoPG = 0
+                                            let sobretiempoNG = 0
+
+                                            let sobretiempoTD = "0H"
+                                            let sobretiempoTN = "0H"
+                                            let sobretiempoTG = "0H"
+
+                                            
                                             let sobretiempoT = ""
                                             for (let index = 1; index <= days_in_month; index++) {
                                                 res.all_data.forEach(element2 => {
@@ -748,11 +760,23 @@
                                                                 let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
                                                                 let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
                                                                 let total_plantilla = element2.horas_trabajo*3600
-                                                                if( total_segundo_marcada ==  0 ){ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }else{
-                                                                    if( total_segundo_marcada > total_plantilla ){ sobretiempoP = ( sobretiempoP + (total_segundo_marcada-total_plantilla) ) }
-                                                                    if( total_segundo_marcada < total_plantilla ){ sobretiempoN = ( sobretiempoN + (total_plantilla-total_segundo_marcada) ) }
+                                                                if( total_segundo_marcada ==  0 ){ 
+                                                                    sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
+                                                                    sobretiempoND = sobretiempoND + ( element2.horas_trabajo*3600 ) 
+                                                                }else{
+                                                                    if( total_segundo_marcada > total_plantilla ){ 
+                                                                        sobretiempoPG = ( sobretiempoPG + (total_segundo_marcada-total_plantilla) ) 
+                                                                        sobretiempoPD = ( sobretiempoPD + (total_segundo_marcada-total_plantilla) ) 
+                                                                    }
+                                                                    if( total_segundo_marcada < total_plantilla ){ 
+                                                                        sobretiempoNG = ( sobretiempoNG + (total_plantilla-total_segundo_marcada) ) 
+                                                                        sobretiempoND = ( sobretiempoND + (total_plantilla-total_segundo_marcada) ) 
+                                                                    }
                                                                 }
-                                                            }else{ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }
+                                                            }else{ 
+                                                                sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
+                                                                sobretiempoND = sobretiempoND + ( element2.horas_trabajo*3600 ) 
+                                                            }
                                                         }
                                                         if( element2.turno == "N" ){
                                                             current_turno_n = current_turno_n+1
@@ -765,24 +789,54 @@
                                                                 let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
                                                                 let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
                                                                 let total_plantilla = element2.horas_trabajo*3600
-                                                                if( total_segundo_marcada ==  0 ){ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }else{
-                                                                    if( total_segundo_marcada > total_plantilla ){ sobretiempoP = ( sobretiempoP + (total_segundo_marcada-total_plantilla) ) }
-                                                                    if( total_segundo_marcada < total_plantilla ){ sobretiempoN = ( sobretiempoN + (total_plantilla-total_segundo_marcada) ) }
+                                                                if( total_segundo_marcada ==  0 ){ 
+                                                                    sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
+                                                                    sobretiempoNN = sobretiempoNN + ( element2.horas_trabajo*3600 ) 
+                                                                }else{
+                                                                    if( total_segundo_marcada > total_plantilla ){ 
+                                                                        sobretiempoPG = ( sobretiempoPG + (total_segundo_marcada-total_plantilla) ) 
+                                                                        sobretiempoPN = ( sobretiempoPN + (total_segundo_marcada-total_plantilla) ) 
+                                                                    }
+                                                                    if( total_segundo_marcada < total_plantilla ){ 
+                                                                        sobretiempoNG = ( sobretiempoNG + (total_plantilla-total_segundo_marcada) ) 
+                                                                        sobretiempoNN = ( sobretiempoNN + (total_plantilla-total_segundo_marcada) ) 
+                                                                    }
                                                                 }
-                                                            }else{ sobretiempoN = sobretiempoN + ( element2.horas_trabajo*3600 ) }
+                                                            }else{ 
+                                                                sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
+                                                                sobretiempoNN = sobretiempoNN + ( element2.horas_trabajo*3600 ) 
+                                                            }
                                                         }
                                                         if( element2.turno == "L" ){  current_turno_l = current_turno_l+1  }
                                                     }
                                                 });
                                             }
-                                            if(sobretiempoP > sobretiempoN ){
-                                                sobretiempoT = `+${ Math.floor((sobretiempoP-sobretiempoN) / 3600) +":"+Math.floor(((sobretiempoP-sobretiempoN) / 60) % 60)+":"+(sobretiempoP-sobretiempoN) % 60 }H`
+                                            // `-${ Math.floor((sobretiempoNN-sobretiempoPN) / 3600) +":"+Math.floor(((sobretiempoNN-sobretiempoPN) / 60) % 60)+":"+(sobretiempoNN-sobretiempoPN) % 60 }H`
+
+
+                                            if(sobretiempoPD > sobretiempoND ){ 
+                                                sobretiempoTD = `+${ Math.floor((sobretiempoPD-sobretiempoND) / 3600) +":"+Math.floor(((sobretiempoPD-sobretiempoND) / 60) % 60)+":"+(sobretiempoPD-sobretiempoND) % 60 }H` 
                                             }
-                                            if(sobretiempoN > sobretiempoP ){
-                                                sobretiempoT = `-${ Math.floor((sobretiempoN-sobretiempoP) / 3600) +":"+Math.floor(((sobretiempoN-sobretiempoP) / 60) % 60)+":"+(sobretiempoN-sobretiempoP) % 60 }H`
+                                            if(sobretiempoND > sobretiempoPD ){ 
+                                                sobretiempoTD = `-${ Math.floor((sobretiempoND-sobretiempoPD) / 3600) +":"+Math.floor(((sobretiempoND-sobretiempoPD) / 60) % 60)+":"+(sobretiempoND-sobretiempoPD) % 60 }H` 
                                             }
+
+                                            if(sobretiempoPN > sobretiempoNN ){ 
+                                                sobretiempoTN = `-${ Math.floor((sobretiempoPN-sobretiempoNN) / 3600) +":"+Math.floor(((sobretiempoPN-sobretiempoNN) / 60) % 60)+":"+(sobretiempoPN-sobretiempoNN) % 60 }H` 
+                                            }
+                                            if(sobretiempoNN > sobretiempoPN ){ 
+                                                sobretiempoTN = `-${ Math.floor((sobretiempoNN-sobretiempoPN) / 3600) +":"+Math.floor(((sobretiempoNN-sobretiempoPN) / 60) % 60)+":"+(sobretiempoNN-sobretiempoPN) % 60 }H` 
+                                            }
+
+                                            if(sobretiempoPG > sobretiempoNG ){ 
+                                                sobretiempoTG = `-${ Math.floor((sobretiempoPG-sobretiempoNG) / 3600) +":"+Math.floor(((sobretiempoPG-sobretiempoNG) / 60) % 60)+":"+(sobretiempoPG-sobretiempoNG) % 60 }H` 
+                                            }
+                                            if(sobretiempoNG > sobretiempoPG ){ 
+                                                sobretiempoTG = `-${ Math.floor((sobretiempoNG-sobretiempoPG) / 3600) +":"+Math.floor(((sobretiempoNG-sobretiempoPG) / 60) % 60)+":"+(sobretiempoNG-sobretiempoPG) % 60 }H` 
+                                            }
+
                                             html += ` 
-                                            ${current.name} - Diurnos: ( ${current_turno_d} ) - Nocturnos: ( ${current_turno_n} ) - Libres: ( ${current_turno_l} ) - Sobretiempo: ${sobretiempoT}
+                                            ${current.name} - Diurnos: ( ${current_turno_d} ) - Nocturnos: ( ${current_turno_n} ) - Libres: ( ${current_turno_l} ) - Sobretiempo Diurno: ( ${sobretiempoTD} ) - Sobretiempo Nocturno: ( ${sobretiempoTN} ) - Sobretiempo Global: ( ${sobretiempoTG} )
                                         </td>
                                     </tr>
                                 </tbody>
