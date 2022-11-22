@@ -432,33 +432,33 @@
                             <input type="hidden" id="${index}_id" name="${index}_id" value="${current_data.id}" >
                             <div class="col-lg-12 my-1">
                                 <select id="${index}_hora_entrada" class="form-control w-100" >
-                                    <option value="00:00-L" class="font-weight-bold"  >LIBRE</option>
+                                    <option value="00:00-L-0" class="font-weight-bold"  >LIBRE</option>
 
                                     <optgroup label="Diurno 7H">
-                                        <option value="14:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "14:00-D-7" ? "selected" : "" } > 02:00 PM </option>
-                                        <option value="15:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "15:00-D-7" ? "selected" : "" } > 03:00 PM </option>
-                                        <option value="16:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "16:00-D-7" ? "selected" : "" } > 04:00 PM </option>
+                                        <option value="14:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "14:00-D-7" ? "selected" : "" } > 02:00 PM </option>
+                                        <option value="15:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "15:00-D-7" ? "selected" : "" } > 03:00 PM </option>
+                                        <option value="16:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "16:00-D-7" ? "selected" : "" } > 04:00 PM </option>
                                     </optgroup>
                                     <optgroup label="Diurno 8H">
-                                        <option value="07:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "07:00-D-8" ? "selected" : "" } > 07:00 AM </option>
-                                        <option value="08:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "08:00-D-8" ? "selected" : "" } > 08:00 AM </option>
-                                        <option value="09:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "09:00-D-8" ? "selected" : "" } > 09:00 AM </option>
-                                        <option value="11:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "11:00-D-8" ? "selected" : "" } > 11:30 AM </option>
-                                        <option value="12:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "12:00-D-8" ? "selected" : "" } > 12:00 PM </option>
+                                        <option value="07:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "07:00-D-8" ? "selected" : "" } > 07:00 AM </option>
+                                        <option value="08:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "08:00-D-8" ? "selected" : "" } > 08:00 AM </option>
+                                        <option value="09:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "09:00-D-8" ? "selected" : "" } > 09:00 AM </option>
+                                        <option value="11:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "11:00-D-8" ? "selected" : "" } > 11:00 AM </option>
+                                        <option value="12:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "12:00-D-8" ? "selected" : "" } > 12:00 PM </option>
                                     </optgroup>
                                     <optgroup label="Diurno 12H">
-                                        <option value="06:00-D-12" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "06:00-D-12" ? "selected" : "" } > 06:00 AM </option>
+                                        <option value="06:00-D-12" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "06:00-D-12" ? "selected" : "" } > 06:00 AM </option>
                                     </optgroup>
 
                                     <optgroup label="Nocturno 7H">
-                                        <option value="17:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "17:00-N-7" ? "selected" : "" } > 05:00 PM</option>
-                                        <option value="18:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "18:00-N-7" ? "selected" : "" } > 06:00 PM</option>
-                                        <option value="19:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "19:00-N-7" ? "selected" : "" } > 07:00 PM</option>
-                                        <option value="20:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "20:00-N-7" ? "selected" : "" } > 08:00 PM</option>
-                                        <option value="21:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "21:00-N-7" ? "selected" : "" } > 09:00 PM</option>
+                                        <option value="17:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "17:00-N-7" ? "selected" : "" } > 05:00 PM</option>
+                                        <option value="18:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "18:00-N-7" ? "selected" : "" } > 06:00 PM</option>
+                                        <option value="19:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "19:00-N-7" ? "selected" : "" } > 07:00 PM</option>
+                                        <option value="20:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "20:00-N-7" ? "selected" : "" } > 08:00 PM</option>
+                                        <option value="21:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "21:00-N-7" ? "selected" : "" } > 09:00 PM</option>
                                     </optgroup>
                                     <optgroup label="Nocturno 12H">
-                                        <option value="18:00-N-12" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "18:00-N-12" ? "selected" : "" } > 06:00 PM</option>
+                                        <option value="18:00-N-12" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)+"-"+(current_data.horas_trabajo)) == "18:00-N-12" ? "selected" : "" } > 06:00 PM</option>
                                     </optgroup>
 
                                 </select>
@@ -482,7 +482,7 @@
                     employee_id: employee_id,
                     hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
                     horas_trabajo: $(`#${index}_hora_entrada`).val().slice(8),
-                    turno: $(`#${index}_hora_entrada`).val().slice(6),
+                    turno: $(`#${index}_hora_entrada`).val().slice(6,7),
                     year: $("#month_year").val().slice(0,4),
                     month: $("#month_year").val().slice(5),
                     day: index,
@@ -547,10 +547,10 @@
                                                         html += `<td rowspan="4" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
                                                     }
                                                     if( element2.turno == "D" ){
-                                                        html += `<td style="color:#6CC773 !important" class="font-weight-bold" >( ${element2.turno} ) ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        html += `<td style="color:#6CC773 !important" class="font-weight-bold" >( ${element2.horas_trabajo}H ${element2.turno} ) ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
                                                     }
                                                     if( element2.turno == "N" ){
-                                                        html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >( ${element2.turno} ) ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >( ${element2.horas_trabajo}H ${element2.turno} ) ${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} - ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
                                                     }
                                                 }
                                             });
@@ -587,7 +587,11 @@
                                                                     html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') } </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td class="text-uppercase font-weight-bold"> NO MARCO </td>`
+                                                                if(current_find != undefined){
+                                                                        html += `<td class="text-uppercase font-weight-bold"> ${ moment(current_find.last).format('h:mm:ss a') } </td>`
+                                                                }else{
+                                                                    html += `<td class="text-uppercase font-weight-bold"> NO MARCO </td>`
+                                                                }
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
@@ -634,7 +638,11 @@
                                                                     html += `<td class="text-uppercase font-weight-bold"> SALIDA NO MARCADA  </td>`
                                                                 }
                                                             }else{
-                                                                html += `<td class="text-uppercase font-weight-bold"> NO TRABAJO </td>`
+                                                                if(current_find != undefined){
+                                                                        html += `<td class="text-uppercase font-weight-bold"> SALIDA NO MARCADA  </td>`
+                                                                }else{
+                                                                    html += `<td class="text-uppercase font-weight-bold"> NO TRABAJO </td>`
+                                                                }
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
@@ -647,6 +655,7 @@
                                         }
                                         html += `
                                     </tr>
+
                                     <tr>
                                         <td class="font-weight-bold" style="background-color:paleturquoise"> Sobretiempo </td>`
                                         for (let index = 1; index <= days_in_month; index++) {
@@ -682,7 +691,11 @@
                                                                 }
 
                                                             }else{
-                                                                html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> -${element2.horas_trabajo}H </td>`
+                                                                if( moment(element2.year+"-"+element2.month+"-"+element2.day).format("YYYY-MM-DD") <=  moment().format("YYYY-MM-DD") ){
+                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> -${element2.horas_trabajo}H </td>`
+                                                                }else{
+                                                                    html += `<td class="text-uppercase font-weight-bold"> 0H </td>`
+                                                                }
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
@@ -710,7 +723,11 @@
                                                                     }
                                                                 }
                                                             }else{
-                                                                html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> -${element2.horas_trabajo}H </td>`
+                                                                if( moment(element2.year+"-"+element2.month+"-"+element2.day).format("YYYY-MM-DD") <=  moment().format("YYYY-MM-DD") ){
+                                                                    html += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> -${element2.horas_trabajo}H </td>`
+                                                                }else{
+                                                                    html += `<td class="text-uppercase font-weight-bold"> 0H </td>`
+                                                                }
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){
@@ -776,8 +793,10 @@
                                                                     }
                                                                 }
                                                             }else{ 
-                                                                sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
-                                                                sobretiempoND = sobretiempoND + ( element2.horas_trabajo*3600 ) 
+                                                                if( moment(element2.year+"-"+element2.month+"-"+element2.day).format("YYYY-MM-DD") <=  moment().format("YYYY-MM-DD") ){
+                                                                    sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
+                                                                    sobretiempoND = sobretiempoND + ( element2.horas_trabajo*3600 ) 
+                                                                }
                                                             }
                                                         }
                                                         if( element2.turno == "N" ){
@@ -805,16 +824,16 @@
                                                                     }
                                                                 }
                                                             }else{ 
-                                                                sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
-                                                                sobretiempoNN = sobretiempoNN + ( element2.horas_trabajo*3600 ) 
+                                                                if( moment(element2.year+"-"+element2.month+"-"+element2.day).format("YYYY-MM-DD") <=  moment().format("YYYY-MM-DD") ){
+                                                                    sobretiempoNG = sobretiempoNG + ( element2.horas_trabajo*3600 ) 
+                                                                    sobretiempoNN = sobretiempoNN + ( element2.horas_trabajo*3600 ) 
+                                                                }
                                                             }
                                                         }
                                                         if( element2.turno == "L" ){  current_turno_l = current_turno_l+1  }
                                                     }
                                                 });
                                             }
-                                            // `-${ Math.floor((sobretiempoNN-sobretiempoPN) / 3600) +":"+Math.floor(((sobretiempoNN-sobretiempoPN) / 60) % 60)+":"+(sobretiempoNN-sobretiempoPN) % 60 }H`
-
 
                                             if(sobretiempoPD > sobretiempoND ){ 
                                                 sobretiempoTD = `+${ Math.floor((sobretiempoPD-sobretiempoND) / 3600) +":"+Math.floor(((sobretiempoPD-sobretiempoND) / 60) % 60)+":"+(sobretiempoPD-sobretiempoND) % 60 }H` 
@@ -824,14 +843,14 @@
                                             }
 
                                             if(sobretiempoPN > sobretiempoNN ){ 
-                                                sobretiempoTN = `-${ Math.floor((sobretiempoPN-sobretiempoNN) / 3600) +":"+Math.floor(((sobretiempoPN-sobretiempoNN) / 60) % 60)+":"+(sobretiempoPN-sobretiempoNN) % 60 }H` 
+                                                sobretiempoTN = `+${ Math.floor((sobretiempoPN-sobretiempoNN) / 3600) +":"+Math.floor(((sobretiempoPN-sobretiempoNN) / 60) % 60)+":"+(sobretiempoPN-sobretiempoNN) % 60 }H` 
                                             }
                                             if(sobretiempoNN > sobretiempoPN ){ 
                                                 sobretiempoTN = `-${ Math.floor((sobretiempoNN-sobretiempoPN) / 3600) +":"+Math.floor(((sobretiempoNN-sobretiempoPN) / 60) % 60)+":"+(sobretiempoNN-sobretiempoPN) % 60 }H` 
                                             }
 
                                             if(sobretiempoPG > sobretiempoNG ){ 
-                                                sobretiempoTG = `-${ Math.floor((sobretiempoPG-sobretiempoNG) / 3600) +":"+Math.floor(((sobretiempoPG-sobretiempoNG) / 60) % 60)+":"+(sobretiempoPG-sobretiempoNG) % 60 }H` 
+                                                sobretiempoTG = `+${ Math.floor((sobretiempoPG-sobretiempoNG) / 3600) +":"+Math.floor(((sobretiempoPG-sobretiempoNG) / 60) % 60)+":"+(sobretiempoPG-sobretiempoNG) % 60 }H` 
                                             }
                                             if(sobretiempoNG > sobretiempoPG ){ 
                                                 sobretiempoTG = `-${ Math.floor((sobretiempoNG-sobretiempoPG) / 3600) +":"+Math.floor(((sobretiempoNG-sobretiempoPG) / 60) % 60)+":"+(sobretiempoNG-sobretiempoPG) % 60 }H` 
