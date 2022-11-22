@@ -396,19 +396,6 @@
                     <div class="col-12 m-auto">
                         <div class="col-md-4 col-sm-4">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label font-weight-bold"> Horas de trabajo <span class="text-danger"> *</span> </label>
-                                <div class="col-lg-12 my-1">
-                                    <select required id="horas_trabajo" class="form-control w-100">
-                                        <option value="" selected >Seleccione</option>
-                                        <option value="8" > 08 Horas </option>
-                                        <option value="12" > 12 Horas </option>
-                                    </select>
-                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-4">
-                            <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Año y mes <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
                                     <input required type="month" id="month_year" value="${moment().format("YYYY")}-${moment().format("MM")}" name="month_year" onchange="monthYearChange(${id})" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="" >
@@ -446,19 +433,34 @@
                             <div class="col-lg-12 my-1">
                                 <select id="${index}_hora_entrada" class="form-control w-100" >
                                     <option value="00:00-L" class="font-weight-bold"  >LIBRE</option>
-                                    <optgroup label="Diurno">
-                                        <option value="06:00-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "06:00-D" ? "selected" : "" } > 06:00 AM </option>
-                                        <option value="08:00-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "08:00-D" ? "selected" : "" } > 08:00 AM </option>
-                                        <option value="09:00-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "09:00-D" ? "selected" : "" } > 09:00 AM </option>
-                                        <option value="11:30-D" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "11:30-D" ? "selected" : "" } > 11:30 AM </option>
+
+                                    <optgroup label="Diurno 7H">
+                                        <option value="14:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "14:00-D-7" ? "selected" : "" } > 02:00 PM </option>
+                                        <option value="15:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "15:00-D-7" ? "selected" : "" } > 03:00 PM </option>
+                                        <option value="16:00-D-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "16:00-D-7" ? "selected" : "" } > 04:00 PM </option>
                                     </optgroup>
-                                    <optgroup label="Nocturno">
-                                        <option value="12:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "12:00-N" ? "selected" : "" } > 12:00 PM</option>
-                                        <option value="13:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "13:00-N" ? "selected" : "" } > 01:00 PM</option>
-                                        <option value="16:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "16:00-N" ? "selected" : "" } > 04:00 PM</option>
-                                        <option value="18:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "18:00-N" ? "selected" : "" } > 06:00 PM</option>
-                                        <option value="20:00-N" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "20:00-N" ? "selected" : "" } > 08:00 PM</option>
+                                    <optgroup label="Diurno 8H">
+                                        <option value="07:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "07:00-D-8" ? "selected" : "" } > 07:00 AM </option>
+                                        <option value="08:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "08:00-D-8" ? "selected" : "" } > 08:00 AM </option>
+                                        <option value="09:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "09:00-D-8" ? "selected" : "" } > 09:00 AM </option>
+                                        <option value="11:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "11:00-D-8" ? "selected" : "" } > 11:30 AM </option>
+                                        <option value="12:00-D-8" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "12:00-D-8" ? "selected" : "" } > 12:00 PM </option>
                                     </optgroup>
+                                    <optgroup label="Diurno 12H">
+                                        <option value="06:00-D-12" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "06:00-D-12" ? "selected" : "" } > 06:00 AM </option>
+                                    </optgroup>
+
+                                    <optgroup label="Nocturno 7H">
+                                        <option value="17:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "17:00-N-7" ? "selected" : "" } > 05:00 PM</option>
+                                        <option value="18:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "18:00-N-7" ? "selected" : "" } > 06:00 PM</option>
+                                        <option value="19:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "19:00-N-7" ? "selected" : "" } > 07:00 PM</option>
+                                        <option value="20:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "20:00-N-7" ? "selected" : "" } > 08:00 PM</option>
+                                        <option value="21:00-N-7" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "21:00-N-7" ? "selected" : "" } > 09:00 PM</option>
+                                    </optgroup>
+                                    <optgroup label="Nocturno 12H">
+                                        <option value="18:00-N-12" ${ ((current_data.hora_entrada)+"-"+(current_data.turno)) == "18:00-N-12" ? "selected" : "" } > 06:00 PM</option>
+                                    </optgroup>
+
                                 </select>
                                 <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                             </div>
@@ -479,7 +481,7 @@
                 schedule: {
                     employee_id: employee_id,
                     hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
-                    horas_trabajo: $("#horas_trabajo").val(),
+                    horas_trabajo: $(`#${index}_hora_entrada`).val().slice(8),
                     turno: $(`#${index}_hora_entrada`).val().slice(6),
                     year: $("#month_year").val().slice(0,4),
                     month: $("#month_year").val().slice(5),
