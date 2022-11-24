@@ -15,4 +15,5 @@ class Employee extends Model
         'sede_id',
         'position_id',
     ];
+   
 }
