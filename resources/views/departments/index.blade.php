@@ -187,36 +187,32 @@
 
     function guardarSchedule(id) {
         let newArr = []
-        let current_department={!! $departments !!}.find(i=>i.id===id)
         let days_in_month=moment( $("#month_year").val().slice(5) ).daysInMonth();
-        (current_department.employees).forEach(element => {
-            for (let index = 1; index <= days_in_month; index++) {
-                newArr.push({
-                    id: { id: $(`#${element.id}_${index}_id`).val() != "undefined" ? $(`#${element.id}_${index}_id`).val() : "" },
-                    schedule: {
-                        employee_id: element.id,
-                        hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
-                        horas_trabajo: $(`#${index}_hora_entrada`).val().slice(8),
-                        turno: $(`#${index}_hora_entrada`).val().slice(6,7),
-                        year: $("#month_year").val().slice(0,4),
-                        month: $("#month_year").val().slice(5),
-                        day: index,
-                        date: moment(`${$("#month_year").val().slice(0,4)}-${$("#month_year").val().slice(5)}-${index}`).format('YYYY-MM-DD'),
-                    }
-                })
-            }
-        });
+        for (let index = 1; index <= days_in_month; index++) {
+            newArr.push({
+                schedule: {
+                    hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
+                    horas_trabajo: $(`#${index}_hora_entrada`).val().slice(8),
+                    turno: $(`#${index}_hora_entrada`).val().slice(6,7),
+                    year: $("#month_year").val().slice(0,4),
+                    month: $("#month_year").val().slice(5),
+                    day: index,
+                    date: moment(`${$("#month_year").val().slice(0,4)}-${$("#month_year").val().slice(5)}-${index}`).format('YYYY-MM-DD'),
+                }
+            })
+        }
         
       
       
         let validity = document.getElementById('form-all-schedule').checkValidity()
         if(validity){
-            let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr  }
+            let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr, type: "department" , department: id, year: $("#month_year").val().slice(0,4), month: $("#month_year").val().slice(5)  }
             $.ajax({
                 url: "{{ route('schedule_templates.store') }}",
                 type: "POST",
                 data: payload,
                 success: function (res) {
+                    console.log("aca_data",res)
                     if(res.type === 'success'){
                         location.reload();
                     }
@@ -593,7 +589,18 @@
                         `
                     });
 
-                    clearInterval(timerInterval)
+                 
+                }
+            });
+
+
+           
+
+            
+
+        });
+
+        clearInterval(timerInterval)
             
             Swal.fire({
                 title: `Horarios`,
@@ -603,12 +610,6 @@
                 confirmButtonText: 'Ok',
                 html: html
             })
-                }
-            });
-
-            
-
-        });
     }
 
     function setLoading(timerInterval) {

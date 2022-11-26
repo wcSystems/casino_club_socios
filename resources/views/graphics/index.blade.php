@@ -123,7 +123,7 @@
     @foreach( $sedes as $item_sede )
         @foreach( $group_menus as $item_group_menu )
 
-            <div class="panel panel-inverse col-sm-12 col-md-12 col-lg-2 col-xl-2 bg-transparent" >
+            <div class="panel panel-inverse col-sm-12 col-md-12 col-lg-4 col-xl-4 bg-transparent" >
                 <div class="panel-heading ui-sortable-handle">
                     <h4 class="panel-title">
                         QR Menu - {{ $item_sede->name }} - {{ $item_group_menu->name }}
