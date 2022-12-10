@@ -16,4 +16,12 @@ class Employee extends Model
         'position_id',
     ];
    
+
+    public function group_schedule() {
+        return $this->hasMany('App\Models\Schedule_template','employee_id')->selectRaw('year, month, employee_id')->groupBy('year','month','employee_id')->orderBy('year','desc')->orderBy('month','desc');
+    }
+    public function schedule_templates() {
+        return $this->hasMany('App\Models\Schedule_template','employee_id');
+    }
+
 }

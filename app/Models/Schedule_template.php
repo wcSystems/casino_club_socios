@@ -16,4 +16,5 @@ class Schedule_template extends Model
         'day',
         'date',
     ];
+
 }
