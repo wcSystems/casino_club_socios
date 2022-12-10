@@ -203,6 +203,19 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'schedule_templates.destroy'
     ]);
 
+    Route::resource('global_warehouses', 'Global_warehousesController')->names([
+        'index' => 'global_warehouses',
+        'create' => 'global_warehouses.create',
+        'update' => 'global_warehouses.update',
+        'destroy' => 'global_warehouses.destroy'
+    ]);
+    Route::resource('sheds', 'ShedsController')->names([
+        'index' => 'sheds',
+        'create' => 'sheds.create',
+        'update' => 'sheds.update',
+        'destroy' => 'sheds.destroy'
+    ]);
+
 
     // VIEW - GRAPHICS
     Route::get('/', 'GraphicsController@index')->name("graphics");

@@ -46,6 +46,8 @@ Route::get('/sexs/service', 'SexsController@service')->name('sexs.service');
 Route::get('/departments/service', 'DepartmentsController@service')->name('departments.service');
 Route::get('/positions/service', 'PositionsController@service')->name('positions.service');
 Route::get('/employees/service', 'EmployeesController@service')->name('employees.service');
+Route::get('/global_warehouses/service', 'Global_warehousesController@service')->name('global_warehouses.service');
+Route::get('/sheds/service', 'ShedsController@service')->name('sheds.service');
 
 
 
