@@ -259,7 +259,7 @@
         }
         function viewImg() {
             $.ajax({
-                url: "{{ route('isapi.captureImgEmployee') }}",
+                url: "{{ route('isapi.authImgIsapi') }}",
                 success: function (res) {
                     let add = ` <xmp>
                                     <catalog>
@@ -1000,6 +1000,7 @@
             { data: 'name' },
             {
                 render: function ( data,type, row  ) {
+                    //console.log(row)
                     return `
                         <a onclick="elim(${row.id},${row.employeeNo})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                         <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>

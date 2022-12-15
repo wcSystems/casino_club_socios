@@ -20,6 +20,7 @@ class CreateAttlogTable extends Migration
             $table->string('time',50);
             $table->string('employeeNoString',50);
             $table->string('pictureURL',200);
+            $table->string('facePictureUser',200);
             $table->timestamps();
         });
     }

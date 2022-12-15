@@ -13,6 +13,7 @@ class Attlog extends Model
         'name',
         'time',
         'employeeNoString',
-        'pictureURL'
+        'pictureURL',
+        'facePictureUser'
     ];
 }

@@ -111,7 +111,7 @@
             { data: 'date' },
             {
                 render: function ( data,type, row,all  ) { 
-
+                        // console.log(row)
                         let first_pictureURL = row.first_pictureURL.slice(7);
                         let last_pictureURL = row.last_pictureURL.slice(7);
                         first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;

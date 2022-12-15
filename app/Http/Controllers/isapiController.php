@@ -49,7 +49,32 @@ class isapiController extends Controller
                             "endTime"=> "2022-12-31T23:59:00+0:00"
                         ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
                 $searchResultPosition +=30;
-                foreach ($query2 as $key => $value) { Attlog::create($value); }
+                foreach ($query2 as $key => $value) { 
+
+                    $newResC = new Client();
+                    $currentWithPic = json_decode($newResC->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch?format=json" ,[
+                        'auth' =>  ['admin', 'Cas1n01234','digest'],
+                        'body' => json_encode([
+                           "searchResultPosition"=> 0,
+                           "maxResults"=> 100,
+                           "faceLibType"=> "blackFD",
+                           "FDID"=> "1",
+                           "FPID"=> $value["employeeNoString"]
+                        ])
+                    ])->getBody()->getContents(), TRUE);
+
+                    if( $currentWithPic['statusCode'] == 1 && $currentWithPic['responseStatusStrg'] != "NO MATCH" ){
+                        $resCPhotoLast = new Client();
+                        $currentPhotoLast = json_decode($resCPhotoLast->get( "http://192.168.5.181/LOCALS/pic/enrlFace/0/0000000238.jpg@WEB000000012407" ,[
+                            'auth' =>  ['admin', 'Cas1n01234','digest']
+                        ])->getBody()->getContents(), TRUE);
+                        
+                        if( $currentPhotoLast  ){
+                            $value['facePictureUser'] = $currentPhotoLast;
+                            Attlog::create($value);
+                        }
+                    }
+                }
             }
             
             
@@ -148,18 +173,15 @@ class isapiController extends Controller
         }
     }
 
-    public function captureImgEmployee()
+    public function authImgIsapi(Request $request)
     {
-            $resC = new Client();
-            $current = $resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/CaptureFaceData" ,[
-                
-                'auth' =>  ['admin', 'Cas1n01234','digest'],
-                
-                'headers' => [
-                    'Content-Type' => 'multipart/form-data; boundary=<frontier>',
-                ],
-                'body' => '<CaptureFaceDataCond version="2.0" xmlns="http://www.isapi.org/ver20/XMLSchema"><captureInfrared>false</captureInfrared><dataType>binary</dataType></CaptureFaceDataCond>'
-            ])->getBody()->getContents();
-            return $current;
+        $resCPhotoLast = new Client();
+        $currentPhotoLast = $resCPhotoLast->getAsync( "http://admin:Cas1n01234@192.168.5.181/LOCALS/pic/enrlFace/0/0000000238.jpg@WEB000000012407" ,[
+            'auth' =>  ['admin', 'Cas1n01234', 'digest'],
+        ]);
+
+
+        return $currentPhotoLast;
+            
     }
 }
