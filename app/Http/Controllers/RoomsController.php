@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Shed;
+use Illuminate\Support\Facades\DB;
+use App\Models\Room;
 use Illuminate\Http\Request;
 
-class ShedsController extends Controller
+class RoomsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,8 +14,8 @@ class ShedsController extends Controller
      */
     public function index()
     {
-        $sheds = Shed::all();
-        return view('sheds.index')->with('sheds',$sheds);
+        $rooms = Room::all();
+        return view('rooms.index')->with('rooms',$rooms);
     }
 
     /**
@@ -35,7 +36,7 @@ class ShedsController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Shed::updateOrCreate($request["id"],$request["data"]);
+        $current_item = Room::updateOrCreate($request["id"],$request["data"]);
         if($current_item){
             return response()->json([ 'type' => 'success']);
         }else{
@@ -85,7 +86,7 @@ class ShedsController extends Controller
      */
     public function destroy($id)
     {
-        $current_item = Shed::find($id);
+        $current_item = Room::find($id);
         if($current_item){
             $current_item->delete();
             return response()->json([ 'type' => 'success']);
@@ -99,7 +100,22 @@ class ShedsController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         /* QUERY FILTER */
-        $query = Shed::where('name','LIKE','%'.$search.'%')->get();
+        
+        $query = DB::table('rooms')->selectRaw('rooms.*,rooms.group AS group_name')
+            ->orWhere(function($query) use ($search){
+                $query->orWhere('rooms.name','LIKE','%'.$search.'%');
+                $query->orWhere('rooms.address','LIKE','%'.$search.'%');
+            })->get();
+
+            $query->each(function ($item) {
+                if($item->group_name == 0){
+                    $item->group_name = "Galpon";
+                }
+                if($item->group_name == 1){
+                    $item->group_name = "Sala";
+                }
+            });
+
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -107,7 +123,7 @@ class ShedsController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count(Shed::all());
+        $totalRecords = count(Room::all());
         $totalRecordswithFilter = count($query);
 
         echo json_encode(array(
@@ -117,4 +133,5 @@ class ShedsController extends Controller
             "aaData" => $query
         ));
     }
+
 }

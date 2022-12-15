@@ -209,11 +209,12 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'global_warehouses.update',
         'destroy' => 'global_warehouses.destroy'
     ]);
-    Route::resource('sheds', 'ShedsController')->names([
-        'index' => 'sheds',
-        'create' => 'sheds.create',
-        'update' => 'sheds.update',
-        'destroy' => 'sheds.destroy'
+ 
+    Route::resource('rooms', 'RoomsController')->names([
+        'index' => 'rooms',
+        'create' => 'rooms.create',
+        'update' => 'rooms.update',
+        'destroy' => 'rooms.destroy'
     ]);
 
 

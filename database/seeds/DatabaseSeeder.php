@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SexsTableSeeder::class);
         $this->call(DepartmentsTableSeeder::class);
         $this->call(PositionsTableSeeder::class);
+        $this->call(RoomsTableSeeder::class);
         
         factory(Client::class, 1000)->create();
     }

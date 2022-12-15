@@ -47,7 +47,7 @@ Route::get('/departments/service', 'DepartmentsController@service')->name('depar
 Route::get('/positions/service', 'PositionsController@service')->name('positions.service');
 Route::get('/employees/service', 'EmployeesController@service')->name('employees.service');
 Route::get('/global_warehouses/service', 'Global_warehousesController@service')->name('global_warehouses.service');
-Route::get('/sheds/service', 'ShedsController@service')->name('sheds.service');
+Route::get('/rooms/service', 'RoomsController@service')->name('rooms.service');
 
 
 
@@ -69,7 +69,8 @@ Route::get('/isapi/authImgIsapi', 'isapiController@authImgIsapi')->name('isapi.a
 Route::post('/schedule_templates/viewSchedule', 'Schedule_templatesController@viewSchedule')->name('schedule_templates.viewSchedule');
 
 // list
-Route::get('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');
+Route::post('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');
+Route::post('/global_warehouses/listModel', 'Global_warehousesController@listModel')->name('global_warehouses.listModel');
 
 // history
 Route::post('/employees/history', 'EmployeesController@history')->name('employees.history');

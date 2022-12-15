@@ -16,6 +16,8 @@
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
+                        <th>Sala / Galpon</th>
+                        <th>Direccion</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -26,7 +28,7 @@
 @endsection
 @section('js')
 <script>
-    $('#sheds_nav').removeClass("closed").addClass("active").addClass("expand")
+    $('#rooms_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({
             title: `${type} Registro`,
@@ -36,9 +38,31 @@
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Titulo <span class="text-danger"> *</span> </label>
+                                <label class=" text-lg-right col-form-label"> Nombre <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina el titulo aqui..." >
+                                    <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Nombre" >
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Sala / Galpon <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="group" class="form-control w-100">
+                                        <option value="" selected >Todos los grupos</option>
+                                        <option value="0" > Galpon </option>
+                                        <option value="1" > Sala </option>
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Direccion <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <textarea required type="text" id="address" name="address" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Direccion" ></textarea>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
@@ -50,8 +74,10 @@
                 </form>`
         })
         if(id){
-            let current={!! $sheds !!}.find(i=>i.id===id)
+            let current={!! $rooms !!}.find(i=>i.id===id)
             $("#name").val(current.name)
+            $("#address").val(current.address)
+            $("#group").val(current.group)
         }
         validateForm()
     }
@@ -62,11 +88,13 @@
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    name: $('#name').val()
+                    name: $('#name').val(),
+                    address: $('#address').val(),
+                    group: $('#group').val()
                 }
             }
             $.ajax({
-                url: "{{ route('sheds.store') }}",
+                url: "{{ route('rooms.store') }}",
                 type: "POST",
                 data: payload,
                 success: function (res) {
@@ -77,21 +105,23 @@
             });
         }
     }
-    dataTable("{{route('sheds.service')}}",[
+    dataTable("{{route('rooms.service')}}",[
         {
             render: function ( data,type, row,all  ) {
                 return all.row+1;
             }
         },
         { data: 'name' },
+        { data: 'group_name' },
+        { data: 'address' },
         {
             render: function ( data,type, row  ) {
                 return `
-                    <a onclick="elim('sheds',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
+                    <a onclick="elim('rooms',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                     <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
                 `;
             }
         },
-    ])
+    ],"group_name_all")
 </script>
 @endsection

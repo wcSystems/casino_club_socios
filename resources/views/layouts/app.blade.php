@@ -301,10 +301,10 @@
                     </li>
                     
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MAQUINAS</li>
-                    <li id="sheds_nav" class="has-sub closed">
-                        <a href="{{ route('sheds') }}">
+                    <li id="rooms_nav" class="has-sub closed">
+                        <a href="{{ route('rooms') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">GALPONES</span>
+                            <span class="text-white">SALAS / GALPONES</span>
                         </a>
                     </li>
                     <li id="global_warehouses_nav" class="has-sub closed">
@@ -488,7 +488,7 @@
                             d.search_department_employees = $('#search_department_employees').val(),
                             d.search_position_employees = $('#search_position_employees').val(),
                             d.search_sex_employees = $('#search_sex_employees').val(),
-                            d.search_sheds = $('#search_sheds').val(),
+                            d.search_rooms = $('#search_rooms').val(),
 
                             
 
@@ -542,7 +542,7 @@
                 $("#search_department_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_position_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_sex_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
-                $("#search_sheds").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_rooms").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
 
                 
 

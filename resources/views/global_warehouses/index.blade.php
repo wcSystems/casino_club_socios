@@ -14,9 +14,9 @@
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <select id="search_sheds" class="form-control w-100">
+                        <select id="search_rooms" class="form-control w-100">
                             <option value="" selected >Todos los galpones</option>
-                            @foreach( $sheds as $item )
+                            @foreach( $rooms as $item )
                                 <option value="{{ $item->id }}" > {{ $item->name }} </option>
                             @endforeach
                         </select>
@@ -29,9 +29,7 @@
                         <tr>
                             <th>#</th>
                             <th>Serial</th>
-                            <th>Nombre</th>
-                            <th>Descripcion</th>
-                            <th>Galpon</th>
+                            <th>Sala / Galpon</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -55,38 +53,87 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Serial <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="text" id="cod" name="cod" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina el sn o cod unico aqui..." >
+                                    <input required type="text" id="serial" name="serial" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el serial de la maquina" >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-12">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Nombre <span class="text-danger"> *</span> </label>
+                                <label class=" text-lg-right col-form-label"> Asociados <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Nombre o titulo..." >
-                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12">
-                            <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Descripcion <span class="text-danger"> *</span> </label>
-                                <div class="col-lg-12">
-                                    <textarea required type="text" id="description" name="description" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina una descripcion aqui..." ></textarea>
-                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12">
-                            <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Galpones <span class="text-danger"> *</span> </label>
-                                <div class="col-lg-12">
-                                    <select required id="shed_id" class="form-control w-100">
-                                        <option value="" selected >Todos los galpones</option>
-                                        @foreach( $sheds as $item )
+                                    <select required id="associated_machine_id" class="form-control w-100">
+                                        <option value="" selected disabled >Todos los Asociados</option>
+                                        @foreach( $associated_machines as $item )
                                             <option value="{{ $item->id }}" > {{ $item->name }} </option>
                                         @endforeach
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Marca <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="brand_machine_id" class="form-control w-100" onchange="listModel()">
+                                        <option value="" selected disabled >Todas las marcas</option>
+                                        @foreach( $brand_machines as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Modelo <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="model_machine_id" class="form-control w-100" disabled>
+                                        <option value="" selected >Seleccione una marca primero</option>
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Condicion <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="condicion" class="form-control w-100" >
+                                        <option value="" selected disabled >Selecione una Condicion</option>
+                                        <option value="0"  > Buen estado </option>
+                                        <option value="1"  > Defectuosa </option>
+                                        <option value="2"  > Solo Carcasa </option>
+                                        <option value="3"  > Dañada ( Repuesto ) </option>
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="col-md-6 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Salas / Galpones <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="room_id" class="form-control w-100">
+                                        <option value="" selected disabled >Salas / Galpones</option>
+                                        <optgroup label="Salas">
+                                            @foreach( $rooms as $item )
+                                                @if( $item->group == 1 )
+                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                @endif
+                                            @endforeach
+                                        </optgroup>
+                                        <optgroup label="Galpones">
+                                            @foreach( $rooms as $item )
+                                                @if( $item->group == 0 )
+                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                @endif
+                                            @endforeach
+                                        </optgroup>
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
@@ -112,10 +159,12 @@
         if(id){
             let current={!! $global_warehouses !!}.find(i=>i.id===id)
             let html_history = ``;
-            $("#name").val(current.name)
-            $("#description").val(current.description)
-            $("#cod").val(current.cod)
-            $("#shed_id").val(current.shed_id)
+            $("#serial").val(current.serial)
+            $("#associated_machine_id").val(current.associated_machine_id)
+            $("#brand_machine_id").val(current.brand_machine_id)
+            $("#condicion").val(current.condicion)
+            $("#room_id").val(current.room_id)
+            listModel(current.model_machine_id)
             
             if(current.history.length > 0){
                 current.history.forEach(element => {
@@ -137,10 +186,12 @@
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    name: $('#name').val(),
-                    description: $('#description').val(),
-                    cod: $('#cod').val(),
-                    shed_id: $('#shed_id').val(),
+                    serial: $('#serial').val(),
+                    associated_machine_id: $('#associated_machine_id').val(),
+                    brand_machine_id: $('#brand_machine_id').val(),
+                    model_machine_id: $('#model_machine_id').val(),
+                    condicion: $('#condicion').val(),
+                    room_id: $('#room_id').val(),
                 },
                 new_novedad: $('#new_novedad').val() ? $('#new_novedad').val() : "",
             }
@@ -156,16 +207,42 @@
             });
         }
     }
+    function listModel(params) {
+        let brand_machine_id = $("#brand_machine_id").val()
+            $.ajax({
+                url: "{{ route('global_warehouses.listModel') }}",
+                type: "POST",
+                data: { id: brand_machine_id},
+                success: function (res) {
+                    if(res.data.length){
+                        let html = ``;
+                            html += `<option value="" selected >Todos los modelos</option>`;
+
+                            res.data.forEach(element => {
+                                html += `<option value="${element.id}" >${element.name}</option>`;
+                            });
+
+                        $("#model_machine_id").replaceWith(`<select required id="model_machine_id" class="form-control w-100">${html}</select>`)
+                        if (params) {
+                            $("#model_machine_id").val(params)
+                        }
+                    }
+                }
+            });
+        
+    }
     dataTable("{{route('global_warehouses.service')}}",[
         {
             render: function ( data,type, row,all  ) {
                 return all.row+1;
             }
         },
-        { data: 'cod' },
-        { data: 'name' },
-        { data: 'description' },
-        { data: 'shed_name' },
+        { data: 'serial' },
+        {
+            render: function ( data,type, row,all  ) {
+                return "<span class='font-weight-bold'>"+row.room_group+": </span>"+row.room_name;
+            }
+        },
         {
             render: function ( data,type, row  ) {
                 return `

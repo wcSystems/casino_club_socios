@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateShedsTable extends Migration
+class CreateRoomsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateShedsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sheds', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',100);
             $table->string('address',100);
+            $table->boolean('group')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateShedsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sheds');
+        Schema::dropIfExists('rooms');
     }
 }
