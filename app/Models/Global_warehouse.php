@@ -18,4 +18,8 @@ class Global_warehouse extends Model
     public function history() {
         return $this->hasMany('App\Models\History_machine');
     }
+
+    public function imgs() {
+        return $this->hasMany('App\Models\Img_global_warehouse');
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\Room;
 use App\Models\Associated_machine;
 use App\Models\Brand_machine;
 use App\Models\Model_machine;
+use App\Models\Img_global_warehouse;
 
 use Illuminate\Support\Facades\DB;
 
@@ -21,14 +22,16 @@ class Global_warehousesController extends Controller
      */
     public function index()
     {
-        $global_warehouses = Global_warehouse::with("history")->get();
+        $global_warehouses = Global_warehouse::with("history")->with("imgs")->get();
         $rooms = Room::all();
         $brand_machines = Brand_machine::all();
+        $model_machines = Model_machine::all();
         $associated_machines = Associated_machine::all();
         return view('global_warehouses.index')
             ->with('global_warehouses',$global_warehouses)
             ->with('associated_machines',$associated_machines)
             ->with('brand_machines',$brand_machines)
+            ->with('model_machines',$model_machines)
             ->with('rooms',$rooms);
     }
 
@@ -50,17 +53,31 @@ class Global_warehousesController extends Controller
      */
     public function store(Request $request)
     {
-        if( $request["id"] ){
-            $current_db = Global_warehouse::where("id","=",$request["id"])->first();
-            if( $request["data"]["serial"] != $current_db->serial ){
+        $current_db = Global_warehouse::where("id","=",$request["id"])->first();
+        if( $current_db ){
+            if( $request["serial"] != $current_db->serial  ){
                 History_machine::Create([
-                    'name' => "SERIAL CAMBIADO, Antes: ".$current_db->serial. ", Nuevo: ".$request["data"]["serial"],
+                    'name' => "SERIAL CAMBIADO: ".$current_db->serial. " -> ".$request["serial"],
                     'global_warehouse_id' => $current_db->id
                 ]);
             }
         }
-        
-        $current_item = Global_warehouse::updateOrCreate($request["id"],$request["data"]);
+        $current_data = array(
+            "serial" => $request["serial"],
+            "associated_machine_id" => $request["associated_machine_id"],
+            "brand_machine_id" => $request["brand_machine_id"],
+            "model_machine_id" => $request["model_machine_id"],
+            "condicion" => $request["condicion"],
+            "room_id" => $request["room_id"],
+        );
+        $current_item = Global_warehouse::updateOrCreate([ 'id' => $request["id"] ],$current_data);
+        if( !$current_db ){
+            History_machine::Create([
+                'name' => "A LA FECHA, SE INGRESA MAQUINA AL SISTEMA",
+                'global_warehouse_id' => $current_item->id
+            ]);
+        }
+
         if( $request["new_novedad"] ){
             History_machine::Create([
                 'name' => $request["new_novedad"],
@@ -69,6 +86,14 @@ class Global_warehousesController extends Controller
         }
         
         if($current_item){
+            if($request->file('images')){
+                foreach ($request->file('images') as $value) {
+                    $file= $value;
+                    $filename= $file->getClientOriginalName();
+                    $file-> move(public_path('public/warehouses/'.$current_item->id), $filename);
+                    Img_global_warehouse::create(array('name'  => $filename,'global_warehouse_id' => $current_item->id));
+                }
+            }
             return response()->json([ 'type' => 'success']);
         }else{
             return response()->json([ 'type' => 'error']);
@@ -131,48 +156,89 @@ class Global_warehousesController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         $search_rooms = $request->get('search_rooms');
-        /* QUERY FILTER */
-        //$query = Global_warehouse::with("history")->where('name','LIKE','%'.$search.'%')->get();
-
+        $search_type_group_associated = $request->get('search_type_group_associated');
+        $search_type_group_room = $request->get('search_type_group_room');
+        $search_associated_select = $request->get('search_associated_select');
+        $search_room_select = $request->get('search_room_select');
+        $search_brand_machines_select = $request->get('search_brand_machines_select');
+        $search_model_machines_select = $request->get('search_model_machines_select');
+        $search_condicion_select = $request->get('search_condicion_select');
 
         /* QUERY FILTER */
         $query = DB::table('global_warehouses')
             ->selectRaw('
                 global_warehouses.*, 
                 rooms.name AS room_name,
-                rooms.group AS room_group
+                rooms.group AS room_group,
+                associated_machines.name AS associated_name,
+                associated_machines.group AS associated_group,
+                global_warehouses.condicion AS condicion_group
             ')
             ->orWhere(function($query) use ($search){
                 $query->orWhere('global_warehouses.serial','LIKE','%'.$search.'%');
             })
-            ->where(function($query) use ($search_rooms){
-                if(!empty($search_rooms)){
-                    $query->where('global_warehouses.room_id', '=', $search_rooms);
+            ->where(function($query) use ($search_type_group_associated,$search_associated_select,$search_brand_machines_select,$search_model_machines_select,$search_type_group_room,$search_room_select,$search_condicion_select){
+                
+
+                if(!empty($search_type_group_associated)){
+                    $query->where('associated_machines.group', '=', $search_type_group_associated);
                 }else{};
+                if(!empty($search_type_group_room)){
+                    $query->where('rooms.group', '=', $search_type_group_room);
+                }else{};
+
+
+                if(!empty($search_associated_select)){
+                    $query->where('global_warehouses.associated_machine_id', '=', $search_associated_select);
+                }else{};
+                if(!empty($search_room_select)){
+                    $query->where('global_warehouses.room_id', '=', $search_room_select);
+                }else{};
+                
+                if(!empty($search_brand_machines_select)){
+                    $query->where('global_warehouses.brand_machine_id', '=', $search_brand_machines_select);
+                }else{};
+                if(!empty($search_model_machines_select)){
+                    $query->where('global_warehouses.model_machine_id', '=', $search_model_machines_select);
+                }else{};
+
+                if(!empty($search_condicion_select)){
+                    $query->where('global_warehouses.condicion', '=', $search_condicion_select);
+                }else{};
+                
             })
             ->join('rooms', 'global_warehouses.room_id', '=', 'rooms.id')
+            ->join('associated_machines', 'global_warehouses.associated_machine_id', '=', 'associated_machines.id')
+            ->join('brand_machines', 'global_warehouses.brand_machine_id', '=', 'brand_machines.id')
             ->get();
 
             $query->each(function ($item) {
 
-                if($item->condicion == 0){
-                    $item->condicion = "Buen estado";
+                if($item->condicion_group == 1){
+                    $item->condicion_group = "Buen estado";
                 }
-                if($item->condicion == 1){
-                    $item->condicion = "Defectuosa";
+                if($item->condicion_group == 2){
+                    $item->condicion_group = "Defectuosa";
                 }
-                if($item->condicion == 2){
-                    $item->condicion = "Solo Carcasa";
+                if($item->condicion_group == 3){
+                    $item->condicion_group = "Solo Carcasa";
                 }
-                if($item->condicion == 3){
-                    $item->condicion = "Dañada ( Repuesto )";
+                if($item->condicion_group == 4){
+                    $item->condicion_group = "Dañada ( Repuesto )";
                 }
 
-                if($item->room_group == 0){
+                if($item->room_group == 2){
                     $item->room_group = "Galpon";
                 }
                 if($item->room_group == 1){
                     $item->room_group = "Sala";
+                }
+
+                if($item->associated_group == 2){
+                    $item->associated_group = "Invitado";
+                }
+                if($item->associated_group == 1){
+                    $item->associated_group = "Asociado";
                 }
 
             });

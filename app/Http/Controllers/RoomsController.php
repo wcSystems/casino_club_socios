@@ -99,16 +99,23 @@ class RoomsController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        $search_rooms_selects = $request->get('search_rooms_selects');
         /* QUERY FILTER */
         
         $query = DB::table('rooms')->selectRaw('rooms.*,rooms.group AS group_name')
             ->orWhere(function($query) use ($search){
                 $query->orWhere('rooms.name','LIKE','%'.$search.'%');
                 $query->orWhere('rooms.address','LIKE','%'.$search.'%');
-            })->get();
+            })
+            ->where(function($query) use ($search_rooms_selects){
+                if(!empty($search_rooms_selects)){
+                    $query->where('rooms.group', '=', $search_rooms_selects);
+                }else{};
+            })
+            ->get();
 
             $query->each(function ($item) {
-                if($item->group_name == 0){
+                if($item->group_name == 2){
                     $item->group_name = "Galpon";
                 }
                 if($item->group_name == 1){

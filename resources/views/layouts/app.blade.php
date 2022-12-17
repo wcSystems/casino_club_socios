@@ -340,7 +340,7 @@
                     <li id="associated_machines_nav" class="has-sub closed">
                         <a href="{{ route('associated_machines') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ASOCIADOS</span>
+                            <span class="text-white">ASOCIADOS / INVITADOS</span>
                         </a>
                     </li>
                     <li id="value_machines_nav" class="has-sub closed">
@@ -489,8 +489,16 @@
                             d.search_position_employees = $('#search_position_employees').val(),
                             d.search_sex_employees = $('#search_sex_employees').val(),
                             d.search_rooms = $('#search_rooms').val(),
+                            d.search_rooms_selects = $('#search_rooms_selects').val(),
+                            d.search_asocciates_selects = $('#search_asocciates_selects').val(),
+                            d.search_room_select = $('#search_room_select').val(),
+                            d.search_condicion_select = $('#search_condicion_select').val(),
 
-                            
+                            d.search_type_group_associated = $('#search_type_group_associated').val(),
+                            d.search_type_group_room = $('#search_type_group_room').val(),
+                            d.search_associated_select = $('#search_associated_select').val(),
+                            d.search_brand_machines_select = $('#search_brand_machines_select').val(),
+                            d.search_model_machines_select = $('#search_model_machines_select').val(),
 
                             d.search_club_vip = $("#search_club_vip:checked").val() ? "1" : undefined,
                             d.search_referido = $("#search_referido:checked").val() ? "1" : undefined,
@@ -543,6 +551,16 @@
                 $("#search_position_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_sex_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_rooms").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_rooms_selects").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_asocciates_selects").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_condicion_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                $("#search_type_group_associated").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_type_group_room").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_associated_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_room_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_brand_machines_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_model_machines_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
 
                 
 
@@ -613,8 +631,16 @@
         function pdfExport(title) {
                 let user = {!! Auth::user() !!}
                 var doc = new jsPDF()
-                doc.autoTable({ html: '#data-table-default' })
+
+                let jsonTabla = doc.autoTableHtmlToJson(document.getElementById("data-table-default"));
+                    jsonTabla.columns = jsonTabla.columns.splice(0,jsonTabla.columns.length-1)
+                    jsonTabla.data.map( i => ( i.length > 1 ) ? i.splice(i.length-1) : i )
+
+                let tabla = doc.autoTable(jsonTabla.columns,jsonTabla.data,{})
+
                 doc.save(`${user.name}-${title}-${moment().format('MMMM Do YYYY, h:mm:ss a')}.pdf`)
+
+                
         }
 
         function alertas(title,text,mode) {
@@ -747,6 +773,35 @@
             
         }
 
+        function dataTableSimple(id) {
+            $(document).ready(function() {
+                let table = $(`#${id}`).DataTable({
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                    responsive: true,
+                    processing: true,
+                    lengthChange: true,
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "emptyTable":  "Sin datos disponibles",
+                        "zeroRecords": "Ningun resultado encontrado",
+                        "info": "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+                        "infoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "infoEmpty": "Ningun valor disponible",
+                        "loadingRecords": "Cargando...",
+                        "processing":     "Procesando...",
+                        "search":     "Buscar",
+                        "paginate": {
+                            "first":      "Primero",
+                            "last":       "Ultimo",
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                    }
+                }).on( 'processing.dt', function ( e, settings, processing ) { if(processing){ console.log() }else{ } });
+                $("#search").keyup( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+            });
+            
+        }
         
     </script>
     @yield('js')

@@ -11,16 +11,20 @@ class Associated_machinesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('associated_machines')->insert(['name' => "JA"]);
-        DB::table('associated_machines')->insert(['name' => "ON-WAM"]);
-        DB::table('associated_machines')->insert(['name' => "RA"]);
-        DB::table('associated_machines')->insert(['name' => "SMARTGAMES"]);
-        DB::table('associated_machines')->insert(['name' => "V"]);
-        DB::table('associated_machines')->insert(['name' => "WAJ"]);
-        DB::table('associated_machines')->insert(['name' => "WAM"]);
-        DB::table('associated_machines')->insert(['name' => "WAMJU"]);
-        DB::table('associated_machines')->insert(['name' => "WISI"]);
-        DB::table('associated_machines')->insert(['name' => "YH"]);
-        DB::table('associated_machines')->insert(['name' => "WISI C.A. AD"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "JA"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "ON-WAM"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "RA"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "SMARTGAMES"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "V"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "WAJ"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "WAM"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "WAMJU"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "WISI"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "YH"]);
+        DB::table('associated_machines')->insert(['group' => 1, 'name' => "WISI C.A. AD"]);
+
+        DB::table('associated_machines')->insert(['group' => 2, 'name' => "Antonio Aponte"]);
+        DB::table('associated_machines')->insert(['group' => 2, 'name' => "Rene Aguilar"]);
+        DB::table('associated_machines')->insert(['group' => 2, 'name' => "WAMJU"]);
     }
 }

@@ -16,16 +16,30 @@
         </div>
     </div>
     <div class="panel-body">
-        <div class="table-responsive">
-            <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                        <select id="search_asocciates_selects" class="form-control w-100">
+                            <option value="" selected >Asociados / Invitados</option>
+                            <option value="1" > Asociado </option>
+                            <option value="2" > Invitado </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Asociados / Invitados</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -50,6 +64,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Asociado / Invitado <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="group" class="form-control w-100">
+                                        <option value="" selected >Todos los grupos</option>
+                                        <option value="1" > Asociado </option>
+                                        <option value="2" > Invitado </option>
+                                        
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         </div>
@@ -59,6 +87,7 @@
         if(id){
             let current={!! $associated_machines !!}.find(i=>i.id===id)
             $("#name").val(current.name)
+            $("#group").val(current.group)
         }
         validateForm()
     }
@@ -69,7 +98,8 @@
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    name: $('#name').val()
+                    name: $('#name').val(),
+                    group: $('#group').val()
                 }
             }
             $.ajax({
@@ -91,6 +121,7 @@
             }
         },
         { data: 'name' },
+        { data: 'group_name' },
         {
             render: function ( data,type, row  ) {
                 return `
@@ -99,6 +130,6 @@
                 `;
             }
         },
-    ])
+    ],"group_name_all")
 </script>
 @endsection

@@ -4,24 +4,43 @@
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
         <div class="panel-heading-btn">
+            <button onclick="pdfExport('salas_galpones')" class="d-flex btn btn-1 btn-secondary mx-1">
+                <i class="m-auto fas fa-lg fa-file-pdf"></i>
+            </button>
+            <button onclick="excelExport('salas_galpones')" class="d-flex btn btn-1 btn-secondary mx-1">
+                <i class="m-auto fas fa-lg fa-file-excel"></i>
+            </button>
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
         </div>
     </div>
     <div class="panel-body">
-        <div class="table-responsive">
-            <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Sala / Galpon</th>
-                        <th>Direccion</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                        <select id="search_rooms_selects" class="form-control w-100">
+                            <option value="" selected >Salas / Galpones</option>
+                            <option value="1" > Salas </option>
+                            <option value="2" > Galpones </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Sala / Galpon</th>
+                            <th>Direccion</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -51,8 +70,8 @@
                                 <div class="col-lg-12">
                                     <select required id="group" class="form-control w-100">
                                         <option value="" selected >Todos los grupos</option>
-                                        <option value="0" > Galpon </option>
                                         <option value="1" > Sala </option>
+                                        <option value="2" > Galpon </option>
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>

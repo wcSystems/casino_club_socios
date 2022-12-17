@@ -17,7 +17,7 @@ class CreateRoomsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name',100);
             $table->string('address',100);
-            $table->boolean('group')->default(0);
+            $table->boolean('group')->default(2);
             $table->timestamps();
         });
     }

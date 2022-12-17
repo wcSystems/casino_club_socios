@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Associated_machine;
+use Illuminate\Support\Facades\DB;
 
 class Associated_machinesController extends Controller
 {
@@ -99,8 +100,29 @@ class Associated_machinesController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        $search_asocciates_selects = $request->get('search_asocciates_selects');
         /* QUERY FILTER */
-        $query = Associated_machine::where('name','LIKE','%'.$search.'%')->get();
+        $query = DB::table('associated_machines')->selectRaw('associated_machines.*,associated_machines.group AS group_name')
+            ->orWhere(function($query) use ($search){
+                $query->orWhere('associated_machines.name','LIKE','%'.$search.'%');
+            })
+            ->where(function($query) use ($search_asocciates_selects){
+                if(!empty($search_asocciates_selects)){
+                    $query->where('associated_machines.group', '=', $search_asocciates_selects);
+                }else{};
+            })
+            ->get();
+
+
+        $query->each(function ($item) {
+            if($item->group_name == 2){
+                $item->group_name = "Invitados";
+            }
+            if($item->group_name == 1){
+                $item->group_name = "Asociados";
+            }
+        });
+
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
         $start = $request->get("start");

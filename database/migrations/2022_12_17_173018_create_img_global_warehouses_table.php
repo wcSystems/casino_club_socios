@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAssociatedMachinesTable extends Migration
+class CreateImgGlobalWarehousesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateAssociatedMachinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('associated_machines', function (Blueprint $table) {
+        Schema::create('img_global_warehouses', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',100);
-            $table->boolean('group')->default(2);
+            $table->bigInteger('global_warehouse_id')->nullable()->unsigned();
+            $table->foreign('global_warehouse_id')->references('id')->on('global_warehouses')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateAssociatedMachinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('associated_machines');
+        Schema::dropIfExists('img_global_warehouses');
     }
 }
