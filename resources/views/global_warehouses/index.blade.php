@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_type_group_associated" class="form-control w-100">
                             <option value="" selected > Asociados o Invitados</option>
                             <option value="1" > Asociados </option>
@@ -24,7 +24,7 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_associated_select" class="form-control w-100">
                             <option value="" selected > Asociado / Invitado</option>
                             <optgroup label="Asociados">
@@ -47,7 +47,7 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_type_group_room" class="form-control w-100">
                             <option value="" selected > Salas o Galpones</option>
                             <option value="1" > Salas </option>
@@ -58,7 +58,7 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_room_select" class="form-control w-100">
                             <option value="" selected > Sala / Galpon</option>
                             <optgroup label="Salas">
@@ -81,7 +81,7 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_brand_machines_select" class="form-control w-100">
                             <option value="" selected > Todas las marcas</option>
                             @foreach( $brand_machines as $item )
@@ -93,7 +93,7 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_model_machines_select" class="form-control w-100">
                             <option value="" selected > Todas los modelos</option>
                             @foreach( $brand_machines as $itemBrand )
@@ -111,7 +111,7 @@
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                    <div class="px-0 col-xs-12">
                         <select id="search_condicion_select" class="form-control w-100">
                             <option value="" selected > Todas las condiciones</option>
                             <option value="1"  > Buen estado </option>
