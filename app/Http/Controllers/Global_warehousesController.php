@@ -142,6 +142,23 @@ class Global_warehousesController extends Controller
      */
     public function destroy($id)
     {
+
+        if( History_machine::where('global_warehouse_id','=',$id)->get() ){
+            $history_global_warehouses = History_machine::where('global_warehouse_id','=',$id)->get();
+            $history_global_warehouses->each(function($itemHistory, $key) {
+                $itemHistory->delete();
+            });
+        }
+
+        if( Img_global_warehouse::where('global_warehouse_id','=',$id)->get() ){
+            $img_global_warehouses = Img_global_warehouse::where('global_warehouse_id','=',$id)->get();
+            $img_global_warehouses->each(function($itemImg, $key) {
+                $itemImg->delete();
+            });
+        }
+
+        if (\File::exists('public/warehouses/'.$id)) \File::deleteDirectory('public/warehouses/'.$id);
+    
         $current_item = Global_warehouse::find($id);
         if($current_item){
             $current_item->delete();

@@ -603,6 +603,7 @@
                 icon: 'error',
                 showCancelButton: false
             }).then((result) => {
+                
                 if (result.isConfirmed) {
                     $.ajax({
                         url: `${location.origin}/${route}/${id}`,
