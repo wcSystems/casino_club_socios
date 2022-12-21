@@ -4,6 +4,12 @@
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
         <div class="panel-heading-btn">
+            <button onclick="pdfExport('model_machines')" class="d-flex btn btn-1 btn-secondary mx-1">
+                <i class="m-auto fas fa-lg fa-file-pdf"></i>
+            </button>
+            <button onclick="excelExport('model_machines')" class="d-flex btn btn-1 btn-secondary mx-1">
+                <i class="m-auto fas fa-lg fa-file-excel"></i>
+            </button>
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
@@ -130,7 +136,9 @@
                             <th>Serial</th>
                             <th>Sala / Galpon</th>
                             <th>Asociado / Invitado</th>
+                            <th>Marca y Modelo</th>
                             <th>Condicion</th>
+                            <th>Historico</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -429,25 +437,38 @@
         { data: 'serial' },
         {
             render: function ( data,type, row,all  ) {
-                return "<span class='font-weight-bold'>"+row.room_group+": </span>"+row.room_name;
+                return "<span class='font-weight-bold'>"+row.room_group+":&nbsp;</span>"+row.room_name;
             }
         },
         {
             render: function ( data,type, row,all  ) {
-                return "<span class='font-weight-bold'>"+row.associated_group+": </span>"+row.associated_name;
+                return "<span class='font-weight-bold'>"+row.associated_group+":&nbsp;</span>"+row.associated_name;
+            }
+        },
+        {
+            render: function ( data,type, row,all  ) {
+                return "<span class='font-weight-bold'>Marca:&nbsp;</span>"+row.brand_name+"<span class='font-weight-bold'>&nbsp;Modelo:&nbsp;</span>"+row.model_name;
             }
         },
         { data: 'condicion_group' },
+        { data: 'history_query' },
         {
             render: function ( data,type, row  ) {
-                return `
-                    <a onclick="elim('global_warehouses',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                    <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
-                    <a onclick="historico(${row.id})" style="color: var(--global-2)" class="btn btn-info btn-icon btn-circle"><i class="fas fa-th-list"></i></a>
-                    <a onclick="imgs(${row.id})" style="color: var(--global-2)" class="btn btn-green btn-icon btn-circle"><i class="fas fa-eye"></i></a>
-                `;
+                let imgExist = {!! $global_warehouses !!}.filter( i => i.id == row.id  ).map( i => i.imgs )[0].length > 0
+                let htmlFunctions = ``;
+                    htmlFunctions += `
+                        <div class="m-auto text-center">
+                            <a onclick="elim('global_warehouses',${row.id})" style="color: var(--global-2)" class="m-2 btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
+                            <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="m-2 btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
+                            <a onclick="historico(${row.id})" style="color: var(--global-2)" class="m-2 btn btn-info btn-icon btn-circle"><i class="fas fa-th-list"></i></a>`;
+                            if(imgExist){
+                                htmlFunctions += `<a onclick="imgs(${row.id})" style="color: var(--global-2)" class="m-2 btn btn-green btn-icon btn-circle"><i class="fas fa-eye"></i></a>`;
+                            }
+                        htmlFunctions += 
+                        `</div>`;
+                    return htmlFunctions;
             }
         },
-    ])
+    ],"group_name_all")
 </script>
 @endsection

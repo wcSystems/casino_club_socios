@@ -189,7 +189,9 @@ class Global_warehousesController extends Controller
                 rooms.group AS room_group,
                 associated_machines.name AS associated_name,
                 associated_machines.group AS associated_group,
-                global_warehouses.condicion AS condicion_group
+                global_warehouses.condicion AS condicion_group,
+                brand_machines.name AS brand_name,
+                model_machines.name AS model_name
             ')
             ->orWhere(function($query) use ($search){
                 $query->orWhere('global_warehouses.serial','LIKE','%'.$search.'%');
@@ -227,6 +229,7 @@ class Global_warehousesController extends Controller
             ->join('rooms', 'global_warehouses.room_id', '=', 'rooms.id')
             ->join('associated_machines', 'global_warehouses.associated_machine_id', '=', 'associated_machines.id')
             ->join('brand_machines', 'global_warehouses.brand_machine_id', '=', 'brand_machines.id')
+            ->join('model_machines', 'global_warehouses.model_machine_id', '=', 'model_machines.id')
             ->get();
 
             $query->each(function ($item) {
@@ -246,9 +249,11 @@ class Global_warehousesController extends Controller
 
                 if($item->room_group == 2){
                     $item->room_group = "Galpon";
+                    $item->group_name = "Galpon: ".$item->room_name;
                 }
                 if($item->room_group == 1){
                     $item->room_group = "Sala";
+                    $item->group_name = "Sala: ".$item->room_name;
                 }
 
                 if($item->associated_group == 2){
@@ -258,9 +263,16 @@ class Global_warehousesController extends Controller
                     $item->associated_group = "Asociado";
                 }
 
+                $history_global_warehouses = History_machine::where('global_warehouse_id','=',$item->id)->orderBy('created_at', 'DESC')->get();                
+                $history_query = "";
+                foreach ($history_global_warehouses as $key => $value) {
+                    $history_query = $history_query ."<span class='font-weight-bold'>". $value["created_at"] . ":&nbsp;</span>" . $value["name"] . ".&nbsp;";
+                }
+                   
+                $item->history_query = $history_query;
             });
 
-
+            //return $query;
 
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
