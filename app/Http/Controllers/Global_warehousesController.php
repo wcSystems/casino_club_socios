@@ -54,14 +54,64 @@ class Global_warehousesController extends Controller
     public function store(Request $request)
     {
         $current_db = Global_warehouse::where("id","=",$request["id"])->first();
+        
         if( $current_db ){
+
+            // SERIAL CAMBIADO
             if( $request["serial"] != $current_db->serial  ){
                 History_machine::Create([
-                    'name' => "SERIAL CAMBIADO: ".$current_db->serial. " -> ".$request["serial"],
+                    'name' => "SERIAL CAMBIADO | ".$current_db->serial. " -> ".$request["serial"],
                     'global_warehouse_id' => $current_db->id
                 ]);
             }
+        
+            // SOCIEDAD CAMBIADA
+            if( $request["associated_machine_id"] != $current_db->associated_machine_id  ){
+                History_machine::Create([
+                    'name' => "SOCIEDAD CAMBIADA / INVITADO CAMBIADO | ".Associated_machine::find($current_db->associated_machine_id)->name. " -> ".Associated_machine::find($request["associated_machine_id"])->name,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+
+            // MARCA CAMBIADA
+            if( $request["brand_machine_id"] != $current_db->brand_machine_id || $request["model_machine_id"] != $current_db->model_machine_id ){
+                History_machine::Create([
+                    'name' => "MARCA CAMBIADA / MODELO CAMBIADO | ".Brand_machine::find($current_db->brand_machine_id)->name. Model_machine::find($current_db->model_machine_id)->name ." -> ".Brand_machine::find($request["brand_machine_id"])->name . Model_machine::find($request["model_machine_id"])->name,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+
+            // CONDICION CAMBIADA
+            if( $request["condicion"] != $current_db->condicion  ){
+
+                $current_condicion = "";
+                if($current_db->condicion == 1){ $current_condicion = "Buen estado"; } 
+                if($current_db->condicion == 2){ $current_condicion = "Defectuosa"; }
+                if($current_db->condicion == 3){ $current_condicion = "Solo Carcasa"; } 
+                if($current_db->condicion == 4){ $current_condicion = "Dañada ( Repuesto )"; }
+                
+                $new_condicion = "";
+                if($request["condicion"] == 1){ $new_condicion = "Buen estado"; } 
+                if($request["condicion"] == 2){ $new_condicion = "Defectuosa"; }
+                if($request["condicion"] == 3){ $new_condicion = "Solo Carcasa"; } 
+                if($request["condicion"] == 4){ $new_condicion = "Dañada ( Repuesto )"; }
+
+                History_machine::Create([
+                    'name' => "CONDICION CAMBIADA | ".$current_condicion. " -> ".$new_condicion,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+
+            // SALA CAMBIADA
+            if( $request["room_id"] != $current_db->room_id  ){
+                History_machine::Create([
+                    'name' => "SALA CAMBIADA / GALPON CAMBIADO | ".Room::find($current_db->room_id)->name. " -> ".Room::find($request["room_id"])->name,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+
         }
+
         $current_data = array(
             "serial" => $request["serial"],
             "associated_machine_id" => $request["associated_machine_id"],
@@ -70,17 +120,28 @@ class Global_warehousesController extends Controller
             "condicion" => $request["condicion"],
             "room_id" => $request["room_id"],
         );
+
+        // NUEVO INGRESO
         $current_item = Global_warehouse::updateOrCreate([ 'id' => $request["id"] ],$current_data);
         if( !$current_db ){
             History_machine::Create([
-                'name' => "A LA FECHA, SE INGRESA MAQUINA AL SISTEMA",
+                'name' => "NUEVO INGRESO",
                 'global_warehouse_id' => $current_item->id
             ]);
         }
 
+        // SERIAL DUPLICADO
+        $duplicado_db = Global_warehouse::where("serial","=",$request["serial"])->first();
+        if( $duplicado_db && $current_item->id != $request["id"] ){
+            History_machine::Create([
+                'name' => "SERIAL DUPLICADO | ".$request["serial"],
+                'global_warehouse_id' => $current_item->id
+            ]);  
+        }
+
         if( $request["new_novedad"] ){
             History_machine::Create([
-                'name' => $request["new_novedad"],
+                'name' => "PERSONALIZADO | ".$request["new_novedad"],
                 'global_warehouse_id' => $current_item->id
             ]);
         }
@@ -266,12 +327,14 @@ class Global_warehousesController extends Controller
                 $history_global_warehouses = History_machine::where('global_warehouse_id','=',$item->id)->orderBy('created_at', 'DESC')->get();                
                 $history_query = "";
                 foreach ($history_global_warehouses as $key => $value) {
-                    $history_query = $history_query ."<span class='font-weight-bold'>". $value["created_at"] . ":&nbsp;</span>" . $value["name"] . ".&nbsp;";
+                    $history_query = $history_query ."<span class='font-weight-bold'>". $value["created_at"] . ":&nbsp;</span>" . $value["name"] . ".<br>";
                 }
                    
                 $item->history_query = $history_query;
             });
 
+
+            
             //return $query;
 
         /* FIELDS DEFAULTS DATATABLES */
