@@ -11,7 +11,7 @@ class Global_warehouse extends Model
         'associated_machine_id',
         'brand_machine_id',
         'model_machine_id',
-        'condicion',
+        'condicion_group_id',
         'room_id'
     ];
 

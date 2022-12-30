@@ -22,8 +22,9 @@
                     <div class="px-0 col-xs-12">
                         <select id="search_type_group_associated" class="form-control w-100">
                             <option value="" selected > Asociados o Invitados</option>
-                            <option value="1" > Asociados </option>
-                            <option value="2" > Invitados </option>
+                            @foreach( $associated_groups as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -33,20 +34,15 @@
                     <div class="px-0 col-xs-12">
                         <select id="search_associated_select" class="form-control w-100">
                             <option value="" selected > Asociado / Invitado</option>
-                            <optgroup label="Asociados">
-                                @foreach( $associated_machines as $item )
-                                    @if( $item->group == 1 )
-                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                    @endif
-                                @endforeach
-                            </optgroup>
-                            <optgroup label="Invitados">
-                                @foreach( $associated_machines as $item )
-                                    @if( $item->group == 2 )
-                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                    @endif
-                                @endforeach
-                            </optgroup>
+                            @foreach( $associated_groups as $itemGroup )
+                                <optgroup label="{{ $itemGroup->name }}">
+                                    @foreach( $associated_machines as $item )
+                                        @if( $item->associated_group_id == $itemGroup->id )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endif
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -56,8 +52,9 @@
                     <div class="px-0 col-xs-12">
                         <select id="search_type_group_room" class="form-control w-100">
                             <option value="" selected > Salas o Galpones</option>
-                            <option value="1" > Salas </option>
-                            <option value="2" > Galpones </option>
+                            @foreach( $room_groups as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -67,20 +64,15 @@
                     <div class="px-0 col-xs-12">
                         <select id="search_room_select" class="form-control w-100">
                             <option value="" selected > Sala / Galpon</option>
-                            <optgroup label="Salas">
-                                @foreach( $rooms as $item )
-                                    @if( $item->group == 1 )
-                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                    @endif
-                                @endforeach
-                            </optgroup>
-                            <optgroup label="Galpones">
-                                @foreach( $rooms as $item )
-                                    @if( $item->group == 2 )
-                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                    @endif
-                                @endforeach
-                            </optgroup>
+                            @foreach( $room_groups as $itemGroup )
+                                <optgroup label="{{ $itemGroup->name }}">
+                                    @foreach( $rooms as $item )
+                                        @if( $item->room_group_id == $itemGroup->id )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endif
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -120,10 +112,9 @@
                     <div class="px-0 col-xs-12">
                         <select id="search_condicion_select" class="form-control w-100">
                             <option value="" selected > Todas las condiciones</option>
-                            <option value="1"  > Buen estado </option>
-                            <option value="2"  > Defectuosa </option>
-                            <option value="3"  > Solo Carcasa </option>
-                            <option value="4"  > Dañada ( Repuesto ) </option>
+                            @foreach( $condicion_groups as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -147,9 +138,91 @@
         </div>
     </div>
 </div>
+<div class="row">
+
+    <!-- Asociados / Invitados -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                <select id="chart_type_group_associated" class="form-control w-100" style="color: #fff !important" onchange="datatableAssociatedGroup()">
+                    <option value="" selected > Asociados o Invitados</option>
+                    @foreach( $associated_groups as $item )
+                        <option value="{{ $item->name }}" > {{ $item->name }} </option>
+                    @endforeach
+                </select>
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="associated_group_data"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Salas / Galpones -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                <select id="chart_type_group_room" class="form-control w-100" style="color: #fff !important" onchange="datatableRoomGroup()">
+                    <option value="" selected > Salas o Galpones</option>
+                    @foreach( $room_groups as $item )
+                        <option value="{{ $item->name }}" > {{ $item->name }} </option>
+                    @endforeach
+                </select>
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="room_group_data"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marcas / Modelos -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                <select id="chart_type_group_brand" class="form-control w-100" style="color: #fff !important" onchange="datatableBrandGroup()">
+                    <option value="" selected > Marcas </option>
+                    @foreach( $brand_machines as $item )
+                        <option value="{{ $item->name }}" > {{ $item->name }} </option>
+                    @endforeach
+                </select>
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="brand_group_data"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Condiciones -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                Condiciones
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="condicion_group_data"></canvas>
+            </div>
+        </div>
+    </div>
+
+    
+    
+</div>
 @endsection
 @section('js')
 <script>
+    let all = [];
+    let associated_group_data;
+    let room_group_data;
+    let brand_group_data;
+    let condicion_group_data;
+    
     $('#global_warehouses_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({
@@ -173,20 +246,15 @@
                                 <div class="col-lg-12">
                                     <select required id="associated_machine_id" class="form-control w-100">
                                         <option value="" selected disabled > Asociados / Invitados </option>
-                                        <optgroup label="Asociados">
-                                            @foreach( $associated_machines as $item )
-                                                @if( $item->group == 1 )
-                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                @endif
-                                            @endforeach
-                                        </optgroup>
-                                        <optgroup label="Invitados">
-                                            @foreach( $associated_machines as $item )
-                                                @if( $item->group == 2 )
-                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                @endif
-                                            @endforeach
-                                        </optgroup>
+                                        @foreach( $associated_groups as $itemGroup )
+                                            <optgroup label="{{ $itemGroup->name }}">
+                                                @foreach( $associated_machines as $item )
+                                                    @if( $item->associated_group_id == $itemGroup->id )
+                                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                    @endif
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
@@ -221,12 +289,11 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Condicion <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <select required id="condicion" class="form-control w-100" >
+                                    <select required id="condicion_group_id" class="form-control w-100" >
                                         <option value="" selected disabled >Selecione una Condicion</option>
-                                        <option value="1"  > Buen estado </option>
-                                        <option value="2"  > Defectuosa </option>
-                                        <option value="3"  > Solo Carcasa </option>
-                                        <option value="4"  > Dañada ( Repuesto ) </option>
+                                        @foreach( $condicion_groups as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
@@ -238,20 +305,15 @@
                                 <div class="col-lg-12">
                                     <select required id="room_id" class="form-control w-100">
                                         <option value="" selected disabled >Salas / Galpones</option>
-                                        <optgroup label="Salas">
-                                            @foreach( $rooms as $item )
-                                                @if( $item->group == 1 )
-                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                @endif
-                                            @endforeach
-                                        </optgroup>
-                                        <optgroup label="Galpones">
-                                            @foreach( $rooms as $item )
-                                                @if( $item->group == 2 )
-                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                @endif
-                                            @endforeach
-                                        </optgroup>
+                                        @foreach( $room_groups as $itemGroup )
+                                            <optgroup label="{{ $itemGroup->name }}">
+                                                @foreach( $rooms as $item )
+                                                    @if( $item->room_group_id == $itemGroup->id )
+                                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                    @endif
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
@@ -286,7 +348,7 @@
             $("#serial").val(current.serial)
             $("#associated_machine_id").val(current.associated_machine_id)
             $("#brand_machine_id").val(current.brand_machine_id)
-            $("#condicion").val(current.condicion)
+            $("#condicion_group_id").val(current.condicion_group_id)
             $("#room_id").val(current.room_id)
             listModel(current.model_machine_id)
         }
@@ -301,7 +363,7 @@
                 payload.append('associated_machine_id',$('#associated_machine_id').val())
                 payload.append('brand_machine_id',$('#brand_machine_id').val())
                 payload.append('model_machine_id',$('#model_machine_id').val())
-                payload.append('condicion',$('#condicion').val())
+                payload.append('condicion_group_id',$('#condicion_group_id').val())
                 payload.append('room_id',$('#room_id').val())
                 payload.append('new_novedad',$('#new_novedad').val())
                 $.each($("input[type='file']")[0].files, function(i, file) {
@@ -470,5 +532,114 @@
             }
         },
     ],"group_name_all")
+
+
+    
+    function ajaxReloadDatatablesFN(res){
+        all = res;
+
+        if(associated_group_data!=null){ associated_group_data.destroy(); }
+        let associated_group =all.map( i => i.associated_group ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        associated_group_data = new Chart(document.getElementById('associated_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(associated_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(associated_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+
+        if(room_group_data!=null){ room_group_data.destroy(); }
+        let room_group =all.map( i => i.room_group ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        room_group_data = new Chart(document.getElementById('room_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(room_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(room_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+
+        if(brand_group_data!=null){ brand_group_data.destroy(); }
+        let brand_group =all.map( i => i.brand_name ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        brand_group_data = new Chart(document.getElementById('brand_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(brand_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(brand_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+
+        if(condicion_group_data!=null){ condicion_group_data.destroy(); }
+        let condicion_group =all.map( i => i.condicion_group ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        condicion_group_data = new Chart(document.getElementById('condicion_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(condicion_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(condicion_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+
+    }      
+
+
+    function datatableAssociatedGroup(){
+        if(associated_group_data!=null){ associated_group_data.destroy(); }
+
+        let associated_group = all.map( i => ( i.associated_group == $("#chart_type_group_associated").val() && $("#chart_type_group_associated").val() != ""  ) ? i.associated_name : ( $("#chart_type_group_associated").val() == "" ) ? i.associated_group : ["borrar"] ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        delete associated_group.borrar
+        associated_group_data = new Chart(document.getElementById('associated_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(associated_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(associated_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+    }
+    function datatableRoomGroup(){
+        if(room_group_data!=null){ room_group_data.destroy(); }
+
+        let room_group = all.map( i => ( i.room_group == $("#chart_type_group_room").val() && $("#chart_type_group_room").val() != ""  ) ? i.room_name : ( $("#chart_type_group_room").val() == "" ) ? i.room_group : ["borrar"] ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        delete room_group.borrar
+        room_group_data = new Chart(document.getElementById('room_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(room_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(room_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+    }
+    
+    function datatableBrandGroup() {
+        if(brand_group_data!=null){ brand_group_data.destroy(); }
+
+        let brand_group = all.map( i => ( i.brand_name == $("#chart_type_group_brand").val() && $("#chart_type_group_brand").val() != ""  ) ? i.model_name : ( $("#chart_type_group_brand").val() == "" ) ? i.brand_name : ["borrar"] ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+        delete brand_group.borrar
+        brand_group_data = new Chart(document.getElementById('brand_group_data').getContext('2d'),{ 
+            type:'doughnut',
+            data: {
+                labels: Object.keys(brand_group), 
+                datasets: [ 
+                    { 'label': '', 'data': Object.values(brand_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                 ] 
+            }
+        });
+    }
+
+    function datatableCondicionGroup() {
+        
+    }
+    
+
 </script>
 @endsection

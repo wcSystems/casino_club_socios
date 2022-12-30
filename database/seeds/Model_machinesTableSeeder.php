@@ -35,7 +35,7 @@ class Model_machinesTableSeeder extends Seeder
         DB::table('model_machines')->insert(['name' => "G20",'brand_machine_id' => "5"]);
 
         DB::table('model_machines')->insert(['name' => "ENDEVOUR KP1",'brand_machine_id' => "6"]);
-        DB::table('model_machines')->insert(['name' => "KP3",'brand_machine_id' => "6"]);
+        DB::table('model_machines')->insert(['name' => "Podium KP3",'brand_machine_id' => "6"]);
         DB::table('model_machines')->insert(['name' => "REVOLVER",'brand_machine_id' => "6"]);
 
         DB::table('model_machines')->insert(['name' => "CF1",'brand_machine_id' => "7"]);
@@ -54,5 +54,25 @@ class Model_machinesTableSeeder extends Seeder
         DB::table('model_machines')->insert(['name' => "R8TS",'brand_machine_id' => "10"]);
 
         DB::table('model_machines')->insert(['name' => "UPRIGHT ONE",'brand_machine_id' => "11"]);
+
+
+        // NUEVAS
+        DB::table('model_machines')->insert(['name' => "FV640",'brand_machine_id' => "7"]);
+        DB::table('model_machines')->insert(['name' => "FV610",'brand_machine_id' => "7"]);
+        DB::table('model_machines')->insert(['name' => "NEO",'brand_machine_id' => "5"]);
+        DB::table('model_machines')->insert(['name' => "EQUINOX",'brand_machine_id' => "4"]);
+        DB::table('model_machines')->insert(['name' => "GENERAL",'brand_machine_id' => "12"]);
+        DB::table('model_machines')->insert(['name' => "ALPHA LAVA 1",'brand_machine_id' => "4"]);
+        DB::table('model_machines')->insert(['name' => "SG",'brand_machine_id' => "1"]);
+        DB::table('model_machines')->insert(['name' => "SG",'brand_machine_id' => "5"]);
+        DB::table('model_machines')->insert(['name' => "SERIE 100",'brand_machine_id' => "8"]);
+        DB::table('model_machines')->insert(['name' => "MK8",'brand_machine_id' => "2"]);
+        DB::table('model_machines')->insert(['name' => "SG",'brand_machine_id' => "11"]);
+        DB::table('model_machines')->insert(['name' => "ALPHA 2",'brand_machine_id' => "4"]);
+        DB::table('model_machines')->insert(['name' => "SH",'brand_machine_id' => "3"]);
+        DB::table('model_machines')->insert(['name' => "LUCKY",'brand_machine_id' => "10"]);
+        DB::table('model_machines')->insert(['name' => "GAMING",'brand_machine_id' => "14"]);
+
+
     }
 }

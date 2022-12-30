@@ -16,7 +16,10 @@ class CreateAssociatedMachinesTable extends Migration
         Schema::create('associated_machines', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name',100);
-            $table->boolean('group')->default(2);
+
+            $table->bigInteger('associated_group_id')->nullable()->unsigned();
+            $table->foreign('associated_group_id')->references('id')->on('associated_groups')->onUpdate('cascade');
+
             $table->timestamps();
         });
     }

@@ -22,8 +22,9 @@
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
                         <select id="search_rooms_selects" class="form-control w-100">
                             <option value="" selected >Salas / Galpones</option>
-                            <option value="1" > Salas </option>
-                            <option value="2" > Galpones </option>
+                            @foreach( $room_groups as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -68,10 +69,11 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Sala / Galpon <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <select required id="group" class="form-control w-100">
+                                    <select required id="room_group_id" class="form-control w-100">
                                         <option value="" selected >Todos los grupos</option>
-                                        <option value="1" > Sala </option>
-                                        <option value="2" > Galpon </option>
+                                        @foreach( $room_groups as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
@@ -96,7 +98,7 @@
             let current={!! $rooms !!}.find(i=>i.id===id)
             $("#name").val(current.name)
             $("#address").val(current.address)
-            $("#group").val(current.group)
+            $("#room_group_id").val(current.room_group_id)
         }
         validateForm()
     }
@@ -109,7 +111,7 @@
                 data: {
                     name: $('#name').val(),
                     address: $('#address').val(),
-                    group: $('#group').val()
+                    room_group_id: $('#room_group_id').val()
                 }
             }
             $.ajax({

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Associated_machine;
+use App\Models\Associated_group;
 use Illuminate\Support\Facades\DB;
 
 class Associated_machinesController extends Controller
@@ -16,7 +17,8 @@ class Associated_machinesController extends Controller
     public function index()
     {
         $associated_machines = Associated_machine::all();
-        return view('associated_machines.index')->with('associated_machines',$associated_machines);
+        $associated_groups = Associated_group::all();
+        return view('associated_machines.index')->with('associated_machines',$associated_machines)->with('associated_groups',$associated_groups);
     }
 
     /**
@@ -102,26 +104,18 @@ class Associated_machinesController extends Controller
         $search = $request->get('search');
         $search_asocciates_selects = $request->get('search_asocciates_selects');
         /* QUERY FILTER */
-        $query = DB::table('associated_machines')->selectRaw('associated_machines.*,associated_machines.group AS group_name')
+        $query = DB::table('associated_machines')->selectRaw('associated_machines.*,associated_groups.name AS group_name')
             ->orWhere(function($query) use ($search){
                 $query->orWhere('associated_machines.name','LIKE','%'.$search.'%');
             })
             ->where(function($query) use ($search_asocciates_selects){
                 if(!empty($search_asocciates_selects)){
-                    $query->where('associated_machines.group', '=', $search_asocciates_selects);
+                    $query->where('associated_machines.associated_group_id', '=', $search_asocciates_selects);
                 }else{};
             })
+            ->join('associated_groups', 'associated_machines.associated_group_id', '=', 'associated_groups.id')
             ->get();
 
-
-        $query->each(function ($item) {
-            if($item->group_name == 2){
-                $item->group_name = "Invitados";
-            }
-            if($item->group_name == 1){
-                $item->group_name = "Asociados";
-            }
-        });
 
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');

@@ -22,5 +22,8 @@ class Brand_machinesTableSeeder extends Seeder
         DB::table('brand_machines')->insert(['name' => "WILLIAMS"]);
         DB::table('brand_machines')->insert(['name' => "ALFASTREET"]);
         DB::table('brand_machines')->insert(['name' => "GOLD CLUB"]);
+        DB::table('brand_machines')->insert(['name' => "INCREDIBLE TECHNOLOGIES"]);
+        DB::table('brand_machines')->insert(['name' => "----"]);
+        DB::table('brand_machines')->insert(['name' => "ARUZE"]);
     }
 }

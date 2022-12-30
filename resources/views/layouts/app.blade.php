@@ -451,6 +451,7 @@
                     lengthChange: true,
                     columns: columns,
                     drawCallback: function (settings) {
+                        ajaxReloadDatatablesFN(settings.aoData.map( i => i._aData ))
                         if(group_name_all){
                             var api = this.api();
                             var rows = api.rows({ page: 'current' }).nodes();
@@ -510,7 +511,10 @@
                             d.search_ticket_souvenirs = $("#search_ticket_souvenirs:checked").val() ? "1" : undefined,
                             d.search_machine = $("#search_machine:checked").val() ? "1" : undefined,
                             d.search_table = $("#search_table:checked").val() ? "1" : undefined,
-                        ]}
+                        ]},
+                        /* success: function (res) {
+                            console.log(res)
+                        } */
                     },
                     language: {
                         "lengthMenu": "Mostrar _MENU_ registros por página",
@@ -530,6 +534,7 @@
                         },
                     }
                 }).on( 'processing.dt', function ( e, settings, processing ) {
+                    
                     if(processing){ console.log() }else{ }
                 });
 
@@ -577,6 +582,7 @@
                 $("#search_ticket_souvenirs").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_ticket_machine").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_ticket_table").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
             });
             
         }
@@ -595,7 +601,7 @@
                 }, false)
             })
         }
-
+        function ajaxReloadDatatablesFN(all){ }  
         function elim(route,id) {
             Swal.fire({
                 title: 'Estás seguro?',

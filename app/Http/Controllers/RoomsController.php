@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\Room;
+use App\Models\Room_group;
 use Illuminate\Http\Request;
 
 class RoomsController extends Controller
@@ -15,7 +16,8 @@ class RoomsController extends Controller
     public function index()
     {
         $rooms = Room::all();
-        return view('rooms.index')->with('rooms',$rooms);
+        $room_groups = Room_group::all();
+        return view('rooms.index')->with('rooms',$rooms)->with('room_groups',$room_groups);
     }
 
     /**
@@ -102,26 +104,20 @@ class RoomsController extends Controller
         $search_rooms_selects = $request->get('search_rooms_selects');
         /* QUERY FILTER */
         
-        $query = DB::table('rooms')->selectRaw('rooms.*,rooms.group AS group_name')
+        $query = DB::table('rooms')->selectRaw('rooms.*,room_groups.name AS group_name')
             ->orWhere(function($query) use ($search){
                 $query->orWhere('rooms.name','LIKE','%'.$search.'%');
                 $query->orWhere('rooms.address','LIKE','%'.$search.'%');
             })
             ->where(function($query) use ($search_rooms_selects){
                 if(!empty($search_rooms_selects)){
-                    $query->where('rooms.group', '=', $search_rooms_selects);
+                    $query->where('rooms.room_group_id', '=', $search_rooms_selects);
                 }else{};
             })
+            ->join('room_groups', 'rooms.room_group_id', '=', 'room_groups.id')
             ->get();
 
-            $query->each(function ($item) {
-                if($item->group_name == 2){
-                    $item->group_name = "Galpon";
-                }
-                if($item->group_name == 1){
-                    $item->group_name = "Sala";
-                }
-            });
+          
 
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');

@@ -8,7 +8,7 @@ class Associated_machine extends Model
 {
     protected $fillable = [
         'name',
-        'group'
+        'associated_group_id'
     ];
 
     public function machines() {

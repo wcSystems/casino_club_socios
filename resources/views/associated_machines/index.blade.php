@@ -22,8 +22,9 @@
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
                         <select id="search_asocciates_selects" class="form-control w-100">
                             <option value="" selected >Asociados / Invitados</option>
-                            <option value="1" > Asociado </option>
-                            <option value="2" > Invitado </option>
+                            @foreach( $associated_groups as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -68,11 +69,11 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Asociado / Invitado <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <select required id="group" class="form-control w-100">
+                                    <select required id="associated_group_id" class="form-control w-100">
                                         <option value="" selected >Todos los grupos</option>
-                                        <option value="1" > Asociado </option>
-                                        <option value="2" > Invitado </option>
-                                        
+                                        @foreach( $associated_groups as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
@@ -87,7 +88,7 @@
         if(id){
             let current={!! $associated_machines !!}.find(i=>i.id===id)
             $("#name").val(current.name)
-            $("#group").val(current.group)
+            $("#associated_group_id").val(current.associated_group_id)
         }
         validateForm()
     }
@@ -99,7 +100,7 @@
                 id: { id: id ? id : "" },
                 data: {
                     name: $('#name').val(),
-                    group: $('#group').val()
+                    associated_group_id: $('#associated_group_id').val()
                 }
             }
             $.ajax({
