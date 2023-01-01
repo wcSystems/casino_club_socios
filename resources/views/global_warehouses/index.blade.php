@@ -201,7 +201,11 @@
     <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-3  " >
         <div class="panel-heading ui-sortable-handle">
             <h4 class="panel-title">
-                Condiciones
+                <select id="chart_type_group_condicion" class="form-control w-100" style="color: #fff !important" onchange="datatableCondicionGroup()">
+                    <option value="condiciones" selected > Condiciones </option>
+                    <option value="imagenes" > Imagenes </option>
+                    <option value="sinserial" > Sin Serial </option>
+                </select>
             </h4>
         </div>
         <div class="panel-body">
@@ -342,6 +346,7 @@
                     </div>
                 </form>`
         })
+        $("#serial").val("S/S")
         if(id){
             let current={!! $global_warehouses !!}.find(i=>i.id===id)
             let html_history = ``;
@@ -637,6 +642,50 @@
     }
 
     function datatableCondicionGroup() {
+        if(condicion_group_data!=null){ condicion_group_data.destroy(); }
+
+        /* Condiciones */
+        if( $("#chart_type_group_condicion").val() == "condiciones" ){
+            let condicion_group =all.map( i => i.condicion_group ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+            condicion_group_data = new Chart(document.getElementById('condicion_group_data').getContext('2d'),{ 
+                type:'doughnut',
+                data: {
+                    labels: Object.keys(condicion_group), 
+                    datasets: [ 
+                        { 'label': '', 'data': Object.values(condicion_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                    ] 
+                }
+            });
+        }
+
+        /* Imagenes */
+        if( $("#chart_type_group_condicion").val() == "imagenes" ){
+            let condicion_group =all.map( i => i.img_query ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+            condicion_group_data = new Chart(document.getElementById('condicion_group_data').getContext('2d'),{ 
+                type:'doughnut',
+                data: {
+                    labels: Object.keys(condicion_group), 
+                    datasets: [ 
+                        { 'label': '', 'data': Object.values(condicion_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                    ] 
+                }
+            });
+        }
+
+        /* Sin serial */
+        if( $("#chart_type_group_condicion").val() == "sinserial" ){
+            let condicion_group =all.map( i => i.serial_query ).reduce((accumulator, value) => {  accumulator[value] = ++accumulator[value] || 1; return accumulator; }, {});
+            condicion_group_data = new Chart(document.getElementById('condicion_group_data').getContext('2d'),{ 
+                type:'doughnut',
+                data: {
+                    labels: Object.keys(condicion_group), 
+                    datasets: [ 
+                        { 'label': '', 'data': Object.values(condicion_group), 'backgroundColor': {!! $all_colors !!}, 'borderWidth': 1 },
+                    ] 
+                }
+            });
+        }
+        
         
     }
     

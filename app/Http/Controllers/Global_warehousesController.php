@@ -316,12 +316,29 @@ class Global_warehousesController extends Controller
 
             $query->each(function ($item) {
                 $item->group_name = "<span class='font-weight-bold'>". $item->room_group . ":&nbsp;</span>" . $item->room_name . "<br>";
+                
                 $history_global_warehouses = History_machine::where('global_warehouse_id','=',$item->id)->orderBy('created_at', 'DESC')->get();                
                 $history_query = "";
                 foreach ($history_global_warehouses as $key => $value) {
                     $history_query = $history_query ."<span class='font-weight-bold'>". $value["created_at"] . ":&nbsp;</span>" . $value["name"] . ".<br>";
                 }
+
+                //img exist
+                $img_global_warehouses = Img_global_warehouse::where('global_warehouse_id','=',$item->id)->first();                
+                $img_query = "Sin Imagenes";
+                if($img_global_warehouses){
+                    $img_query = "Con Imagenes";
+                }
+
+                //serial S/S               
+                $serial_query = "Con Serial";
+                if($item->serial == "S/S" || $item->serial == "" || $item->serial == null ){
+                    $serial_query = "Sin Serial";
+                }
+
                    
+                $item->serial_query = $serial_query;
+                $item->img_query = $img_query;
                 $item->history_query = $history_query;
             });
 
