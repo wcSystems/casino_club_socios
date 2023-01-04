@@ -26,8 +26,8 @@ class isapiController extends Controller
                     "maxResults"=> 1,
                     "major"=> 5,
                     "minor"=> 75,
-                    "startTime"=> "2022-01-01T00:00:00+00:00",
-                    "endTime"=> "2022-12-31T23:59:00+0:00"
+                    "startTime"=> "2023-01-01T00:00:00+00:00",
+                    "endTime"=> "2023-12-31T23:59:00+0:00"
                 ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
         
         $totalMatches30 = floor($totalMatches/30);
@@ -45,8 +45,8 @@ class isapiController extends Controller
                             "maxResults"=> 30,
                             "major"=> 5,
                             "minor"=> 75,
-                            "startTime"=> "2022-01-01T00:00:00+00:00",
-                            "endTime"=> "2022-12-31T23:59:00+0:00"
+                            "startTime"=> "2023-01-01T00:00:00+00:00",
+                            "endTime"=> "2023-12-31T23:59:00+0:00"
                         ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
                 $searchResultPosition +=30;
                 foreach ($query2 as $key => $value) { 
