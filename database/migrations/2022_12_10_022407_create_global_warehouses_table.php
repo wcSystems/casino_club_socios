@@ -26,6 +26,16 @@ class CreateGlobalWarehousesTable extends Migration
             $table->foreign('condicion_group_id')->references('id')->on('condicion_groups')->onUpdate('cascade');
             $table->bigInteger('room_id')->nullable()->unsigned();
             $table->foreign('room_id')->references('id')->on('rooms')->onUpdate('cascade');
+
+
+            $table->string('name_machine_room_active',100)->nullable();
+            $table->bigInteger('value_machine_id')->nullable()->unsigned();
+            $table->foreign('value_machine_id')->references('id')->on('value_machines')->onUpdate('cascade');
+            $table->bigInteger('play_machine_id')->nullable()->unsigned();
+            $table->foreign('play_machine_id')->references('id')->on('play_machines')->onUpdate('cascade');
+            $table->bigInteger('range_machine_id')->nullable()->unsigned();
+            $table->foreign('range_machine_id')->references('id')->on('range_machines')->onUpdate('cascade');
+
             $table->timestamps();
         });
     }

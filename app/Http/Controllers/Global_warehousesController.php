@@ -12,6 +12,10 @@ use App\Models\Brand_machine;
 use App\Models\Model_machine;
 use App\Models\Img_global_warehouse;
 
+use App\Models\Range_machine;
+use App\Models\Value_machine;
+use App\Models\Play_machine;
+
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -36,6 +40,10 @@ class Global_warehousesController extends Controller
         $associated_groups = Associated_group::all();
         $condicion_groups = Condicion_group::all();
 
+        $range_machines = Range_machine::all();
+        $value_machines = Value_machine::all();
+        $play_machines = Play_machine::all();
+
         return view('global_warehouses.index')
             ->with('global_warehouses',$global_warehouses)
             ->with('associated_machines',$associated_machines)
@@ -45,6 +53,11 @@ class Global_warehousesController extends Controller
             ->with('rooms',$rooms)
             ->with('room_groups',$room_groups)
             ->with('condicion_groups',$condicion_groups)
+
+            ->with('range_machines',$range_machines)
+            ->with('value_machines',$value_machines)
+            ->with('play_machines',$play_machines)
+
             ->with('all_colors',json_encode($all_colors));
     }
 
@@ -66,18 +79,11 @@ class Global_warehousesController extends Controller
      */
     public function store(Request $request)
     {
-        $current_db = Global_warehouse::where("id","=",$request["id"])->first();
-        
-        if( $current_db ){
 
-            // SERIAL CAMBIADO
-            if( $request["serial"] != $current_db->serial  ){
-                History_machine::Create([
-                    'name' => "SERIAL CAMBIADO | ".$current_db->serial. " -> ".$request["serial"],
-                    'global_warehouse_id' => $current_db->id
-                ]);
-            }
         
+        // IF EXISTS
+        $current_db = Global_warehouse::where("id","=",$request["id"])->first();
+        if( $current_db ){
             // SOCIEDAD CAMBIADA
             if( $request["associated_machine_id"] != $current_db->associated_machine_id  ){
                 History_machine::Create([
@@ -85,7 +91,6 @@ class Global_warehousesController extends Controller
                     'global_warehouse_id' => $current_db->id
                 ]);
             }
-
             // MARCA CAMBIADA
             if( $request["brand_machine_id"] != $current_db->brand_machine_id || $request["model_machine_id"] != $current_db->model_machine_id ){
                 History_machine::Create([
@@ -93,7 +98,6 @@ class Global_warehousesController extends Controller
                     'global_warehouse_id' => $current_db->id
                 ]);
             }
-
             // CONDICION CAMBIADA
             if( $request["condicion_group_id"] != $current_db->condicion_group_id  ){
 
@@ -114,7 +118,6 @@ class Global_warehousesController extends Controller
                     'global_warehouse_id' => $current_db->id
                 ]);
             }
-
             // SALA CAMBIADA
             if( $request["room_id"] != $current_db->room_id  ){
                 History_machine::Create([
@@ -123,8 +126,37 @@ class Global_warehousesController extends Controller
                 ]);
             }
 
+            // NOMBRE UNICO CAMBIADO
+            if( $request["name_machine_room_active"] != $current_db->name_machine_room_active && $current_db->name_machine_room_active != null ){
+                History_machine::Create([
+                    'name' => "NOMBRE UNICO CAMBIADO | ".$current_db->name_machine_room_active. " -> ".$request["name_machine_room_active"],
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+            // DENOMINACION CAMBIADA
+            if( $request["value_machine_id"] != $current_db->value_machine_id && $current_db->value_machine_id != null ){
+                History_machine::Create([
+                    'name' => "DENOMINACION CAMBIADA | ".Value_machine::find($current_db->value_machine_id)->name. " -> ".Value_machine::find($request["value_machine_id"])->name,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+            // JUEGO CAMBIADO
+            if( $request["play_machine_id"] != $current_db->play_machine_id && $current_db->play_machine_id != null ){
+                History_machine::Create([
+                    'name' => "JUEGO CAMBIADO | ".Play_machine::find($current_db->play_machine_id)->name. " -> ".Play_machine::find($request["play_machine_id"])->name,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
+            //  RANGO CAMBIADO
+            if( $request["range_machine_id"] != $current_db->range_machine_id && $current_db->range_machine_id != null ){
+                History_machine::Create([
+                    'name' => "RANGO CAMBIADO | ".Range_machine::find($current_db->range_machine_id)->name. " -> ".Range_machine::find($request["range_machine_id"])->name,
+                    'global_warehouse_id' => $current_db->id
+                ]);
+            }
         }
-
+    
+        // TEMPLATE MODELS
         $current_data = array(
             "serial" => $request["serial"],
             "associated_machine_id" => $request["associated_machine_id"],
@@ -132,10 +164,16 @@ class Global_warehousesController extends Controller
             "model_machine_id" => $request["model_machine_id"],
             "condicion_group_id" => $request["condicion_group_id"],
             "room_id" => $request["room_id"],
+            "name_machine_room_active" => $request["name_machine_room_active"],
+            "value_machine_id" => $request["value_machine_id"],
+            "play_machine_id" => $request["play_machine_id"],
+            "range_machine_id" => $request["range_machine_id"],
         );
 
         // NUEVO INGRESO
         $current_item = Global_warehouse::updateOrCreate([ 'id' => $request["id"] ],$current_data);
+
+        // NEW INGRESO
         if( !$current_db ){
             History_machine::Create([
                 'name' => "NUEVO INGRESO",
@@ -143,23 +181,23 @@ class Global_warehousesController extends Controller
             ]);
         }
 
-        // SERIAL DUPLICADO
-        $duplicado_db = Global_warehouse::where("serial","=",$request["serial"])->get();
-        if( count($duplicado_db) > 1 ){
-            History_machine::Create([
-                'name' => "SERIAL DUPLICADO | ".$request["serial"],
-                'global_warehouse_id' => $current_item->id
-            ]);  
-        }
-
+        //NEW NOVEDAD
         if( $request["new_novedad"] ){
             History_machine::Create([
                 'name' => "PERSONALIZADO | ".$request["new_novedad"],
                 'global_warehouse_id' => $current_item->id
             ]);
         }
+    
+
+
+
         
+
+
+
         if($current_item){
+            // UPLOAD WITH IMAGES
             if($request->file('images')){
                 foreach ($request->file('images') as $value) {
                     $file= $value;
@@ -172,6 +210,9 @@ class Global_warehousesController extends Controller
         }else{
             return response()->json([ 'type' => 'error']);
         }
+
+
+
     }
 
     /**
@@ -263,10 +304,15 @@ class Global_warehousesController extends Controller
 
                 rooms.name AS room_name,
                 room_groups.name AS room_group,
+                room_groups.id AS room_group_id,
 
                 associated_machines.name AS associated_name,
                 associated_groups.name AS associated_group,
                 condicion_groups.name AS condicion_group,
+
+                range_machines.name AS range_group,
+                play_machines.name AS play_group,
+                value_machines.name AS value_group,
 
                 brand_machines.name AS brand_name,
                 model_machines.name AS model_name
@@ -312,6 +358,10 @@ class Global_warehousesController extends Controller
             ->join('room_groups', 'rooms.room_group_id', '=', 'room_groups.id')
             ->join('associated_groups', 'associated_machines.associated_group_id', '=', 'associated_groups.id')
             ->join('condicion_groups', 'global_warehouses.condicion_group_id', '=', 'condicion_groups.id')
+
+            ->leftjoin('range_machines', 'global_warehouses.range_machine_id', '=', 'range_machines.id')
+            ->leftjoin('play_machines', 'global_warehouses.play_machine_id', '=', 'play_machines.id')
+            ->leftjoin('value_machines', 'global_warehouses.value_machine_id', '=', 'value_machines.id')
             ->get();
 
             $query->each(function ($item) {
@@ -325,18 +375,61 @@ class Global_warehousesController extends Controller
 
                 //img exist
                 $img_global_warehouses = Img_global_warehouse::where('global_warehouse_id','=',$item->id)->first();                
-                $img_query = "Sin Imagenes";
+                $img_query = "SIN IMAGENES";
                 if($img_global_warehouses){
-                    $img_query = "Con Imagenes";
+                    $img_query = "CON IMAGENES";
                 }
 
                 //serial S/S               
-                $serial_query = "Con Serial";
+                $serial_query = "CON SERIALES";
                 if($item->serial == "S/S" || $item->serial == "" || $item->serial == null ){
-                    $serial_query = "Sin Serial";
+                    $serial_query = "SIN SERIALES";
                 }
 
-                   
+                //Name Machine Room Active [ SOLO SI YA ESTA EN SALA ID 1 ]      
+                $room_active_group = "borrar";
+                if($item->room_group_id == 1){
+                    if($item->name_machine_room_active == "" || $item->name_machine_room_active == null ){
+                        $room_active_group = "SIN NOMBRES";
+                    }else{
+                        $room_active_group = "CON NOMBRES";
+                    }
+                }
+
+                //Rangos [ SOLO SI YA ESTA EN SALA ID 1 ]      
+                $range_group = "borrar";
+                if($item->room_group_id == 1){
+                    if($item->range_group == "" || $item->range_group == null ){
+                        $range_group = "SIN RANGOS";
+                    }else{
+                        $range_group = $item->range_group;
+                    }
+                }
+
+                //JUEGOS [ SOLO SI YA ESTA EN SALA ID 1 ]      
+                $play_group = "borrar";
+                if($item->room_group_id == 1){
+                    if($item->play_group == "" || $item->play_group == null ){
+                        $play_group = "SIN JUEGOS";
+                    }else{
+                        $play_group = $item->play_group;
+                    }
+                }
+
+                //JUEGOS [ SOLO SI YA ESTA EN SALA ID 1 ]      
+                $value_group = "borrar";
+                if($item->room_group_id == 1){
+                    if($item->value_group == "" || $item->value_group == null ){
+                        $value_group = "SIN DENOMINACIONES";
+                    }else{
+                        $value_group = $item->value_group;
+                    }
+                }
+
+                $item->range_group = $range_group;
+                $item->play_group = $play_group;
+                $item->value_group = $value_group;
+                $item->room_active_group = $room_active_group;
                 $item->serial_query = $serial_query;
                 $item->img_query = $img_query;
                 $item->history_query = $history_query;

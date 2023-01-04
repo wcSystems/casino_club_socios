@@ -12,7 +12,12 @@ class Global_warehouse extends Model
         'brand_machine_id',
         'model_machine_id',
         'condicion_group_id',
-        'room_id'
+        'room_id',
+
+        'name_machine_room_active',
+        'value_machine_id',
+        'play_machine_id',
+        'range_machine_id',
     ];
 
     public function history() {
