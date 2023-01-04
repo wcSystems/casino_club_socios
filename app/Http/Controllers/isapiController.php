@@ -64,15 +64,15 @@ class isapiController extends Controller
                     ])->getBody()->getContents(), TRUE);
 
                     if( $currentWithPic['statusCode'] == 1 && $currentWithPic['responseStatusStrg'] != "NO MATCH" ){
-                        $resCPhotoLast = new Client();
+                        /* $resCPhotoLast = new Client();
                         $currentPhotoLast = json_decode($resCPhotoLast->get( "http://192.168.5.181/LOCALS/pic/enrlFace/0/0000000238.jpg@WEB000000012407" ,[
                             'auth' =>  ['admin', 'Cas1n01234','digest']
                         ])->getBody()->getContents(), TRUE);
                         
                         if( $currentPhotoLast  ){
-                            $value['facePictureUser'] = $currentPhotoLast;
+                            $value['facePictureUser'] = $currentPhotoLast; */
                             Attlog::create($value);
-                        }
+                        //}
                     }
                 }
             }

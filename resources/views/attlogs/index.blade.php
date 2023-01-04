@@ -16,7 +16,7 @@
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
                     <label for="start" class="text-left d-block"> Desde </label>
                         <div class="form-check" style="justify-content: left !important">
-                            <input required class="form-control w-100" type="date" name="start" value="2022-01-01" id="start" >
+                            <input required class="form-control w-100" type="date" name="start" value="2023-01-01" id="start" >
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
                     <label for="end" class="text-left d-block"> Hasta </label>
                         <div class="form-check" style="justify-content: left !important">
-                            <input required class="form-control w-100" type="date" name="end"  value="2022-12-31"id="end" >
+                            <input required class="form-control w-100" type="date" name="end"  value="2023-12-31"id="end" >
                         </div>
                     </div>
                 </div>
