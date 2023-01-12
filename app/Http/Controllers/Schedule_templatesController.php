@@ -40,45 +40,65 @@ class Schedule_templatesController extends Controller
     public function store(Request $request)
     {
         $valid = false;
-        if( $request["type"] == "employee" ){
-            foreach ($request["data"] as $key => $value) {
-                $valid = false;
-                Schedule_template::updateOrCreate($value["id"],$value["schedule"]);
-                $valid = true;
-            }
-        }
+        
 
-        if( $request["type"] == "department" ){
-            $employee_department= Department::with("employees")->where("id","=",$request["department"])->first();
-            foreach ($employee_department["employees"] as $key => $valueEmployees) {
+       
 
+
+        if( $request["type"] == "all" ){
+            
                 foreach ($request["data"] as $key => $value) {
-                    $valid = false;
-                    $curent_delete = Schedule_template::where("year","=",$request["year"])->where("month","=",$request["month"])->where("employee_id","=",$valueEmployees["id"])->first();
-                    
-                    if( $curent_delete ){
-                        $valid = true;
-                    }
-                    
+                    Schedule_template::where("year","=",$value["year"])->where("month","=",$value["month"])->where("employee_id","=",$value["employee_id"])->delete();
                 }
 
                 foreach ($request["data"] as $key => $value) {
                     $valid = false;
                     Schedule_template::Create([
-                        "employee_id" => $valueEmployees["id"],
-                        "hora_entrada" => $value["schedule"]["hora_entrada"],
-                        "horas_trabajo" => $value["schedule"]["horas_trabajo"],
-                        "turno" => $value["schedule"]["turno"],
-                        "year" => $value["schedule"]["year"],
-                        "month" => $value["schedule"]["month"],
-                        "day" => $value["schedule"]["day"],
-                        "date" => $value["schedule"]["date"],
+                        "employee_id" => $value["employee_id"],
+                        "hora_entrada" => $value["hora_entrada"],
+                        "horas_trabajo" => $value["horas_trabajo"],
+                        "turno" => $value["turno"],
+                        "year" => $value["year"],
+                        "month" => $value["month"],
+                        "day" => $value["day"],
+                        "date" => $value["date"],
                     ]);
                     $valid = true;
                 }
 
-            }
+            
         }
+        if( $request["type"] == "allEmployees" ){
+            
+            Schedule_template::where("year","=",$request["year"])->where("month","=",$request["month"])->delete();
+            $employees = Employee::all();
+            $valid = false;
+            
+            for ($i=1; $i <= $request["days_in_month"] ; $i++) { 
+                foreach ($employees as $key => $valueEmployee) {
+                    Schedule_template::Create([
+                        "employee_id" => $valueEmployee["id"],
+                        "hora_entrada" => "00:00",
+                        "horas_trabajo" => "0",
+                        "turno" => "L",
+                        "year" => $request["year"],
+                        "month" => $request["month"],
+                        "day" => $i,
+                        "date" => $request["year"]."-".$request["month"]."-".$i,
+                    ]);
+                }
+            }
+            
+            $valid = true;
+
+            
+        }
+
+
+
+
+
+
         if( $valid == true ){
             return response()->json([ 'type' => 'success']);
         }
@@ -211,5 +231,32 @@ class Schedule_templatesController extends Controller
 
                         
         return response()->json([ 'type' => 'success','data' => $current,'all_data' => $all_data,'query' => $query, 'new_data' => $new_data]);
+    }
+
+    public function viewScheduleAll(Request $request)
+    {
+        $all_group = Schedule_template::selectRaw('year, month')->groupBy('year','month')->orderBy('year','desc')->orderBy('month','desc')->get();
+        
+
+        $schedule_group_employee = DB::table('schedule_templates')->selectRaw('year, month, employee_id, employees.name AS employee_name, departments.id AS department_id, departments.name AS department_name, employees.employeeNo AS employeeNo')
+                        ->join('employees', 'schedule_templates.employee_id', '=', 'employees.id')
+                        ->join('departments', 'employees.department_id', '=', 'departments.id')
+                        ->groupBy('year','month','employee_id')
+                        ->orderBy('year','desc')
+                        ->orderBy('month','desc')
+                        ->get();
+
+        foreach ($schedule_group_employee as $key => $value_schedule_group_employee) {
+            
+            $value_schedule_group_employee->schedule = DB::table('schedule_templates')->selectRaw('schedule_templates.*,employees.name AS employee_name, departments.id AS department_id, departments.name AS department_name')
+                                                        ->where('employee_id','=',$value_schedule_group_employee->employee_id)
+                                                        ->where('year','=',$value_schedule_group_employee->year)
+                                                        ->where('month','=',$value_schedule_group_employee->month)
+                                                        ->join('employees', 'schedule_templates.employee_id', '=', 'employees.id')
+                                                        ->join('departments', 'employees.department_id', '=', 'departments.id')->get();
+        }
+
+
+        return response()->json([ 'type' => 'success','all_group' => $all_group, 'schedule_group_employee' => $schedule_group_employee]);
     }
 }

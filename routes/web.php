@@ -12,6 +12,10 @@
 */
 
 use App\Models\Ayb_item;
+use App\Models\Sede;
+use App\Models\Group_menu;
+use App\Models\Schedule_template;
+use App\Models\Department;
 
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
@@ -223,9 +227,50 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // VIEW - MENU DINAMIC
-Route::get("/menu/{menu_id}/{sede_id}", function($menu_id, $sede_id){
-        return view("qr.index")->with('ayb_items',Ayb_item::where(['sede_id' => $sede_id,'group_menu_id' => $menu_id ])->with('imgs')->get() );
- });
+Route::get("/menu/{sede_id}", function($sede_id){
+        return view("qr.index")
+            ->with('ayb_items',Ayb_item::where(['sede_id' => $sede_id])->with('imgs')->get() )
+            ->with('sede',Sede::where(['id' => $sede_id])->first() )
+            ->with('group_menus',Group_menu::all() );
+});
+
+// VIEW - MENU DINAMIC
+Route::get("/schedule_department/{department_id}/{year}/{mont}", function($department_id,$year,$month){
+
+
+    $all_group = Schedule_template::selectRaw('year, month')
+                    ->where('year','=',$year)
+                    ->where('month','=',$month)
+                    ->groupBy('year','month')->orderBy('year','desc')
+                    ->orderBy('month','desc')
+                    ->get();
+        
+
+    $schedule_group_employee = DB::table('schedule_templates')->selectRaw('year, month, employee_id, employees.name AS employee_name, departments.id AS department_id, departments.name AS department_name, employees.employeeNo AS employeeNo')
+                    ->where('department_id','=',$department_id)
+                    ->join('employees', 'schedule_templates.employee_id', '=', 'employees.id')
+                    ->join('departments', 'employees.department_id', '=', 'departments.id')
+                    ->groupBy('year','month','employee_id')
+                    ->orderBy('year','desc')
+                    ->orderBy('month','desc')
+                    ->get();
+
+        foreach ($schedule_group_employee as $key => $value_schedule_group_employee) {
+            
+            $value_schedule_group_employee->schedule = DB::table('schedule_templates')->selectRaw('schedule_templates.*,employees.name AS employee_name, departments.id AS department_id, departments.name AS department_name')
+                                                        ->where('employee_id','=',$value_schedule_group_employee->employee_id)
+                                                        ->where('year','=',$value_schedule_group_employee->year)
+                                                        ->where('month','=',$value_schedule_group_employee->month)
+                                                        ->join('employees', 'schedule_templates.employee_id', '=', 'employees.id')
+                                                        ->join('departments', 'employees.department_id', '=', 'departments.id')->get();
+        }
+
+        $department = Department::find($department_id);
+
+
+
+        return view("schedule_department.index")->with('schedule_group_employee',$schedule_group_employee )->with('all_group',$all_group )->with('department',$department )->with('year',$year )->with('month',$month );
+});
 
 
 

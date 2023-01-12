@@ -84,6 +84,7 @@
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
+                        <th>Cedula</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -136,13 +137,19 @@
                 showConfirmButton: false,
                 html:`
                     <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                    @csrf
                         <div class="row">
-                            <div class="panel-heading-btn mx-2">
-                                <label onclick="viewImg()" class="d-flex btn btn-1 btn-info m-0">
-                                    <i class="m-auto fa fa-lg fa-arrow-up"></i>
-                                    <img id="imgISAPI" />
+
+
+                            <div class="mx-auto">
+                                <label class="d-flex m-0">
+                                    <img id="imgUser" class="rounded-circle"  src='public/users/null.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
+                                    <input require onchange="viewImg(this)" type="file" id="image" name="image" style="display:none" >
                                 </label>
                             </div>
+
+
+
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group row m-b-0">
                                     <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger"> *</span> </label>
@@ -242,6 +249,7 @@
                 $("#department_id").val(current.department_id)
                 $("#sex_id").val(current.sex_id)
                 $("#position_id").val(current.position_id)
+                $("#imgUser").attr("src",`public/employees/${current.employeeNo}.jpg`)
             }
             validateForm()
         }
@@ -257,60 +265,56 @@
                 }
             });
         }
-        function viewImg() {
-            $.ajax({
-                url: "{{ route('isapi.authImgIsapi') }}",
-                success: function (res) {
-                    let add = ` <xmp>
-                                    <catalog>
-                                        <cd>
-                                            <title>Empire Burlesque</title>
-                                            <artist>Bob Dylan</artist>
-                                            <country>USA</country>
-                                            <country>Columbia</country>
-                                            <price>10.90</price>
-                                            <year>1985</year>
-                                        </cd>
-                                    </catalog>
-                                </xmp>`;
-                    //$("#imgISAPI").replaceWith(res)
-                    let imgXml = res
-                    console.log(imgXml)
-                /*  if(res.type === 'success'){
-                        location.reload();
-                    } */
-                }
-            });
+        
+        function viewImg(input) {
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imgUser').attr('src', e.target.result).width(200).height(200);
+            };
+            reader.readAsDataURL(input.files[0]);
         }
-        function guardar(id) {
+    }
+
+
+        async function guardar(id) {
+
             let validity = document.getElementById('form-all').checkValidity()
             if(validity){
-                let payload = {
-                    _token: $("meta[name='csrf-token']").attr("content"),
-                    id: { id: id ? id : "" },
-                    data: {
-                        employeeNo: $("#employeeNo").val(),
-                        name: $("#name").val(),
-                        nacimiento: $("#nacimiento").val(),
-                        sex_id: $("#sex_id").val(),
-                        department_id: $("#department_id").val(),
-                        position_id: $("#position_id").val(),
-                        sede_id: $("#sede_id").val(),
+            
+                let payload = new FormData();   
+                    payload.append('id',id ? id : "")
+                    payload.append('employeeNo',$('#employeeNo').val())
+                    payload.append('name',$('#name').val())
+                    payload.append('nacimiento',$('#nacimiento').val())
+                    payload.append('sex_id',$('#sex_id').val())
+                    payload.append('sede_id',$('#sede_id').val())
+                    payload.append('department_id',$('#department_id').val())
+                    payload.append('position_id',$('#position_id').val())
+                    payload.append('originIMG',window.location.origin+"/public/employees/"+$('#employeeNo').val()+".jpg")
+                    
+                    if($('#image').prop('files')[0]){
+                        payload.append('image',await resizeImage({ file: $('#image').prop('files')[0],maxSize: 500 }))
                     }
-                }
                 $.ajax({
                     url: "{{ route('isapi.addOrUpdateEmployee') }}",
                     type: "POST",
                     data: payload,
+                    processData: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
                     success: function (res) {
                         if(res.type === 'success'){
                             location.reload();
                         }
                     }
                 });
+
             }
         }
-        function elim(id,employeeNo) {
+        function elim(id) {
+            let current={!! $employees !!}.find(i=>i.id===id)
                 Swal.fire({
                     title: 'Estás seguro?',
                     text: 'No serás capaz de recuperar el registro a borrar!',
@@ -324,7 +328,7 @@
                             data: {
                                 _token: $("meta[name='csrf-token']").attr("content"),
                                 id: id,
-                                employeeNo: employeeNo
+                                employeeNo: current.employeeNo
                             },
                             success: function (res) {
                                 if(res.type === 'success'){
@@ -337,6 +341,7 @@
         };
 
         function view(params) {
+            fetch("https://api.ipify.org/?format=json").then(r => r.json()).then(res => {
                 $.ajax({
                     url: "{{ route('employees.history') }}",
                     type: "POST",
@@ -350,22 +355,22 @@
                                         <tr>
                                             <th>Fecha</th>
                                             <th>Hora de Marcaje</th>
-                                            <th>Foto</th>
+                                            <th>Foto ( INTERNO )</th>
+                                            <th>Foto ( EXTERNO ) </th>
                                         </tr>
                                     </thead>
                                     <tbody>`;
+                                    
                                         res.forEach(element => {
-
-                                            let pictureURL = element.pictureURL.slice(7);
-                                        
-                                            pictureURL = `http://admin:Cas1n01234@${pictureURL}`;
-
                                             htmlTemplate +=`
                                             <tr>
                                                 <td>${element.date}</td>
                                                 <td>${moment(element.time).format('h:mm:ss a')}</td>
-                                                <td>
-                                                    <a href='${pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                                                <td>`
+                                                    htmlTemplate +=`<a href='http://admin:Cas1n01234@192.168.5.181${element.pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                                                </td>
+                                                <td>`
+                                                    htmlTemplate +=`<a href='http://admin:Cas1n01234@${element.pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
                                                 </td>
                                             </tr>
                                             `;
@@ -385,13 +390,15 @@
                         dataTableView()
                     }
                 });
-            
+            });
         }
 
+       
         function createSchedule(id) {
             let html = ``;
                 html +=`
                 <form id="form-all-schedule" class="needs-validation" action="javascript:void(0);" novalidate>
+                @csrf
                     <div class="row">
                         <div class="col-12 m-auto">
                             <div class="col-md-4 col-sm-4">
@@ -507,6 +514,11 @@
 
 
         }
+
+
+
+
+
 
         function viewSchedule(employee_id) {
             let timerInterval 
@@ -998,19 +1010,158 @@
                 }
             },
             { data: 'name' },
+            { data: 'employeeNo' },
             {
                 render: function ( data,type, row  ) {
                     //console.log(row)
                     return `
-                        <a onclick="elim(${row.id},${row.employeeNo})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                        <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
-                        <a onclick="view(${row.id})" style="color: var(--global-2)" class="btn btn-green btn-icon btn-circle"><i class="fas fa-eye"></i></a>
-                        <a onclick="createSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-info btn-icon btn-circle"><i class="fas fa-calendar"></i></a>
-                        <a onclick="viewSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle"><i class="fas fa-calendar"></i></a>
+                        <img onclick="previewIMG(${row.id})" src='public/employees/${row.employeeNo}.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" class="btn  btn-icon btn-circle m-2" />
+                        <a onclick="elim(${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
+                        <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>
+                        <a onclick="view(${row.id})" style="color: var(--global-2)" class="btn btn-green btn-icon btn-circle m-2"><i class="fas fa-eye"></i></a>
+                        <a onclick="viewSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
                     `;
                 }
             },
         ])
+
+        function viewHorario(employee_id) {
+            let timerInterval 
+            setLoading(timerInterval)
+            $.ajax({
+                url: "{{ route('schedule_templates.viewSchedule') }}",
+                type: "POST",
+                data: { employee_id: employee_id },
+                success: function (res) {
+
+                    let current={!! $employees !!}.find(i=>i.id===employee_id)
+                    let current_data_filter=res.query.filter(i=>i.employee_id==employee_id)
+                    let html = ``;
+                    res.data.forEach(element => {
+                        let days_in_month=moment(element.month).daysInMonth();
+                        html += `
+                            <div class="table-responsive">
+                                <table id="data-table-default-schedule-${element.year}-${element.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                    <thead style="background-color:paleturquoise;" >
+                                        <tr>
+                                            <th class="text-center text-uppercase font-weight-bold" colspan=${days_in_month+1}>${moment(element.month).format('MMMM')} ${element.year}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td class="font-weight-bold" style="background-color:paleturquoise;">Trabajador</td>`
+                                            for (let index = 1; index <= days_in_month; index++) {
+                                                html += `<td class="font-weight-bold" style="background-color:paleturquoise;width:150px !important"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                            }
+                                            html += `
+                                        </tr>
+
+
+                                        <tr>
+                                            <td class="font-weight-bold" style="background-color:paleturquoise"> ${ current.name } </td>`
+                                            for (let index = 1; index <= days_in_month; index++) {
+                                                res.all_data.forEach(element2 => {
+                                                    if( employee_id == element2.employee_id && element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                        if( element2.turno == "L" ){
+                                                            html += `<td rowspan="4" class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
+                                                        }
+                                                        if( element2.turno == "D" ){
+                                                            html += `<td style="color:#6CC773 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br -> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        }
+                                                        if( element2.turno == "N" ){
+                                                            html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br -> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            html += `
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        `
+                    });
+
+                    clearInterval(timerInterval)
+                    
+                    Swal.fire({
+                        title: `Horarios`,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        width: "95%",
+                        confirmButtonText: 'Ok',
+                        html: html
+                    })
+                    
+                    
+                }
+            });
+        }
+
+        function previewIMG(employee_id) {
+            let current={!! $employees !!}.find(i=>i.id===employee_id)
+            Swal.fire({
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        confirmButtonText: 'CERRAR',
+                        html: `<div>
+                            <div class="py-3 font-weight-bold">${current.name}</div>
+                            <img  src='public/employees/${current.employeeNo}.jpg' width="100%" onerror="this.onerror=null;this.src='public/users/null.jpg';" />
+                        </div>`
+                    })
+        }
+
+        function resizeImage(settings) {
+                var file = settings.file;
+                var maxSize = settings.maxSize;
+                var reader = new FileReader();
+                var image = new Image();
+                var canvas = document.createElement('canvas');
+                var dataURItoBlob = function (dataURI) {
+                    var bytes = dataURI.split(',')[0].indexOf('base64') >= 0 ?
+                        atob(dataURI.split(',')[1]) :
+                        unescape(dataURI.split(',')[1]);
+                    var mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                    var max = bytes.length;
+                    var ia = new Uint8Array(max);
+                    for (var i = 0; i < max; i++)
+                        ia[i] = bytes.charCodeAt(i);
+                    return new Blob([ia], { type: mime });
+                };
+                var resize = function () {
+                    var width = image.width;
+                    var height = image.height;
+                    if (width > height) {
+                        if (width > maxSize) {
+                            height *= maxSize / width;
+                            width = maxSize;
+                        }
+                    } else {
+                        if (height > maxSize) {
+                            width *= maxSize / height;
+                            height = maxSize;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+                    var dataUrl = canvas.toDataURL('image/jpeg');
+                    return dataURItoBlob(dataUrl);
+                };
+                return new Promise(function (ok, no) {
+                    if (!file.type.match(/image.*/)) {
+                        no(new Error("Not an image"));
+                        return;
+                    }
+                    reader.onload = function (readerEvent) {
+                        image.onload = function () { return ok(resize()); };
+                        image.src = readerEvent.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+        };
 
 </script>
 @endsection

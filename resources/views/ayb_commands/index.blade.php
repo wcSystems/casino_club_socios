@@ -36,6 +36,7 @@
             width: '50em',
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                @csrf
                     <div class="col-12">
 
                             <div id="items">

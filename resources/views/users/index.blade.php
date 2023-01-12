@@ -36,6 +36,7 @@
             showConfirmButton: false,
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                @csrf
                     <div class="row">
 
                         
@@ -100,7 +101,7 @@
             let current={!! $users !!}.find(i=>i.id===id)
             $("#email").val(current.email)
             $("#name").val(current.name)
-            $("#password").val(current.password)
+            $("#password").removeAttr('required');
             $("#level").val(current.level_id)
         }
         validateForm()
@@ -115,9 +116,14 @@
                 payload.append('id',id ? id : "")
                 payload.append('name',$('#name').val())
                 payload.append('email',$('#email').val())
-                payload.append('password',$('#password').val())
+                
                 payload.append('level_id',$('#level').val())
                 payload.append('image',$('#image').prop('files')[0])
+
+                
+                if(id && $('#password').val() != "" || !id ){
+                    payload.append('password',$('#password').val())
+                }
 
             $.ajax({
                 url: "{{ route('users.store') }}",

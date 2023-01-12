@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Department;
+use App\Models\Position;
 use App\Models\Schedule_template;
 
 class DepartmentsController extends Controller
@@ -16,8 +17,9 @@ class DepartmentsController extends Controller
     public function index()
     {
         $departments = Department::with("employees")->get();
+        $positions = Position::all();
         $schedule_templates = Schedule_template::all();
-        return view('departments.index')->with('departments',$departments)->with('schedule_templates',$schedule_templates);
+        return view('departments.index')->with('departments',$departments)->with('schedule_templates',$schedule_templates)->with('positions',$positions);
     }
 
     /**

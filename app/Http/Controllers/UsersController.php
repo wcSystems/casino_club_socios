@@ -37,30 +37,44 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        if($request["id"]){
-            $current_data = array(
-                "email" => $request["email"],
-                "name" => $request["name"],
-                "level_id" => $request["level_id"],
-                "password" => bcrypt($request["password"]),
-            );
+        $exist = User::where('email', $request["email"])->count() > 1;
+        if($exist){
+            return response()->json([ 'type' => 'repeat']);
+        }
+
+            if($request["password"]){
+                $current_data = array(
+                    "email" => $request["email"],
+                    "name" => $request["name"],
+                    "level_id" => $request["level_id"],
+                    "password" => bcrypt($request["password"]),
+                );
+            }
+            if(!$request["password"]){
+                $current_data = array(
+                    "email" => $request["email"],
+                    "name" => $request["name"],
+                    "level_id" => $request["level_id"],
+                );
+            }
+
+            
+
             $current_item = User::updateOrCreate([ 'id' => $request["id"] ],$current_data);
+
             if($current_item){
+
                 if($request->file('image')){
                     $file= $request->file('image');
                     $ext= $file->getClientOriginalExtension();
                     $file-> move(public_path('public/users/'), $current_item->id.".jpg");
                 }
+
                 return response()->json([ 'type' => 'success']);
             }else{
                 return response()->json([ 'type' => 'error']);
             }
-        }else{
-            $exist = User::where('email', $request["email"])->count() > 0;
-            if($exist){
-                return response()->json([ 'type' => 'repeat']);
-            }
-        } 
+        
     }
 
     /**

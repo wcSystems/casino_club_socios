@@ -49,6 +49,7 @@
                 showCancelButton: true,
                 html:`
                     <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                    @csrf
                         <div class="row">
 
                             {{-- 14:00 --}}

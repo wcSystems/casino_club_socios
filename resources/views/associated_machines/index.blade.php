@@ -55,6 +55,7 @@
             showConfirmButton: false,
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                @csrf
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">

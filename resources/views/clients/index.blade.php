@@ -211,6 +211,7 @@
             showCloseButton: true,
             html:`
                 <form id="form_user_create" class="needs-validation" action="javascript:void(0);" novalidate >
+                @csrf
                     <div class="row">
                         {{-- Inputs --}}
                         <div class="col-sm-6">
@@ -537,6 +538,7 @@
             showConfirmButton: false,
             html:`
                 <form id="form_user_edit" >
+                @csrf
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group row m-b-0">

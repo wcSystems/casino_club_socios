@@ -26,7 +26,7 @@ class isapiController extends Controller
                     "maxResults"=> 1,
                     "major"=> 5,
                     "minor"=> 75,
-                    "startTime"=> "2022-01-01T00:00:00+00:00",
+                    "startTime"=> "2023-01-01T00:00:00+00:00",
                     "endTime"=> "2023-12-31T23:59:00+0:00"
                 ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
         
@@ -45,7 +45,7 @@ class isapiController extends Controller
                             "maxResults"=> 30,
                             "major"=> 5,
                             "minor"=> 75,
-                            "startTime"=> "2022-01-01T00:00:00+00:00",
+                            "startTime"=> "2023-01-01T00:00:00+00:00",
                             "endTime"=> "2023-12-31T23:59:00+0:00"
                         ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
                 $searchResultPosition +=30;
@@ -63,8 +63,8 @@ class isapiController extends Controller
             'auth' =>  ['admin', 'Cas1n01234','digest'],
             'body' => json_encode([
                 "UserInfo"=> [
-                    "employeeNo" =>$request["data"]["employeeNo"],
-                    "name" =>$request["data"]["name"],
+                    "employeeNo" =>$request["employeeNo"],
+                    "name" =>$request["name"],
                     "userType" =>"normal",
                     "Valid"=>[
                         "enable"=> true,
@@ -72,14 +72,82 @@ class isapiController extends Controller
                         "endTime"=>"2035-01-01T00:00:00"
                     ],
                     "PersonInfoExtends"=>[[
-                        "value"=> "{sexo:".$request["data"]['sex_id'].",departamento:".$request["data"]['department_id'].",cargo:".$request["data"]['position_id'].",sede:".$request["data"]['sede_id'].",nacimiento:".$request["data"]['nacimiento']."}"
+                        "value"=> "{sexo:".$request['sex_id'].",departamento:".$request['department_id'].",cargo:".$request['position_id'].",sede:".$request['sede_id'].",nacimiento:".$request['nacimiento']."}"
                     ]],
                 ]])
         ])->getBody()->getContents(), TRUE);
 
         if( $current['statusCode'] == 1 ){
-            $current_delete = Employee::where("employeeNo","=",$request["data"]["employeeNo"])->delete();
-            $current_item = Employee::updateOrCreate($request["id"],$request["data"]);
+            $current_data = array(
+                "employeeNo" => $request["employeeNo"],
+                "name" => $request["name"],
+                "nacimiento" => $request["nacimiento"],
+                "sex_id" => $request["sex_id"],
+                "department_id" => $request["department_id"],
+                "sede_id" => $request["sede_id"],
+                "position_id" => $request["position_id"],
+            );
+
+            $current_item = Employee::updateOrCreate([ 'id' => $request["id"] ],$current_data);
+
+            if($request->file('image')){
+                $file= $request->file('image');
+                $file->move(public_path('public/employees/'), $current_item->employeeNo.".jpg");       
+            }
+
+            $imgGet = new Client();
+            $imgGetIMG = json_decode($imgGet->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch?format=json" ,[
+                'auth' =>  ['admin', 'Cas1n01234','digest'],
+                'body' => json_encode([
+                "searchResultPosition"=>0,
+                "maxResults"=>100,
+                "faceLibType"=>"blackFD",
+                "FDID"=>"1",
+                "FPID"=>$request["employeeNo"]
+            ])])->getBody()->getContents(), TRUE)["responseStatusStrg"];
+
+            if($imgGetIMG == "OK"){
+                $imgDelete = new Client();
+                $imgDeleteIMG = json_decode($imgDelete->put($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch/Delete?format=json&FDID=1&faceLibType=blackFD" ,[
+                    'auth' =>  ['admin', 'Cas1n01234','digest'],
+                    'body' => json_encode([
+                            "FPID" => [[ "value"=> $request["employeeNo"]
+                        ]]
+                    ])])->getBody()->getContents(), TRUE)["statusString"];
+                if($imgDeleteIMG == "OK"){
+                    $imgSend = new Client();
+                    $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
+                        'auth' =>  ['admin', 'Cas1n01234','digest'],
+                        'body' => json_encode([
+                        "faceURL"=> $request["originIMG"],
+                        "faceLibType"=> "blackFD",
+                        "FDID"=> "1",
+                        "FPID"=> $request["employeeNo"],
+                        "name"=> $request["name"],
+                        "gender"=> "male",
+                        "featurePointType"=>"face"
+                    ])])->getBody()->getContents(), TRUE);
+                }
+            }else{
+                $imgSend = new Client();
+                $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
+                    'auth' =>  ['admin', 'Cas1n01234','digest'],
+                    'body' => json_encode([
+                    "faceURL"=> $request["originIMG"],
+                    "faceLibType"=> "blackFD",
+                    "FDID"=> "1",
+                    "FPID"=> $request["employeeNo"],
+                    "name"=> $request["name"],
+                    "gender"=> "male",
+                    "featurePointType"=>"face"
+                ])])->getBody()->getContents(), TRUE);
+            }
+
+            
+            
+
+            
+
             if($current_item){
                 return response()->json([ 'type' => 'success']);
             }else{
@@ -149,14 +217,10 @@ class isapiController extends Controller
     }
 
     public function authImgIsapi(Request $request)
-    {
-        $resCPhotoLast = new Client();
-        $currentPhotoLast = $resCPhotoLast->getAsync( "http://admin:Cas1n01234@192.168.5.181/LOCALS/pic/enrlFace/0/0000000238.jpg@WEB000000012407" ,[
-            'auth' =>  ['admin', 'Cas1n01234', 'digest'],
-        ]);
-
-
-        return $currentPhotoLast;
-            
+    {    
+        return response()->json([ 
+            'first_pictureURL' => "http://admin:Cas1n01234@".$request["first_pictureURL"],
+            'last_pictureURL' => "http://admin:Cas1n01234@".$request["last_pictureURL"]
+        ]);  
     }
 }

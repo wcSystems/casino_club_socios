@@ -254,7 +254,7 @@
             showConfirmButton: false,
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
-
+                @csrf
                     <input type="hidden" id="name_machine_room_active" >
                     <input type="hidden" id="range_machine_id" >
                     <input type="hidden" id="play_machine_id" >
@@ -525,6 +525,7 @@
         let htmlTemplate = ``
         htmlTemplate += `
         <form id="form-all-imgs" class="needs-validation" action="javascript:void(0);" novalidate>
+        @csrf
             <div class="row">`
             if(current.imgs.length > 0){
                 current.imgs.forEach(element => {
@@ -618,7 +619,7 @@
             showConfirmButton: false,
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
-
+                @csrf
                     <input type="hidden" id="serial"  >
                     <input type="hidden" id="associated_machine_id"  >
                     <input type="hidden" id="brand_machine_id"  >

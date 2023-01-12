@@ -90,7 +90,8 @@
                         <th>Cedula</th>
                         <th>Nombre y Apellido</th>
                         <th>Fecha</th>
-                        <th>Hora de Marcaje</th>
+                        <th>Hora de Marcaje ( INTERNO ) </th>
+                        <th>Hora de Marcaje ( EXTERNO ) </th>
                     </tr>
                 </thead>
             </table>
@@ -111,15 +112,21 @@
             { data: 'date' },
             {
                 render: function ( data,type, row,all  ) { 
-                        // console.log(row)
-                        let first_pictureURL = row.first_pictureURL.slice(7);
-                        let last_pictureURL = row.last_pictureURL.slice(7);
-                        first_pictureURL = `http://admin:Cas1n01234@${first_pictureURL}`;
-                        last_pictureURL = `http://admin:Cas1n01234@${last_pictureURL}`;
+
                         return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
-                                <a href='${first_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                                <a href='http://admin:Cas1n01234@192.168.5.181${row.first_pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
                                 <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
-                                <a href='${last_pictureURL}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
+                                <a href='http://admin:Cas1n01234@192.168.5.181${row.last_pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
+                        
+                }
+            },
+            {
+                render: function ( data,type, row,all  ) { 
+
+                        return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
+                                <a href='http://admin:Cas1n01234@${row.first_pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
+                                <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
+                                <a href='http://admin:Cas1n01234@${row.last_pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
                         
                 }
             },

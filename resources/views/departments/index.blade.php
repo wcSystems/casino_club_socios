@@ -1,13 +1,16 @@
 @extends('layouts.app')
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
-    <div class="panel-heading ui-sortable-handle">
-        <h4 class="panel-title"></h4>
-        <div class="panel-heading-btn">
+    <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
+        
+            <button onclick="createSchedule()" class="d-flex btn btn-1 btn-danger">
+                <i class="m-auto fa fa-lg fa-plus"></i>
+            </button>
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
-        </div>
+        
+
     </div>
     <div class="panel-body">
         <div class="table-responsive">
@@ -33,6 +36,7 @@
             showConfirmButton: false,
             html:`
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                @csrf
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
@@ -87,26 +91,259 @@
         {
             render: function ( data,type, row  ) {
                 return `
-                    <a onclick="elim('departments',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                    <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
-                    <a onclick="createSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-info btn-icon btn-circle"><i class="fas fa-calendar"></i></a>
-                    <a onclick="viewSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle"><i class="fas fa-calendar"></i></a>
+                    <a onclick="elim('departments',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
+                    <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>
+                    <a onclick="viewSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
+
+                    
+                    <a onclick="viewEmployees(${row.id})" style="color: var(--global-2)" class="btn btn-gray btn-icon btn-circle my-2 mx-3"><i class="fas fa-camera"></i></a>
+
+
+
+
+                    <a onclick="addHorario(${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
+                    <a onclick="viewHorario(${row.id})" style="color: var(--global-2)" class="btn btn-red btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
+                    
                 `;
             }
         },
     ])
 
-    function createSchedule(id) {
+
+
+    function viewHorario(department_id) {
+        $.ajax({
+            url: "{{ route('schedule_templates.viewScheduleAll') }}",
+            type: "GET",
+            success: function (res) {
+                let html = ``;
+                res.schedule_group_employee = res.schedule_group_employee.filter( i=> i.department_id == department_id )
+                console.log(res.schedule_group_employee)
+
+                const unique = [...new Set(res.schedule_group_employee.map((item) => item.year ))];
+                console.log(unique);
+
+                res.all_group.forEach(element => {
+                    
+                    let days_in_month=moment(element.month).daysInMonth();
+                    html += `
+                        <div class="table-responsive">
+                            <table id="schedule-${element.year}-${element.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                <thead style="background-color:paleturquoise;" >
+                                    <tr>
+                                        <th class="text-center text-uppercase font-weight-bold" colspan=${days_in_month+1}>${moment(element.month).format('MMMM')} ${element.year}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-weight-bold" style="background-color:paleturquoise;"> Trabajador </td>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            html += `<td class="font-weight-bold" style="background-color:paleturquoise;width:150px !important"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                        }
+                                        html += `
+                                    </tr>`
+                                    res.schedule_group_employee.forEach(elementEmployee => {
+                                        if( elementEmployee.year == element.year && elementEmployee.month == element.month ){
+                                            html += `
+                                            <tr>
+                                                <td class="font-weight-bold text-left" style="background-color:paleturquoise;"> 
+                                                    <img src="/public/employees/${elementEmployee.employeeNo}.jpg" onerror="this.onerror=null;this.src='/public/users/null.jpg';" width="40" height="40" class="rounded-circle mr-3" /> ${elementEmployee.employee_name}
+                                                </td>`
+                                                for (let index = 1; index <= days_in_month; index++) {
+                                                    elementEmployee.schedule.forEach(element2 => {
+                                                            if( element.year == element2.year &&  element.month == element2.month && index == element2.day ){
+                                                                if( element2.turno == "L" ){
+                                                                    html += `<td class="font-weight-bold" style="background-color:#EDEDED !important" >L</td>`
+                                                                }
+                                                                if( element2.turno == "D" ){
+                                                                    html += `<td style="color:#6CC773 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                                }
+                                                                if( element2.turno == "N" ){
+                                                                    html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" >${moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).format('LT')} <br /> ${ moment(element2.year+"-"+element2.month+"-"+index+" "+element2.hora_entrada).add(element2.horas_trabajo, 'h').format('LT') }</td>`
+                                                                }
+                                                            }
+                                                        });
+                                                    
+                                                }
+                                            html += `
+                                            </tr>`
+                                        }
+                                    });
+                                    if( res.schedule_group_employee.length == 0 ){
+                                        html +=  `<tr><td colspan=${days_in_month+1} class="font-weight-bold"> HORARIOS A LA FECHA NO CREADA </td></tr>`
+                                    }
+                                    
+                                    html += `
+                                </tbody>
+                            </table>
+                            <div class="d-flex">
+                                <a href="https://api.whatsapp.com/send?text=${window.location.origin}/schedule_department/${department_id}/${element.year}/${element.month}" class="btn btn-green text-white " >
+                                    Whatsapp
+                                </a>
+                            </div>
+                                    
+
+                        </div>
+                    `
+                });
+                Swal.fire({
+                    title: `Horarios`,
+                    showConfirmButton: true,
+                    showCloseButton: true,
+                    width: "95%",
+                    confirmButtonText: 'Ok',
+                    html: html
+                })  
+            }
+        }); 
+    }
+
+
+
+    // new para add
+    function addHorario(department_id) {
+        $.ajax({
+            url: "{{ route('schedule_templates.viewScheduleAll') }}",
+            type: "GET",
+            success: function (res) {
+                let html = ``;
+                res.schedule_group_employee = res.schedule_group_employee.filter( i=> i.department_id == department_id )
+            
+
+                res.all_group.forEach( ( element, indexSchedule ) => {
+                    
+                    let days_in_month=moment(element.month).daysInMonth();
+                    html += `
+                        <div class="table-responsive">
+                            <table id="schedule-${element.year}-${element.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                <thead style="background-color:paleturquoise;" >
+                                    <tr>
+                                        <th class="text-center text-uppercase font-weight-bold" colspan=${days_in_month+1}>${moment(element.month).format('MMMM')} ${element.year}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-weight-bold" style="background-color:paleturquoise;"> Trabajador </td>`
+                                        for (let index = 1; index <= days_in_month; index++) {
+                                            html += `<td class="font-weight-bold text-left" style="background-color:paleturquoise;width:150px !important"> ${ moment(element.year+"-"+element.month+"-"+index).format('dd') }(${moment(element.year+"-"+element.month+"-"+index).format('DD')}) </td>`
+                                        }
+                                        html += `
+                                    </tr>`
+                                    res.schedule_group_employee.forEach(elementEmployee => {
+                                        if( elementEmployee.year == element.year && elementEmployee.month == element.month ){
+                                            html += `
+                                            <tr>
+                                                <td class="font-weight-bold text-left" style="background-color:paleturquoise;"> 
+                                                    <img src="/public/employees/${elementEmployee.employeeNo}.jpg" onerror="this.onerror=null;this.src='/public/users/null.jpg';" width="40" height="40" class="rounded-circle mr-3" /> ${elementEmployee.employee_name}
+                                                </td>`
+                                                for (let index = 1; index <= days_in_month; index++) {
+                                                    html += `
+                                                    <td class="font-weight-bold" style="background-color:#EDEDED !important" >
+                                                    <div >
+                                                        <select id="${indexSchedule}_${index}_${elementEmployee.employee_id}" class="form-control" style="width:100px" >
+                                                            <option value="00:00-L-0" selected class="font-weight-bold"  >LIBRE</option>
+                                                            <optgroup label="Diurno 7H">
+                                                                <option value="14:00-D-7"> 02:00 PM </option>
+                                                                <option value="15:00-D-7"> 03:00 PM </option>
+                                                                <option value="16:00-D-7"> 04:00 PM </option>
+                                                            </optgroup>
+                                                            <optgroup label="Diurno 8H">
+                                                                <option value="07:00-D-8"> 07:00 AM </option>
+                                                                <option value="08:00-D-8"> 08:00 AM </option>
+                                                                <option value="09:00-D-8"> 09:00 AM </option>
+                                                                <option value="11:00-D-8"> 11:00 AM </option>
+                                                                <option value="12:00-D-8"> 12:00 PM </option>
+                                                            </optgroup>
+                                                            <optgroup label="Diurno 12H">
+                                                                <option value="06:00-D-12"> 06:00 AM </option>
+                                                            </optgroup>
+                                                            <optgroup label="Nocturno 7H">
+                                                                <option value="17:00-N-7"> 05:00 PM</option>
+                                                                <option value="18:00-N-7"> 06:00 PM</option>
+                                                                <option value="19:00-N-7"> 07:00 PM</option>
+                                                                <option value="20:00-N-7"> 08:00 PM</option>
+                                                                <option value="21:00-N-7"> 09:00 PM</option>
+                                                            </optgroup>
+                                                            <optgroup label="Nocturno 12H">
+                                                                <option value="18:00-N-12"> 06:00 PM</option>
+                                                            </optgroup>
+
+                                                        </select>
+                                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                                    </div>
+                                                    </td>
+                                                    `
+                                                    
+                                                }
+                                            html += `
+                                            </tr>`
+                                        }
+                                    });
+                                    if( res.schedule_group_employee.length == 0 ){
+                                        html +=  `<tr><td colspan=${days_in_month+1} class="font-weight-bold"> HORARIOS A LA FECHA NO CREADA </td></tr>`
+                                    }
+                                    
+                                    html += `
+                                </tbody>
+                            </table>
+                            <div class="col-sm-12" style="margin-top:20px">
+                                <button onclick="newSchedule(${days_in_month},${element.year},${element.month},${department_id},${indexSchedule})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                            </div>
+                                    
+
+                        </div>
+                    `
+                });
+                Swal.fire({
+                    title: `Horarios`,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    width: "95%",
+                    html: html
+                })  
+            }
+        }); 
+    }
+
+
+    
+
+    function viewEmployees(id) {
+        let current={!! $departments !!}.find(i=>i.id===id)
+        let html = `<div class="row d-flex justify-content-center">`;
+            current.employees.forEach(element => {
+                let position={!! $positions !!}.find(i=>i.id==element.position_id)
+                html += `
+                <div class=" col-md-4 col-sm-6 col-xs-12" >
+                    <img class="rounded-circle" src='public/employees/${element.employeeNo}.jpg' width="150" height="150" onerror="this.onerror=null;this.src='public/users/null.jpg';" />
+                    <div class="font-weight-bold">${element.name}</div>
+                    <span>Cargo: ${ position.name }</span>
+                </div>
+                `
+            });
+            html += `</div>`;
+        Swal.fire({
+            title: current.name,
+            width: '80em',
+            showConfirmButton: true,
+            showCloseButton: true,
+            confirmButtonText: 'CERRAR',
+            html: html
+        })
+    }
+
+    function createSchedule() {
         let html = ``;
             html +=`
             <form id="form-all-schedule" class="needs-validation" action="javascript:void(0);" novalidate>
+            @csrf
                 <div class="row">
                     <div class="col-12 m-auto">
                         <div class="col-md-4 col-sm-4">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Año y mes <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="month" id="month_year" value="${moment().format("YYYY")}-${moment().format("MM")}" name="month_year" onchange="monthYearChange(${id})" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="" >
+                                    <input required type="month" id="month_year" value="${moment().format("YYYY")}-${moment().format("MM")}" name="month_year"  class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="" >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
@@ -115,110 +352,94 @@
                     <div id="daysOfMonth" class="row"></div>`
                     html +=`
                     <div class="col-sm-12" style="margin-top:20px">
-                        <button onclick="guardarSchedule(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                        <button onclick="guardarSchedule()" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                     </div>
                 </div>
             </form>`;
-        Swal.fire({ title: {!! $departments !!}.find(i=>i.id===id).name, showConfirmButton: false, width: '80em', html:html })
-        monthYearChange(id)
-        validateForm()
+        Swal.fire({ title: "Horarios", showConfirmButton: false, width: '80em', html:html })
     }
 
-    function monthYearChange(id) {
-        let days_in_month=moment( $("#month_year").val().slice(5) ).daysInMonth();
-        let current_department={!! $departments !!}.find(i=>i.id===id)
-        let html = ``
-            html +=`
-            <div id="daysOfMonth" class="row">
-                <div class="col-12 m-auto"><label class=" text-lg-right col-form-label font-weight-bold"> Horario ${ moment($("#month_year").val().slice(5)).format('MMMM') } ${ $("#month_year").val().slice(0,4) }</span> </label></div>`;
-                for (let index = 1; index <= days_in_month; index++) {
-                    
-                    (current_department.employees).forEach(element => {
-                        let current={!! $schedule_templates !!}.filter(i=>i.employee_id==element.id).filter(i=>i.year==$("#month_year").val().slice(0,4)).filter(i=>i.month==$("#month_year").val().slice(5))
-                        let current_data= ( current.find(i=>i.day==index) != undefined ) ? current.find(i=>i.day==index)  : {} ;
-                        html +=`<input type="hidden" id="${element.id}_${index}_id" name="${element.id}_${index}_id" value="${current_data.id}" >`
-                    });
-                    
-                    
-                    html +=`
-                    <div class="col-md-2 col-sm-2">
-                        <div class="form-group row m-b-0 m-2">
-                            <label class=" text-lg-right col-form-label font-weight-bold"> ${ moment($("#month_year").val().slice(0,4)+"-"+$("#month_year").val().slice(5)+"-"+index).format('dd') }(${moment($("#month_year").val().slice(0,4)+"-"+$("#month_year").val().slice(5)+"-"+index).format('DD')}) <span class="text-danger"> *</span> </label>
-                            
-                            <div class="col-lg-12 my-1">
-                                <select id="${index}_hora_entrada" class="form-control w-100" >
-                                    <option value="00:00-L-0" selected class="font-weight-bold"  >LIBRE</option>
-                                    <optgroup label="Diurno 7H">
-                                        <option value="14:00-D-7"> 02:00 PM </option>
-                                        <option value="15:00-D-7"> 03:00 PM </option>
-                                        <option value="16:00-D-7"> 04:00 PM </option>
-                                    </optgroup>
-                                    <optgroup label="Diurno 8H">
-                                        <option value="07:00-D-8"> 07:00 AM </option>
-                                        <option value="08:00-D-8"> 08:00 AM </option>
-                                        <option value="09:00-D-8"> 09:00 AM </option>
-                                        <option value="11:00-D-8"> 11:00 AM </option>
-                                        <option value="12:00-D-8"> 12:00 PM </option>
-                                    </optgroup>
-                                    <optgroup label="Diurno 12H">
-                                        <option value="06:00-D-12"> 06:00 AM </option>
-                                    </optgroup>
-                                    <optgroup label="Nocturno 7H">
-                                        <option value="17:00-N-7"> 05:00 PM</option>
-                                        <option value="18:00-N-7"> 06:00 PM</option>
-                                        <option value="19:00-N-7"> 07:00 PM</option>
-                                        <option value="20:00-N-7"> 08:00 PM</option>
-                                        <option value="21:00-N-7"> 09:00 PM</option>
-                                    </optgroup>
-                                    <optgroup label="Nocturno 12H">
-                                        <option value="18:00-N-12"> 06:00 PM</option>
-                                    </optgroup>
+    
 
-                                </select>
-                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                            </div>
-                        </div>
-                    </div>`; 
+    function newSchedule(days_in_month,year,month,department_id,indexSchedule) {
+        month = ( month <= 9 ) ? "0"+month : month
+
+        let department={!! $departments !!}.find(i=>i.id===department_id)
+        let employees = department.employees
+
+        let newArr = []
+
+        for (let index = 1; index <= days_in_month; index++) {
+            employees.forEach( element =>  {
+                if( $(`#${indexSchedule}_${index}_${element.id}`).val() ){
+
+                    newArr.push({
+                            hora_entrada: $(`#${indexSchedule}_${index}_${element.id}`).val().slice(0,5),
+                            horas_trabajo: $(`#${indexSchedule}_${index}_${element.id}`).val().slice(8),
+                            turno: $(`#${indexSchedule}_${index}_${element.id}`).val().slice(6,7),
+                            year: year,
+                            month: month,
+                            day: index,
+                            date: moment(`${year}-${month}-${index}`).format('YYYY-MM-DD'),
+                            employee_id: element.id,
+                        
+                    })
+
                 }
-                html +=`
-            </div>`
-        $("#daysOfMonth").replaceWith(html)
-    }
+            });
+        }
 
-    function guardarSchedule(id) {
+                let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr, type: "all", year: year, month: month  }
+                $.ajax({
+                    url: "{{ route('schedule_templates.store') }}",
+                    type: "POST",
+                    data: payload,
+                    success: function (res) {
+                        console.log("aca_data",res)
+                        if(res.type === 'success'){
+                            location.reload();
+                        }
+                    }
+                });
+                
+
+            
+            
+    }
+    
+
+    function guardarSchedule() {
+
         let newArr = []
         let days_in_month=moment( $("#month_year").val().slice(5) ).daysInMonth();
+
         for (let index = 1; index <= days_in_month; index++) {
             newArr.push({
-                schedule: {
-                    hora_entrada: $(`#${index}_hora_entrada`).val().slice(0,5),
-                    horas_trabajo: $(`#${index}_hora_entrada`).val().slice(8),
-                    turno: $(`#${index}_hora_entrada`).val().slice(6,7),
+                    hora_entrada: "00:00",
+                    horas_trabajo: "0",
+                    turno: "L",
                     year: $("#month_year").val().slice(0,4),
                     month: $("#month_year").val().slice(5),
                     day: index,
                     date: moment(`${$("#month_year").val().slice(0,4)}-${$("#month_year").val().slice(5)}-${index}`).format('YYYY-MM-DD'),
-                }
+                
             })
         }
-        
+
       
-      
-        let validity = document.getElementById('form-all-schedule').checkValidity()
-        if(validity){
-            let payload = { _token: $("meta[name='csrf-token']").attr("content"), data: newArr, type: "department" , department: id, year: $("#month_year").val().slice(0,4), month: $("#month_year").val().slice(5)  }
-            $.ajax({
-                url: "{{ route('schedule_templates.store') }}",
-                type: "POST",
-                data: payload,
-                success: function (res) {
-                    console.log("aca_data",res)
-                    if(res.type === 'success'){
-                        location.reload();
-                    }
+        let payload = { _token: $("meta[name='csrf-token']").attr("content"), days_in_month: days_in_month, type: "allEmployees", year: $("#month_year").val().slice(0,4), month: $("#month_year").val().slice(5)  }
+        $.ajax({
+            url: "{{ route('schedule_templates.store') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+                console.log("aca_data",res)
+                if(res.type === 'success'){
+                    location.reload();
                 }
-            });
-        }
+            }
+        });
+    
 
 
     }
@@ -602,14 +823,14 @@
 
         clearInterval(timerInterval)
             
-            Swal.fire({
-                title: `Horarios`,
-                showConfirmButton: true,
-                showCloseButton: true,
-                width: "95%",
-                confirmButtonText: 'Ok',
-                html: html
-            })
+        Swal.fire({
+            title: `Horarios`,
+            showConfirmButton: true,
+            showCloseButton: true,
+            width: "95%",
+            confirmButtonText: 'Ok',
+            html: html
+        })
     }
 
     function setLoading(timerInterval) {
@@ -623,7 +844,9 @@
                     timerInterval = setInterval(() => { }, 100)
                 },
             })
-        }
+    }
+
+    
 
 </script>
 @endsection
