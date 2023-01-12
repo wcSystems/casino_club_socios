@@ -15,13 +15,13 @@ class CreateAybItemCommandsTable extends Migration
     {
         Schema::create('ayb_item_commands', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('ayb_item_id')->nullable()->unsigned();
-            $table->foreign('ayb_item_id')->references('id')->on('ayb_items')->onUpdate('cascade');
             $table->bigInteger('ayb_command_id')->nullable()->unsigned();
             $table->foreign('ayb_command_id')->references('id')->on('ayb_commands')->onUpdate('cascade');
+            $table->bigInteger('ayb_item_id')->nullable()->unsigned();
+            $table->foreign('ayb_item_id')->references('id')->on('ayb_items')->onUpdate('cascade');
             $table->string('total',11);
-            $table->string('option',11);
-            $table->string('game',11);
+            $table->bigInteger('table_id')->nullable()->unsigned();
+            $table->foreign('table_id')->references('id')->on('tables')->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -28,13 +28,15 @@ class ClientsController extends Controller
         $foods = Food::all();
         $juices = Juice::all();
         $drinks = Drink::all();
+        $clients = Client::all();
         return view('clients.index')
                         ->with('transportations',$transportations)
                         ->with('machines',$machines)
                         ->with('tables',$tables)
                         ->with('foods',$foods)
                         ->with('juices',$juices)
-                        ->with('drinks',$drinks);
+                        ->with('drinks',$drinks)
+                        ->with('clients',$clients);
     }
 
     /**
@@ -55,14 +57,12 @@ class ClientsController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = new Client($request->all());
-        $current_item->save();
-        $current_item->machines()->attach($request->client_machines);
-        $current_item->tables()->attach($request->client_tables);
-        $current_item->foods()->attach($request->client_foods);
-        $current_item->juices()->attach($request->client_juices);
-        $current_item->drinks()->attach($request->client_drinks);
-        return response()->json([ 'type' => 'success', 'data' => $current_item]);
+        $current_item = Client::updateOrCreate($request["id"],$request["data"]);
+        if($current_item){
+            return response()->json([ 'type' => 'success']);
+        }else{
+            return response()->json([ 'type' => 'error']);
+        }
     }
 
     /**

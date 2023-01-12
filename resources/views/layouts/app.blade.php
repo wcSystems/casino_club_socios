@@ -255,45 +255,8 @@
                             <span class="text-white">SEXOS</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MARKENTING</li>
+                   
                     
-                    
-                    <li id="transportations_nav" class="has-sub closed">
-                        <a href="{{ route('transportations') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">TRANSPORTES</span>
-                        </a>
-                    </li>
-                    <li id="juices_nav" class="has-sub closed">
-                        <a href="{{ route('juices') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">JUGOS</span>
-                        </a>
-                    </li>
-                    <li id="foods_nav" class="has-sub closed">
-                        <a href="{{ route('foods') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">COMIDAS</span>
-                        </a>
-                    </li>
-                    <li id="drinks_nav" class="has-sub closed">
-                        <a href="{{ route('drinks') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">TRAGOS</span>
-                        </a>
-                    </li>
-                    <li id="machines_nav" class="has-sub closed">
-                        <a href="{{ route('machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MAQUINAS</span>
-                        </a>
-                    </li>
-                    <li id="tables_nav" class="has-sub closed">
-                        <a href="{{ route('tables') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MESAS EN VIVO</span>
-                        </a>
-                    </li>
                     
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MAQUINAS</li>
                     <li id="rooms_nav" class="has-sub closed">
@@ -363,6 +326,12 @@
                         <a href="{{ route('group_menus') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">GRUPO DE MENUS</span>
+                        </a>
+                    </li>
+                    <li id="tables_nav" class="has-sub closed">
+                        <a href="{{ route('tables') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">DESTINOS</span>
                         </a>
                     </li>
 

@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Ayb_item_command extends Model
 {
     protected $fillable = [
-        'ayb_item_id',
         'ayb_command_id',
+        'ayb_item_id',
         'total',
-        'option',
-        'game',
+        'table_id',
     ];
 
     public function items() {

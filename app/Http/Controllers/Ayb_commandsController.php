@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Ayb_command;
 use App\Models\Ayb_item;
 use App\Models\Ayb_item_command;
+use App\Models\Table;
+use App\Models\Employee;
+use App\Models\Position;
 use Illuminate\Support\Facades\DB;
 use App\User;
 
@@ -22,7 +25,17 @@ class Ayb_commandsController extends Controller
         $ayb_items = Ayb_item::all();
         $users = User::all();
         $ayb_item_commands = Ayb_item_command::all();
-        return view('ayb_commands.index')->with('ayb_commands',$ayb_commands)->with('ayb_items',$ayb_items)->with('ayb_item_commands',$ayb_item_commands)->with('users',$users);
+        $tables = table::all();
+        $positions = Position::whereIn('id', [1, 3, 15, 19])->get();
+        $employees = Employee::whereIn('position_id', [1, 3, 15, 19])->get();
+        
+        return view('ayb_commands.index')
+                    ->with('ayb_commands',$ayb_commands)
+                    ->with('ayb_items',$ayb_items)
+                    ->with('ayb_item_commands',$ayb_item_commands)
+                    ->with('tables',$tables)
+                    ->with('employees',$employees)
+                    ->with('positions',$positions);
     }
 
     /**
@@ -44,14 +57,15 @@ class Ayb_commandsController extends Controller
     public function store(Request $request)
     {
         $current_data_command = array(
-            "user_id" => $request["data"]["user_id"],
+            "codigo" => $request->codigo,
+            "tipo" => $request->tipo,
+            "employee_id" => $request->employee_id,
         );
-        $current_item_command = Ayb_command::updateOrCreate($request["id"],$current_data_command);
+        $current_item_command = Ayb_command::create($current_data_command);
 
-        $obj = $request["data"]["obj"];
-
-        foreach ($obj as $key) {
-            $current_item = Ayb_item_command::create([ 'ayb_item_id' => $key["ayb_item_id"], 'ayb_command_id' => $current_item_command->id, 'total' => $key["total"], 'option' => $key["option"], 'game' => $key["game"] ]);
+        $obj = $request->items;
+        foreach ($obj as $value) {
+            $current_item = Ayb_item_command::create([ 'ayb_command_id' => $current_item_command->id, 'ayb_item_id' => $value["ayb_item_id"],  'total' => $value["total"], 'table_id' => $value["table_id"] ]);
         }
 
         if($current_item_command){
@@ -124,17 +138,16 @@ class Ayb_commandsController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
-        /* QUERY FILTER */
-        //$query = Ayb_command::where('ayb_item_id','LIKE','%'.$search.'%')->get();
-        //$query = Ayb_item_command::all();
 
-        $query = Ayb_command::select(DB::raw('ayb_commands.*, ayb_commands.created_at AS group_name, users.name AS user_name'))
-                    ->where('users.name','LIKE','%'.$search.'%')
+        $query = Ayb_command::select(DB::raw('ayb_commands.*, ayb_commands.created_at AS group_name, employees.name AS employee_name '))
                     ->orWhere('ayb_commands.created_at','LIKE','%'.$search.'%')
-                    ->join('users', 'ayb_commands.user_id', '=', 'users.id')->get();
+                    ->join('employees', 'ayb_commands.employee_id', '=', 'employees.id')
+                    ->get();
 
         $query->each(function ($item) {
             $item->group_name = DATE_FORMAT($item->created_at, "Y-m-d");
+            if($item->tipo == "1"){ $item->tipo = "Venta"; }
+            if($item->tipo == "2"){ $item->tipo = "Cortesia"; }
         });
 
 
@@ -163,23 +176,26 @@ class Ayb_commandsController extends Controller
       
         $id = $request["id"];
 
-        $list = Ayb_item_command::select(DB::raw('ayb_item_commands.*, ayb_items.name AS item_name, ayb_items.price AS price'))
+        $list = Ayb_item_command::select(DB::raw('ayb_item_commands.*, ayb_items.name AS item_name, ayb_items.price AS price, tables.name AS table_name'))
                     ->where('ayb_item_commands.ayb_command_id','=',$id)
+
                     ->join('ayb_commands', 'ayb_item_commands.ayb_command_id', '=', 'ayb_commands.id')
                     ->join('ayb_items', 'ayb_item_commands.ayb_item_id', '=', 'ayb_items.id')
+                    ->join('tables', 'ayb_item_commands.table_id', '=', 'tables.id')
                     ->get();
 
-        $aprobado = Ayb_command::select(DB::raw('users.name, ayb_commands.created_at AS fecha'))
+        $command = Ayb_command::select(DB::raw('ayb_commands.*, employees.name AS employee_name'))
                         ->where('ayb_commands.id','=',$id)
-                        ->join('users', 'ayb_commands.user_id', '=', 'users.id')
+                        ->join('employees', 'ayb_commands.employee_id', '=', 'employees.id')
                         ->first();
-
-        //$list = Ayb_item_command::with($id);
+        
+        if($command->tipo == "1"){ $command->tipo = "Venta"; }
+        if($command->tipo == "2"){ $command->tipo = "Cortesia"; }
+                      
 
         echo json_encode(array(
             "productos" => $list,
-            "aprobado" => $aprobado->name,
-            "fecha" => $aprobado->fecha,
+            "command" => $command,
         ));
     }
 
