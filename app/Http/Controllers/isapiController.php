@@ -68,8 +68,8 @@ class isapiController extends Controller
                     "userType" =>"normal",
                     "Valid"=>[
                         "enable"=> true,
-                        "beginTime"=>"2000-01-01T00:00:00",
-                        "endTime"=>"2035-01-01T00:00:00"
+                        "beginTime"=>"2023-01-01T00:00:00",
+                        "endTime"=>"2023-12-31T23:59:59"
                     ],
                     "PersonInfoExtends"=>[[
                         "value"=> "{sexo:".$request['sex_id'].",departamento:".$request['department_id'].",cargo:".$request['position_id'].",sede:".$request['sede_id'].",nacimiento:".$request['nacimiento']."}"
@@ -200,7 +200,7 @@ class isapiController extends Controller
                         "Valid"=>[
                             "enable"=> true,
                             "beginTime"=>"2000-01-01T00:00:00",
-                            "endTime"=>"2035-01-01T00:00:00"
+                            "endTime"=>"2037-12-31T23:59:59"
                         ],
                         "PersonInfoExtends"=>[[
                             "value"=> "{sexo:".$value['sex_id'].",departamento:".$value['department_id'].",cargo:".$value['position_id'].",sede:".$value['sede_id'].",nacimiento:".$value['nacimiento']."}"

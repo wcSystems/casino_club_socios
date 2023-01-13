@@ -27,6 +27,7 @@
                         <th>Cedula</th>
                         <th>Telefono</th>
                         <th>Email</th>
+                        <th>Sede</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -110,6 +111,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Sede <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="sede_id" class="form-control w-100" >
+                                        <option value="" selected >Todas las sedes</option>
+                                        @foreach( $sedes as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;">Guardar</button>
                         </div>
@@ -125,6 +140,7 @@
             $("#phone").val(current.phone)
             $("#email").val(current.email)
             $("#address").val(current.address)
+            $("#sede_id").val(current.sede_id)
         }
         validateForm()
     }
@@ -143,6 +159,7 @@
                     phone: $("#phone").val(),
                     email: $("#email").val(),
                     address: $("#address").val(),
+                    sede_id: $("#sede_id").val(),
                 }
             }
             $.ajax({
@@ -170,6 +187,7 @@
         { data: 'cedula' },
         { data: 'phone' },
         { data: 'email' },
+        { data: 'sede_name' },
         {
             render: function ( data,type, row  ) {
                 return `

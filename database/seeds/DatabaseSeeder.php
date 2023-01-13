@@ -51,6 +51,5 @@ class DatabaseSeeder extends Seeder
         $this->call(PositionsTableSeeder::class);
         $this->call(RoomsTableSeeder::class);
         
-        factory(Client::class, 1000)->create();
     }
 }

@@ -24,10 +24,6 @@
 
 <script>
     $('#graphics_nav').removeClass("closed").addClass("active").addClass("expand")
-    let charts = {!! $charts !!}
-    
-  
-
 </script>
 @endsection
 

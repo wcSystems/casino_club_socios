@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
-use App\Models\Transportation;
-use App\Models\Machine;
+use App\Models\Sede;
 use App\Models\Table;
-use App\Models\Food;
-use App\Models\Juice;
-use App\Models\Drink;
 
 use Illuminate\Support\Facades\DB;
 
@@ -22,20 +18,12 @@ class ClientsController extends Controller
      */
     public function index()
     {
-        $transportations = Transportation::all();
-        $machines = Machine::all();
         $tables = Table::all();
-        $foods = Food::all();
-        $juices = Juice::all();
-        $drinks = Drink::all();
         $clients = Client::all();
+        $sedes = Sede::all();
         return view('clients.index')
-                        ->with('transportations',$transportations)
-                        ->with('machines',$machines)
                         ->with('tables',$tables)
-                        ->with('foods',$foods)
-                        ->with('juices',$juices)
-                        ->with('drinks',$drinks)
+                        ->with('sedes',$sedes)
                         ->with('clients',$clients);
     }
 
@@ -136,52 +124,18 @@ class ClientsController extends Controller
         $search_ticket_machine = $request->get('search_ticket_machine');
         $search_ticket_table = $request->get('search_ticket_table');
 
-        $query = DB::table('clients')
-        ->orWhere(function($query) use ($search){
-            $query->orWhere('name','LIKE','%'.$search.'%');
-            $query->orWhere('last_name','LIKE','%'.$search.'%');
-            $query->orWhere('cedula','LIKE','%'.$search.'%');
-            $query->orWhere('f_nac','LIKE','%'.$search.'%');
-            $query->orWhere('email','LIKE','%'.$search.'%');
-            $query->orWhere('address','LIKE','%'.$search.'%');
-            $query->orWhere('phone','LIKE','%'.$search.'%');
-        })
-        ->where(function($query) use ($search_transportation,$search_club_vip,$search_referido,$search_vive_cerca,$search_trabaja_cerca,$search_solo_de_paso,$search_descuento,$search_puntos_por_canje,$search_ticket_souvenirs){
-            if(!empty($search_transportation)){
-                $query->where('transportation_id', '=', $search_transportation);
-            }else{};
-            if($search_club_vip==1){
-                $query->where('club_vip', '=', 1);
-            }else{};
-            if(!empty($search_referido)){
-                $query->where('referido', '=', $search_referido);
-            }else{};
-            if(!empty($search_vive_cerca)){
-                $query->where('vive_cerca', '=', $search_vive_cerca);
-            }else{};
-            if(!empty($search_trabaja_cerca)){
-                $query->where('trabaja_cerca', '=', $search_trabaja_cerca);
-            }else{};
-            if(!empty($search_solo_de_paso)){
-                $query->where('solo_de_paso', '=', $search_solo_de_paso);
-            }else{};
-            if(!empty($search_descuento)){
-                $query->where('descuento', '=', $search_descuento);
-            }else{};
-            if(!empty($search_puntos_por_canje)){
-                $query->where('puntos_por_canje', '=', $search_puntos_por_canje);
-            }else{};
-            if(!empty($search_ticket_souvenirs)){
-                $query->where('ticket_souvenirs', '=', $search_ticket_souvenirs);
-            }else{};
-            /* if(!empty($search_ticket_machine)){
-                $query->where('machine', '=', $search_ticket_machine);
-            }else{};
-            if(!empty($search_ticket_table)){
-                $query->where('table', '=', $search_ticket_table);
-            }else{}; */
-        })
-        ->get();
+        $query = Client::select(DB::raw('clients.*, sedes.name AS sede_name'))
+                    ->orWhere(function($query) use ($search){
+                        $query->orWhere('clients.name','LIKE','%'.$search.'%');
+                        $query->orWhere('last_name','LIKE','%'.$search.'%');
+                        $query->orWhere('cedula','LIKE','%'.$search.'%');
+                        $query->orWhere('f_nac','LIKE','%'.$search.'%');
+                        $query->orWhere('email','LIKE','%'.$search.'%');
+                        $query->orWhere('address','LIKE','%'.$search.'%');
+                        $query->orWhere('phone','LIKE','%'.$search.'%');
+                    })
+                    ->join('sedes', 'clients.sede_id', '=', 'sedes.id')
+                    ->get();
 
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');

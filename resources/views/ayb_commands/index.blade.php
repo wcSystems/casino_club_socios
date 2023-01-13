@@ -192,11 +192,11 @@
                                 res.productos.forEach(element => {
                                     html +=`
                                     <tr>
-                                        <td> ${element.item_name} </td>
-                                        <td> ${element.table_name} </td>
-                                        <td> ${element.total} </td>
-                                        <td> ${element.price} $ </td>
-                                        <td> ${ element.total * element.price } $ </td>
+                                        <td class="text-left"> ${element.item_name} </td>
+                                        <td class="text-left"> ${element.table_name} </td>
+                                        <td > ${element.total} </td>
+                                        <td > ${element.price} $ </td>
+                                        <td > ${ element.total * element.price } $ </td>
                                     </tr>
                                     `;
                                 });
