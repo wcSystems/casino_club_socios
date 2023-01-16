@@ -26,6 +26,7 @@
             --global-4: #000 !important;
             --global-6: #2986cc !important;
             --global-7: #000 !important;
+            --global-8: #EDEDED !important;
         }
     </style>
     <link href="{{ asset('css/filepond/filepond.css') }}" rel="stylesheet" />
@@ -78,11 +79,11 @@
         /* NEW COLORS */
         /* NEW COLORS */
         /* NEW COLORS */
-        .form-control, .form-check-input, input, select {
+        /* .form-control, .form-check-input, input, select {
             background-color: transparent !important;
             border-color: var(--global-6) !important;
             color: #000 !important;
-        }
+        } */
         input[type="checkbox"]{
             border-color: var(--global-6) !important;
         }
@@ -318,7 +319,7 @@
                     <li id="ayb_items_nav" class="has-sub closed">
                         <a href="{{ route('ayb_items') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ITEMS A&B</span>
+                            <span class="text-white">MENÚS</span>
                         </a>
                     </li>
                     
@@ -326,6 +327,12 @@
                         <a href="{{ route('group_menus') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">GRUPO DE MENUS</span>
+                        </a>
+                    </li>
+                    <li id="type_commands_nav" class="has-sub closed">
+                        <a href="{{ route('type_commands') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">TIPOS DE COMANDAS</span>
                         </a>
                     </li>
                     <li id="tables_nav" class="has-sub closed">
@@ -352,6 +359,18 @@
                         <a href="{{ route('positions') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">CARGOS</span>
+                        </a>
+                    </li>
+                    <li id="horarios_nav" class="has-sub closed">
+                        <a href="{{ route('horarios') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">HORAS DE ENTRADA</span>
+                        </a>
+                    </li>
+                    <li id="year_month_groups_nav" class="has-sub closed">
+                        <a href="{{ route('year_month_groups') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">HORARIOS</span>
                         </a>
                     </li>
                     
@@ -406,7 +425,7 @@
         });
 
         
-        function dataTable(url,columns,group_name_all) {
+        function dataTable(url,columns,group_name_all, order_by) {
             $(document).ready(function() {
                 let table = $('#data-table-default').DataTable({
                     lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
@@ -414,6 +433,7 @@
                     processing: true,
                     lengthChange: true,
                     columns: columns,
+                    order: (order_by) ?  [[1, 'asc']] : [],
                     drawCallback: function (settings) {
                         ajaxReloadDatatablesFN(settings.aoData.map( i => i._aData ))
                         if(group_name_all){
@@ -567,6 +587,7 @@
         }
         function ajaxReloadDatatablesFN(all){ }  
         function elim(route,id) {
+            let timerInterval 
             Swal.fire({
                 title: 'Estás seguro?',
                 text: 'No serás capaz de recuperar el registro a borrar!',
@@ -575,6 +596,7 @@
             }).then((result) => {
                 
                 if (result.isConfirmed) {
+                    setLoading(timerInterval)
                     $.ajax({
                         url: `${location.origin}/${route}/${id}`,
                         type: "DELETE",
@@ -583,6 +605,7 @@
                         },
                         success: function (res) {
                             if(res.type === 'success'){
+                                clearInterval(timerInterval)
                                 location.reload();
                             }
                         }
@@ -774,6 +797,19 @@
                 $("#search").keyup( () =>{ $('#data-table-default').DataTable().ajax.reload() });
             });
             
+        }
+
+        function setLoading(timerInterval) {
+            Swal.fire({
+                title: 'Gargando datos!',
+                text: 'porfavor espere...',
+                timer: 300000,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => { }, 100)
+                },
+            })
         }
         
     </script>

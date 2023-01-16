@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ayb_command extends Model
 {
     protected $fillable = [
-        'codigo',
-        'tipo',
+        'type_command_id',
         'employee_id',
     ];
 

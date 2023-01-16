@@ -12,10 +12,10 @@ class Group_menusTableSeeder extends Seeder
     public function run()
     {
         DB::table('group_menus')->insert([
-            'name' => "Venta"
+            'name' => "Dips"
         ]);
         DB::table('group_menus')->insert([
-            'name' => "Cortesia"
+            'name' => "Shabdwiths"
         ]);
     }
 }

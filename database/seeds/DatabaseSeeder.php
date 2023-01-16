@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentsTableSeeder::class);
         $this->call(PositionsTableSeeder::class);
         $this->call(RoomsTableSeeder::class);
+        $this->call(Type_commandsTableSeeder::class);
         
     }
 }

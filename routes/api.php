@@ -48,6 +48,9 @@ Route::get('/positions/service', 'PositionsController@service')->name('positions
 Route::get('/employees/service', 'EmployeesController@service')->name('employees.service');
 Route::get('/global_warehouses/service', 'Global_warehousesController@service')->name('global_warehouses.service');
 Route::get('/rooms/service', 'RoomsController@service')->name('rooms.service');
+Route::get('/type_commands/service', 'Type_commandsController@service')->name('type_commands.service');
+Route::get('/year_month_groups/service', 'Year_month_groupsController@service')->name('year_month_groups.service');
+Route::get('/horarios/service', 'HorariosController@service')->name('horarios.service');
 
 
 
@@ -67,7 +70,7 @@ Route::post('/isapi/authImgIsapi', 'isapiController@authImgIsapi')->name('isapi.
 
 
 Route::post('/schedule_templates/viewSchedule', 'Schedule_templatesController@viewSchedule')->name('schedule_templates.viewSchedule');
-Route::get('/schedule_templates/viewScheduleAll', 'Schedule_templatesController@viewScheduleAll')->name('schedule_templates.viewScheduleAll');
+Route::post('/schedule_templates/viewScheduleAll', 'Schedule_templatesController@viewScheduleAll')->name('schedule_templates.viewScheduleAll');
 
 // list
 Route::post('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');

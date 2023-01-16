@@ -8,7 +8,9 @@ use App\Models\Ayb_item;
 use App\Models\Ayb_item_command;
 use App\Models\Table;
 use App\Models\Employee;
-use App\Models\Position;
+use App\Models\Department;
+use App\Models\Group_menu;
+use App\Models\Type_command;
 use Illuminate\Support\Facades\DB;
 use App\User;
 
@@ -22,12 +24,16 @@ class Ayb_commandsController extends Controller
     public function index()
     {
         $ayb_commands = Ayb_command::all();
+        $ayb_item_commands = Ayb_item_command::all();
+        $tables = Table::all();
+
         $ayb_items = Ayb_item::all();
         $users = User::all();
-        $ayb_item_commands = Ayb_item_command::all();
-        $tables = table::all();
-        $positions = Position::whereIn('id', [1, 3, 15, 19])->get();
-        $employees = Employee::whereIn('position_id', [1, 3, 15, 19])->get();
+        
+        $group_menus = Group_menu::all();
+        $type_commands = Type_command::all();
+        $departments = Department::whereIn('id', [16])->get();
+        $employees = Employee::whereIn('department_id', [16])->get();
         
         return view('ayb_commands.index')
                     ->with('ayb_commands',$ayb_commands)
@@ -35,7 +41,9 @@ class Ayb_commandsController extends Controller
                     ->with('ayb_item_commands',$ayb_item_commands)
                     ->with('tables',$tables)
                     ->with('employees',$employees)
-                    ->with('positions',$positions);
+                    ->with('group_menus',$group_menus)
+                    ->with('type_commands',$type_commands)
+                    ->with('departments',$departments);
     }
 
     /**
@@ -57,8 +65,7 @@ class Ayb_commandsController extends Controller
     public function store(Request $request)
     {
         $current_data_command = array(
-            "codigo" => $request->codigo,
-            "tipo" => $request->tipo,
+            "type_command_id" => $request->type_command_id,
             "employee_id" => $request->employee_id,
         );
         $current_item_command = Ayb_command::create($current_data_command);
@@ -139,9 +146,10 @@ class Ayb_commandsController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
 
-        $query = Ayb_command::select(DB::raw('ayb_commands.*, ayb_commands.created_at AS group_name, employees.name AS employee_name '))
+        $query = Ayb_command::select(DB::raw('ayb_commands.*, ayb_commands.created_at AS group_name, employees.name AS employee_name,  type_commands.name AS type_command_name '))
                     ->orWhere('ayb_commands.created_at','LIKE','%'.$search.'%')
                     ->join('employees', 'ayb_commands.employee_id', '=', 'employees.id')
+                    ->join('type_commands', 'ayb_commands.type_command_id', '=', 'type_commands.id')
                     ->get();
 
         $query->each(function ($item) {
@@ -184,13 +192,11 @@ class Ayb_commandsController extends Controller
                     ->join('tables', 'ayb_item_commands.table_id', '=', 'tables.id')
                     ->get();
 
-        $command = Ayb_command::select(DB::raw('ayb_commands.*, employees.name AS employee_name'))
+        $command = Ayb_command::select(DB::raw('ayb_commands.*, employees.name AS employee_name, type_commands.name AS type_command_name'))
                         ->where('ayb_commands.id','=',$id)
                         ->join('employees', 'ayb_commands.employee_id', '=', 'employees.id')
+                        ->join('type_commands', 'ayb_commands.type_command_id', '=', 'type_commands.id')
                         ->first();
-        
-        if($command->tipo == "1"){ $command->tipo = "Venta"; }
-        if($command->tipo == "2"){ $command->tipo = "Cortesia"; }
                       
 
         echo json_encode(array(

@@ -15,10 +15,13 @@ class CreateAybCommandsTable extends Migration
     {
         Schema::create('ayb_commands', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('codigo',11);
-            $table->string('tipo',11);
+
+            $table->bigInteger('type_command_id')->nullable()->unsigned();
+            $table->foreign('type_command_id')->references('id')->on('type_commands')->onUpdate('cascade');
+
             $table->bigInteger('employee_id')->nullable()->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onUpdate('cascade');
+            
             $table->timestamps();
         });
     }

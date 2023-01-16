@@ -15,15 +15,14 @@ class CreateScheduleTemplatesTable extends Migration
     {
         Schema::create('schedule_templates', function (Blueprint $table) {
             $table->bigIncrements('id');
+
             $table->bigInteger('employee_id')->nullable()->unsigned();
             $table->foreign('employee_id')->references('id')->on('employees')->onUpdate('cascade');
-            $table->string('hora_entrada',100);
-            $table->string('horas_trabajo',100);
-            $table->string('turno',100);
-            $table->string('year',100);
-            $table->string('month',100);
-            $table->string('day',100);
-            $table->string('date',100);
+
+            $table->bigInteger('year_month_group_id')->nullable()->unsigned();
+            $table->foreign('year_month_group_id')->references('id')->on('year_month_groups')->onUpdate('cascade');
+
+            $table->text('horario');
             $table->timestamps();
         });
     }

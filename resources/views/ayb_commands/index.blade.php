@@ -2,8 +2,10 @@
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
     <div class="panel-heading ui-sortable-handle">
-        <h4 class="panel-title"></h4>
-        <div class="panel-heading-btn">
+        <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
+            <a class="d-flex btn btn-danger" href="/new_command" target="_blank" >
+                GENERADOR DE COMANDAS
+            </a>
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
@@ -34,6 +36,7 @@
         Swal.fire({
             title: `${type} Registro`,
             showConfirmButton: false,
+            allowOutsideClick: false,
             showCloseButton: true,
             width: '50em',
             html:`
@@ -45,23 +48,15 @@
                         <div id="comand" class="my-5">
                             <div class="row " >
 
-                                <div class="col-xs-4">
+                                <div class="col-xs-6">
                                     <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Codigo <span class="text-danger"> *</span> </label>
+                                        <label class=" text-lg-right col-form-label"> Tipo de comanda <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <input required type="text" id="codigo" name="codigo" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Codigo de la comanda" >
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Venta / Cortesia <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12">
-                                            <select required id="tipo" name="tipo" class="form-control w-100" onchange="tipoMenuSelect()">
-                                                <option disabled value="" selected >Tipo</option>
-                                                <option value="1" >Venta</option>
-                                                <option value="2" >Cortesia</option>
+                                            <select required id="type_command_id" name="type_command_id" class="form-control w-100" >
+                                                <option disabled value="" selected >Seleccione una opcion</option>
+                                                @foreach( $type_commands as $item )
+                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                @endforeach
                                             </select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
@@ -71,7 +66,7 @@
                                 
 
                                 
-                                <div class="col-xs-4">
+                                <div class="col-xs-6">
                                     <div class="form-group row m-b-0">
                                         <label class=" text-lg-right col-form-label"> Comandado por: <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
@@ -79,10 +74,10 @@
                                                 <option disabled value="" selected >Autorizado ( a )</option>
                                               
 
-                                                @foreach( $positions as $itemGroup )
+                                                @foreach( $departments as $itemGroup )
                                                     <optgroup label="{{ $itemGroup->name }}">
                                                         @foreach( $employees as $item )
-                                                            @if( $item->position_id == $itemGroup->id )
+                                                            @if( $item->department_id == $itemGroup->id )
                                                                 <option value="{{ $item->id }}" > {{ $item->name }} </option>
                                                             @endif
                                                         @endforeach
@@ -108,30 +103,34 @@
 
                                 <div class="col-xs-4">
                                     <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Menú <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
-                                            <select disabled required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
-                                                <option disabled value="" selected > Seleccione Venta / Cortesia</option>
+                                            <select required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
+                                                <option disabled value="" selected > Seleccione un menú</option>
+                                                @foreach( $group_menus as $itemGroup )
+                                                    <optgroup label="{{ $itemGroup->name }}">
+                                                        @foreach( $ayb_items as $item )
+                                                            @if( $item->group_menu_id == $itemGroup->id )
+                                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
+                                                @endforeach
                                             </select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-xs-4">
-                                    <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Total <span class="text-danger"> *</span> </label>
-                                        <div class="col-lg-12">
-                                            <input required type="number" id="total" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
-                                            <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                        </div>
-                                    </div>
+
+                                <div class="col-xs-4 d-flex">
+                                    <button onclick="totalSum('-','1')" class="btn btn-secondary" style="height: fit-content" > - </button>
+                                    <input readonly required type="number" id="total-1" name="total" class="form-control parsley-normal upper mx-2" style="color: var(--global-2) !important" value="1" min="1" >
+                                    <button onclick="totalSum('+','1')" class="btn btn-secondary" style="height: fit-content" > + </button>
                                 </div>
 
                                 
                                 <div class="col-xs-4">
                                     <div class="form-group row m-b-0">
-                                        <label class=" text-lg-right col-form-label"> Destinos <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
                                             <select required id="table_id" name="table_id" class="form-control w-100">
                                                 <option disabled value="" selected >Destinos</option>
@@ -176,7 +175,7 @@
                         <table id="data-table-default-stadistic" class=" table table-bordered table-td-valign-middle mt-3" style="width:100% !important">
                             <thead style="background-color:paleturquoise" >
                                 <tr>
-                                    <th colspan="5"> N°${res.command.codigo} - ${res.command.tipo} - ${ moment( res.command.created_at ).format("YYYY-MM-DD")  } </th>
+                                    <th colspan="5"> N°${res.command.id} - ${res.command.type_command_name} - ${ moment( res.command.created_at ).format("YYYY-MM-DD")  } </th>
                                 </tr>
                             </thead>
                             <thead style="background-color:paleturquoise" >
@@ -215,11 +214,12 @@
 
 
                 Swal.fire({
-                    title: `Comanda N°${res.command.codigo}`,
+                    title: `Comanda N°${res.command.id}`,
                     showConfirmButton: false,
                     width: '50em',
                     html: html,
                     showConfirmButton: true,
+                    allowOutsideClick: false,
                     showCloseButton: true,
                     confirmButtonText: 'CERRAR',
                 })
@@ -244,12 +244,10 @@
         }
         let payload = {
             _token: $("meta[name='csrf-token']").attr("content"),
-            codigo: $("#codigo").val(),
-            tipo: $("#tipo").val(),
+            type_command_id: $("#type_command_id").val(),
             employee_id: $("#employee_id").val(),
             items: newArrObj
         }
-
 
         $.ajax({
             url: "{{ route('ayb_commands.store') }}",
@@ -264,8 +262,8 @@
        
     }
     dataTable("{{route('ayb_commands.service')}}",[
-        { data: 'codigo' },
-        { data: 'tipo' },
+        { data: 'id' },
+        { data: 'type_command_name' },
         { data: 'employee_name' },
         {
             render: function ( data,type, row  ) {
@@ -282,32 +280,49 @@
         },
     ],"group_name_all")
 
+    function totalSum(type,index) {
+        let total = parseInt($(`#total-${parseInt(index)}`).val())
+
+        if(type == "-" && total > 1){
+            total = total - 1
+        }
+
+        if(type == "+"){
+            total = total + 1
+        }
+        $(`#total-${parseInt(index)}`).val(total)
+    }
+
     function itemCrud(more){
         let newHtmlItem = `
         <div class="row newRow" >
             <div class="col-xs-4">
                 <div class="form-group row m-b-0">
-                    <label class=" text-lg-right col-form-label"> Menú <span class="text-danger"> *</span> </label>
                     <div class="col-lg-12">
-                        <select disabled required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
-                            <option disabled value="" selected > Seleccione Venta / Cortesia</option>
-                        </select>
+                    <select required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
+                        <option disabled value="" selected > Seleccione un menú</option>
+                        @foreach( $group_menus as $itemGroup )
+                            <optgroup label="{{ $itemGroup->name }}">
+                                @foreach( $ayb_items as $item )
+                                    @if( $item->group_menu_id == $itemGroup->id )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+
                         <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-4">
-                <div class="form-group row m-b-0">
-                    <label class=" text-lg-right col-form-label"> Total <span class="text-danger"> *</span> </label>
-                    <div class="col-lg-12">
-                        <input required type="number" id="total" name="total" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese el total" >
-                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                    </div>
-                </div>
+            <div class="col-xs-4 d-flex">
+                <button onclick="totalSum('-',${arrayItems})" class="btn btn-secondary" style="height: fit-content" > - </button>
+                <input readonly type="number" id="total-${arrayItems}" name="total" class="form-control parsley-normal upper mx-2" style="color: var(--global-2) !important" value="1" min="1" >
+                <button onclick="totalSum('+',${arrayItems})" class="btn btn-secondary" style="height: fit-content" > + </button>
             </div>
             <div class="col-xs-4">
                 <div class="form-group row m-b-0">
-                    <label class=" text-lg-right col-form-label"> Destinos <span class="text-danger"> *</span> </label>
                     <div class="col-lg-12">
                         <select required id="table_id" name="table_id" class="form-control w-100">
                             <option disabled value="" selected >Destinos</option>
@@ -331,24 +346,6 @@
             $('#items .newRowLabel:last').remove()
         }
     }
-
-    function tipoMenuSelect() {
-        let html = ``;
-        let tipo = $("#tipo").val()
-        let items = {!! $ayb_items !!}
-            items = items.filter( i => i.group_menu_id == tipo )
-        
-            html += `<select disabled required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">`
-            html += `<option disabled value="" selected > Seleccione una opcion </option>`
-            items.forEach(element => {
-                html += `<option value="${ element.id }" > ${ element.name } </option>`
-            });
-            html += `</select>`
-            $("[name*='ayb_item_id']").replaceWith(html)
-            $("[name*='ayb_item_id']").prop( "disabled", false );
-    }
-
-
 
 </script>
 @endsection

@@ -8,13 +8,8 @@ class Schedule_template extends Model
 {
     protected $fillable = [
         'employee_id',
-        'hora_entrada',
-        'horas_trabajo',
-        'turno',
-        'year',
-        'month',
-        'day',
-        'date',
+        'year_month_group_id',
+        'horario',
     ];
 
 }
