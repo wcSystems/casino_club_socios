@@ -279,7 +279,7 @@ Route::get("/new_command/", function( ){
 });
 
 // VIEW - SCHEDULE DEPARTMENT
-Route::get("/schedule_department/{department_id}/{year_month_group_id}", function($department_id,$year_month_group_id){
+Route::get("/schedule_department/{department_id}/{year_month_group_id}/{day_init}/{day_end}", function($department_id,$year_month_group_id,$day_init,$day_end){
 
 
         $department = Department::where("id","=",$department_id)->first();
@@ -294,7 +294,7 @@ Route::get("/schedule_department/{department_id}/{year_month_group_id}", functio
             ->join('departments', 'employees.department_id', '=', 'departments.id')
             ->get();
 
-        return view("schedule_department.index")->with('schedule',$schedule )->with('department',$department )->with('year_month_group',$year_month_group )->with('horarios',$horarios );
+        return view("schedule_department.index")->with('schedule',$schedule )->with('department',$department )->with('year_month_group',$year_month_group )->with('horarios',$horarios )->with('day_init',$day_init )->with('day_end',$day_end );
 });
 
 

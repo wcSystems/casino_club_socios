@@ -19,8 +19,9 @@ class Year_month_groupsController extends Controller
     {
         $year_month_groups = Year_month_group::all();
         $horarios = Horario::all();
+        $schedule_templates = Schedule_template::all();
         $departments = Department::with("employees")->get();
-        return view('year_month_groups.index')->with('year_month_groups',$year_month_groups)->with('horarios',$horarios)->with('departments',$departments);
+        return view('year_month_groups.index')->with('year_month_groups',$year_month_groups)->with('horarios',$horarios)->with('departments',$departments)->with('schedule_templates',$schedule_templates);
     }
 
     /**

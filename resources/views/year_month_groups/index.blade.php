@@ -29,9 +29,10 @@
                     <tr>
                         <th>#</th>
                         <th>Departamento</th>
-                        <th>Año</th>
-                        <th>Mes</th>
-                        <th>Acciones</th>
+                        <th>Año y Mes</th>
+                        <th>Vista Semanal</th>
+                        <th>Vista Quincenal</th>
+                        <th>Vista Mensual</th>
                     </tr>
                 </thead>
             </table>
@@ -134,22 +135,45 @@
             }
         },
         { data: 'department_name' },
-        { data: 'year' },
         {
             render: function ( data,type, row  ) {
-                return moment(row.month).format('MMMM')
+                return row.year+" "+moment(row.month).format('MMMM')
             }
         },
         {
             render: function ( data,type, row  ) {
+                let month = row.month = ( row.month <= 9 ? "0"+row.month : row.month )
+                let day_end=moment(month).daysInMonth();
                 return `
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${row.month})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},1,7)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">1</a>
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},8,14)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">2</a>
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},15,21)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">3</a>
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},22,${day_end})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">4</a>
+                `;
+            }
+        },
+        {
+            render: function ( data,type, row  ) {
+                let month = row.month = ( row.month <= 9 ? "0"+row.month : row.month )
+                let day_end=moment(month).daysInMonth();
+                return `
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},1,15)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">1</a>
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},16,${day_end})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">2</a>
+                `;
+            }
+        },
+        {
+            render: function ( data,type, row  ) {
+                let month = row.month = ( row.month <= 9 ? "0"+row.month : row.month )
+                let day_end=moment(month).daysInMonth();
+                return `
+                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},1,${day_end})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">1</a>
                 `;
             }
         },
     ],"group_all","order_by")
 
-    function addHorario(year_month_group_id,department_id,year,month) {
+    function addHorario(year_month_group_id,department_id,year,month,day_init,day_end) {
         let timerInterval 
         let payload = { 
             _token: $("meta[name='csrf-token']").attr("content"), 
@@ -166,69 +190,41 @@
                 let schedules = res.schedules
                 let department_name = res.employees.name
                 let horarios = {!! $horarios !!}
-                month = ( month <= 9 ? "0"+month : month )
                 res.employees = res.employees.employees
-                let days_in_month=moment(month).daysInMonth();
+
                 let html = ``;
                     html += `
-                        <div class="table-responsive my-5">
+                        <div class="table-responsive my-3">
                             <table id="horario" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
                                 <thead style="background-color:paleturquoise;"  >
                                     <tr>
-                                        <th class="text-center text-uppercase " > Id </th>
                                         <th class="text-center text-uppercase " > Leyenda </th>
-                                        <th class="text-center text-uppercase " > Codigo </th>
                                         <th class="text-center text-uppercase " > H. Entrada </th>
                                         <th class="text-center text-uppercase " > H. Salida </th>
                                         <th class="text-center text-uppercase " > H. Trabajo </th>
-                                        <th class="text-center text-uppercase " > Color </th>
                                        
                                     </tr>
                                 </thead>
                                 <tbody>`
                                     horarios.forEach(horarioItem => {
-                                        if( horarioItem.leyenda == "L" ){
+                                        if( horarioItem.leyenda != "L" ){
                                             html += `
                                             <tr>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
-                                                    ${ horarioItem.id }
-                                                </td>
-                                                <td colspan="5" style="background-color:#EDEDED !important;font-size:12px !important" >
-                                                    LIBRE
-                                                </td>
-                                                <td style="background-color:#999999 !important;font-size:12px !important" >
-                                                
-                                                </td>
-                                            </tr>
-                                            `
-                                        }else{
-                                            html += `
-                                            <tr>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
-                                                    ${ horarioItem.id }
-                                                </td>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
-                                                    ${ horarioItem.leyenda }
-                                                </td>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
+                                                <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
                                                     ${ horarioItem.name }
                                                 </td>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
+                                                <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
                                                     ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).format('LT') }
                                                 </td>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
-                                                ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).add(horarioItem.hora_trabajo, 'h').format('LT') }
+                                                <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                    ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).add(horarioItem.hora_trabajo, 'h').format('LT') }
                                                 </td>
-                                                <td style="background-color:#EDEDED !important;font-size:12px !important" >
+                                                <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
                                                     ${ horarioItem.hora_trabajo }
-                                                </td>
-                                                <td style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
-
                                                 </td>`
                                             html += `
                                             </tr>`
                                         }
-                                        
                                     });
                                     
                                     html += `
@@ -238,11 +234,11 @@
                     `
                     html += `
                         <div class="table-responsive">
-                            <table id="schedule-${year}-${month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                            <table id="schedule-${year}-${month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
                                 <thead style="background-color:paleturquoise;"  >
                                     <tr>
                                         <th class="text-center text-uppercase font-weight-bold" > Trabajador </th>`
-                                        for (let index = 1; index <= days_in_month; index++) {
+                                        for (let index = day_init; index <= day_end; index++) {
                                             html += `<td class="font-weight-bold text-left" style="background-color:paleturquoise;width:150px !important;font-size:12px !important"> ${ moment(year+"-"+month+"-"+index).format('dd') }(${moment(year+"-"+month+"-"+index).format('DD')}) </td>`
                                         }
                                         html += `
@@ -266,7 +262,7 @@
                                                 </div>
                                                 
                                             </td>`
-                                            for (let index = 1; index <= days_in_month; index++) {
+                                            for (let index = day_init; index <= day_end; index++) {
                                                 html += `
                                                 <td class="font-weight-bold" style="background-color:#EDEDED !important" >
                                                     <div class="done_style_${elementEmployee.id}"  >
@@ -295,13 +291,13 @@
                                 </tbody>
                             </table>
                             <div class="col-sm-12" style="margin-top:20px">
-                                <a href="https://api.whatsapp.com/send?text=${window.location.origin}/schedule_department/${department_id}/${year_month_group_id}" class="swal2-confirm swal2-styled bg-green text-decoration-none" >
+                                <a href="https://api.whatsapp.com/send?text=${window.location.origin}/schedule_department/${department_id}/${year_month_group_id}/${day_init}/${day_end}" class="swal2-confirm swal2-styled bg-green text-decoration-none" >
                                     Whatsapp
                                 </a>
-                                <a  target="_blank" href="${window.location.origin}/schedule_department/${department_id}/${year_month_group_id}" class="swal2-confirm swal2-styled bg-info text-decoration-none" >
+                                <a  target="_blank" href="${window.location.origin}/schedule_department/${department_id}/${year_month_group_id}/${day_init}/${day_end}" class="swal2-confirm swal2-styled bg-info text-decoration-none" >
                                     Ver
                                 </a>
-                                <button onclick="newSchedule(${year_month_group_id},${days_in_month},${year},${month},${department_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                                <button onclick="newSchedule(${year_month_group_id},${day_init},${day_end},${year},${month},${department_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                                 <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
                             </div>
                                     
@@ -324,7 +320,7 @@
                 })  
 
                 res.employees.forEach(elementEmployee => {
-                    for (let index = 1; index <= days_in_month; index++) {
+                    for (let index = day_init; index <= day_end; index++) {
                         checkColor(`#${index}_${elementEmployee.id}`)
                     }
                 });
@@ -338,7 +334,7 @@
         let id = $(params).attr("id")
         let select_id = $(`#${id}`).val()
         let horario_one = {!! $horarios !!}.find( i => i.id == select_id )
-        let leyenda = horario_one.leyenda
+        let leyenda = ( horario_one ) ? horario_one.leyenda : ""
         
         if( leyenda == "T1" ){
             $(`#${id}`).css("background-color","#A9DFBF !important")
@@ -351,16 +347,20 @@
         }
     }
 
-    function newSchedule(year_month_group_id,days_in_month,year,month,department_id) {
+    function newSchedule(year_month_group_id,day_init,day_end,year,month,department_id) {
         
         let department = {!! $departments !!}.find( i => i.id == department_id )
         let employees = department.employees
         let countReset = 0
         employees.forEach( element =>  {
-            let horarioEmployee = []
-            for (let index = 1; index <= days_in_month; index++) {
+
+            let horarioEmployee = $(`#schedule_id_${element.id}`).val() ?   {!! $schedule_templates !!}.find( i => i.id == $(`#schedule_id_${element.id}`).val() ).horario.split(",")     : []
+
+            
+
+            for (let index = day_init; index <= day_end; index++) {
                 if( $(`#${index}_${element.id}`).val() ){
-                    horarioEmployee.push(parseInt($(`#${index}_${element.id}`).val()))
+                    horarioEmployee[index-1] = parseInt($(`#${index}_${element.id}`).val()) 
                 }
             }
             let payload = {

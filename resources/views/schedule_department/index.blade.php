@@ -170,7 +170,10 @@ moment.locale('en', {
             let year_month_group = {!! $year_month_group !!} 
             let month = ( year_month_group.month <= 9 ? "0"+year_month_group.month : year_month_group.month )
             let year = year_month_group.year
-            let days_in_month=moment(month).daysInMonth();
+
+            let day_init = {!! $day_init !!} 
+            let day_end = {!! $day_end !!} 
+
             let html = ``;
             $("#title-schedule").text( department.name+", "+moment(month).format('MMMM')+ " " + year )
 
@@ -195,7 +198,7 @@ moment.locale('en', {
                                         html += `
                                         <tr>
                                             <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
-                                                ${ horarioItem.leyenda }
+                                                ${ horarioItem.name }
                                             </td>
                                             <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
                                                 ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).format('LT') }
@@ -216,11 +219,11 @@ moment.locale('en', {
                             html += `
                         </tbody>
                     </table>
-                    <table class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                    <table class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline mx-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
                         <thead style="background-color:paleturquoise;"  >
                             <tr>
                                 <th class="text-center text-uppercase font-weight-bold" rowspan="2" > Empleados <br /> ( ${ schedule.length } ) </th>`
-                                for (let index = 1; index <= days_in_month; index++) {
+                                for (let index = day_init; index <= day_end; index++) {
                                     html += `<td class="text-center font-weight-bold px-1" style="background-color:paleturquoise;width:150px !important;font-size:10px !important"> ${ moment(year+"-"+month+"-"+index).format('dd') } <br /> ${moment(year+"-"+month+"-"+index).format('DD')} </td>`
                                 }
                                 html += `
@@ -235,10 +238,10 @@ moment.locale('en', {
                                     <td class="font-weight-bold" style="background-color:paleturquoise;font-size:11px !important"> 
                                         <img src="/public/employees/${elementEmployee.employeeNo}.jpg" onerror="this.onerror=null;this.src='/public/users/null.jpg';" width="30" height="30" class="rounded-circle mr-1" /> ${elementEmployee.employee_name}
                                     </td>`
-                                    for (let index = 1; index <= days_in_month; index++) {
+                                    for (let index = day_init; index <= day_end; index++) {
                                         horarios.forEach(element => {
                                             if( current.find( (d,i) => d == element.id && i+1 == index ) ){
-                                                html += `<td class="font-weight-bold p-0 text-center" style="${element.leyenda == 'T1' ? 'background-color:#A9DFBF !important' : element.leyenda == 'T2' ? 'background-color:#A9CCE3 !important' : element.leyenda == 'L' ? 'background-color:#EDEDED !important' : 'background-color:#EDEDED !important' }" >${ element.leyenda }</td>`
+                                                html += `<td class="font-weight-bold p-0 text-center" style="${element.leyenda == 'T1' ? 'background-color:#A9DFBF !important' : element.leyenda == 'T2' ? 'background-color:#A9CCE3 !important' : element.leyenda == 'L' ? 'background-color:#EDEDED !important' : 'background-color:#EDEDED !important' }" >${ element.name }</td>`
                                             }
                                         });                                    
                                     }
