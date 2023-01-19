@@ -250,6 +250,49 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'horarios.destroy'
     ]);
 
+    Route::resource('mesas_casinos', 'Mesas_casinosController')->names([
+        'index' => 'mesas_casinos',
+        'create' => 'mesas_casinos.create',
+        'update' => 'mesas_casinos.update',
+        'destroy' => 'mesas_casinos.destroy'
+    ]);
+
+    Route::resource('fichas_casinos', 'Fichas_casinosController')->names([
+        'index' => 'fichas_casinos',
+        'create' => 'fichas_casinos.create',
+        'update' => 'fichas_casinos.update',
+        'destroy' => 'fichas_casinos.destroy'
+    ]);
+
+    Route::resource('horas_casinos', 'Horas_casinosController')->names([
+        'index' => 'horas_casinos',
+        'create' => 'horas_casinos.create',
+        'update' => 'horas_casinos.update',
+        'destroy' => 'horas_casinos.destroy'
+    ]);
+
+    Route::resource('billetes_casinos', 'Billetes_casinosController')->names([
+        'index' => 'billetes_casinos',
+        'create' => 'billetes_casinos.create',
+        'update' => 'billetes_casinos.update',
+        'destroy' => 'billetes_casinos.destroy'
+    ]);
+
+    Route::resource('group_drops_casinos', 'Group_drops_casinosController')->names([
+        'index' => 'group_drops_casinos',
+        'create' => 'group_drops_casinos.create',
+        'update' => 'group_drops_casinos.update',
+        'destroy' => 'group_drops_casinos.destroy'
+    ]);
+
+    
+    Route::resource('conteo_drop_cecom_casinos', 'Conteo_drop_cecom_casinosController')->names([
+        'index' => 'conteo_drop_cecom_casinos',
+        'create' => 'conteo_drop_cecom_casinos.create',
+        'update' => 'conteo_drop_cecom_casinos.update',
+        'destroy' => 'conteo_drop_cecom_casinos.destroy'
+    ]);
+
 
     // VIEW - GRAPHICS
     Route::get('/', 'GraphicsController@index')->name("graphics");

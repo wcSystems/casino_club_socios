@@ -51,6 +51,11 @@ Route::get('/rooms/service', 'RoomsController@service')->name('rooms.service');
 Route::get('/type_commands/service', 'Type_commandsController@service')->name('type_commands.service');
 Route::get('/year_month_groups/service', 'Year_month_groupsController@service')->name('year_month_groups.service');
 Route::get('/horarios/service', 'HorariosController@service')->name('horarios.service');
+Route::get('/mesas_casinos/service', 'Mesas_casinosController@service')->name('mesas_casinos.service');
+Route::get('/fichas_casinos/service', 'Fichas_casinosController@service')->name('fichas_casinos.service');
+Route::get('/horas_casinos/service', 'Horas_casinosController@service')->name('horas_casinos.service');
+Route::get('/billetes_casinos/service', 'Billetes_casinosController@service')->name('billetes_casinos.service');
+Route::get('/group_drops_casinos/service', 'Group_drops_casinosController@service')->name('group_drops_casinos.service');
 
 
 
@@ -81,3 +86,6 @@ Route::post('/employees/history', 'EmployeesController@history')->name('employee
 
 // ALL JOINS DATABASE
 Route::post('/ayb_commands/pjoin', 'Ayb_commandsController@pjoin')->name('ayb_commands.pjoin');
+
+// LIST
+Route::post('/conteo_drop_cecom_casinos/list', 'Conteo_drop_cecom_casinosController@list')->name('conteo_drop_cecom_casinos.list');

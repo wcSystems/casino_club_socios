@@ -224,6 +224,12 @@
                             <span class="text-white">ASISTENCIA</span>
                         </a>
                     </li>
+                    <li id="group_drops_casinos_nav" class="has-sub closed">
+                        <a href="{{ route('group_drops_casinos') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">DROP</span>
+                        </a>
+                    </li>
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES USUARIOS</li>
                     <li id="users_nav" class="has-sub closed">
                         <a href="{{ route('users') }}">
@@ -371,6 +377,31 @@
                         <a href="{{ route('year_month_groups') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">HORARIOS</span>
+                        </a>
+                    </li>
+                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES CASINO</li>
+                    <li id="mesas_casinos_nav" class="has-sub closed">
+                        <a href="{{ route('mesas_casinos') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">MESAS</span>
+                        </a>
+                    </li>
+                    <li id="fichas_casinos_nav" class="has-sub closed">
+                        <a href="{{ route('fichas_casinos') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">FICHAS</span>
+                        </a>
+                    </li>
+                    <li id="horas_casinos_nav" class="has-sub closed">
+                        <a href="{{ route('horas_casinos') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">HORAS CONTEO</span>
+                        </a>
+                    </li>
+                    <li id="billetes_casinos_nav" class="has-sub closed">
+                        <a href="{{ route('billetes_casinos') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">BILLETES</span>
                         </a>
                     </li>
                     
@@ -801,7 +832,7 @@
 
         function setLoading(timerInterval) {
             Swal.fire({
-                title: 'Gargando datos!',
+                title: 'Cargando datos!',
                 text: 'porfavor espere...',
                 timer: 300000,
                 didOpen: () => {
