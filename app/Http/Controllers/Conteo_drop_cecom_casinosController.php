@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Group_drops_casino;
 use App\Models\Conteo_drop_cecom_casino;
+use Illuminate\Support\Facades\DB;
 
 class Conteo_drop_cecom_casinosController extends Controller
 {
@@ -35,6 +37,10 @@ class Conteo_drop_cecom_casinosController extends Controller
      */
     public function store(Request $request)
     {
+        $group_drops_casino = Group_drops_casino::find($request->group_drops_casino_id);
+        $group_drops_casino->extra = $request->extra;
+        $group_drops_casino->save();
+
         $current_item = Conteo_drop_cecom_casino::updateOrCreate($request->id,$request->data);
         if($current_item){
             return response()->json([ 'type' => 'success']);
@@ -90,7 +96,16 @@ class Conteo_drop_cecom_casinosController extends Controller
 
     public function list(Request $request)
     {
-        $list = Conteo_drop_cecom_casino::where("group_drops_casino_id","=",$request["id"])->get();
+  
+
+                        $list = DB::table('conteo_drop_cecom_casinos')
+                        ->selectRaw('conteo_drop_cecom_casinos.*, billetes_casinos.name AS billete_name')
+                        ->where("group_drops_casino_id","=",$request["id"])
+                        ->join('billetes_casinos', 'conteo_drop_cecom_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+                        ->get();
+    
+
+
         return response()->json([ 'list' => $list ]);
     }
 

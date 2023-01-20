@@ -15,6 +15,7 @@ class CreateGroupDropsCasinosTable extends Migration
     {
         Schema::create('group_drops_casinos', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('extra',100)->nullable();
             $table->bigInteger('sede_id')->nullable()->unsigned();
             $table->foreign('sede_id')->references('id')->on('sedes')->onUpdate('cascade');
             $table->timestamps();

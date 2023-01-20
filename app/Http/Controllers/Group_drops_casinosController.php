@@ -19,11 +19,21 @@ class Group_drops_casinosController extends Controller
      */
     public function index()
     {
+        //$conteo_drop_cecom_casinos = Conteo_drop_cecom_casino::all();
+
+        $conteo_drop_cecom_casinos = DB::table('conteo_drop_cecom_casinos')
+                    ->selectRaw('group_drops_casino_id, sum(cantidad * billetes_casinos.name) AS total')
+                    ->join('billetes_casinos', 'conteo_drop_cecom_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+                    ->groupBy('group_drops_casino_id')
+                    ->get();
+
         $sedes = Sede::all();
         $mesas_casinos = Mesas_casino::all();
+
+
         $billetes_casinos = Billetes_casino::all();
         $group_drops_casinos = Group_drops_casino::all();
-        return view('group_drops_casinos.index')->with('group_drops_casinos',$group_drops_casinos)->with('sedes',$sedes)->with('billetes_casinos',$billetes_casinos)->with('mesas_casinos',$mesas_casinos);
+        return view('group_drops_casinos.index')->with('group_drops_casinos',$group_drops_casinos)->with('sedes',$sedes)->with('billetes_casinos',$billetes_casinos)->with('mesas_casinos',$mesas_casinos)->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos);
     }
 
     /**
@@ -112,6 +122,7 @@ class Group_drops_casinosController extends Controller
         $query = DB::table('group_drops_casinos')
                     ->selectRaw('group_drops_casinos.*, sedes.id AS sede_id, sedes.name AS sede_name, sedes.name AS group_name')
                     ->join('sedes', 'group_drops_casinos.sede_id', '=', 'sedes.id')
+                    ->orderBy('group_drops_casinos.created_at', 'desc')
                     ->get();
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');

@@ -35,6 +35,11 @@
                     <tr>
                         <th>#</th>
                         <th>Sede</th>
+
+                        <th>Drop</th>
+                        <th>Gañota</th>
+                        <th>Total</th>
+
                         <th>Fecha</th>
                         <th>Acciones</th>
                     </tr>
@@ -46,6 +51,7 @@
 @endsection
 @section('js')
 <script>
+    let global_sumTotalFinal = 0
     $('#group_drops_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({
@@ -115,6 +121,30 @@
         { data: 'sede_name' },
         {
             render: function ( data,type, row,all  ) {
+                let conteo_drop_cecom_casinos = {!! $conteo_drop_cecom_casinos !!}.find( i => i.group_drops_casino_id == row.id )
+                let total = conteo_drop_cecom_casinos == undefined ? 0 : conteo_drop_cecom_casinos.total
+                return `$ ${ total }`;
+            }
+        },
+        {
+            render: function ( data,type, row,all  ) {
+                return `$ ${ parseInt(row.extra ? row.extra : 0 ) }`;
+            }
+        },
+        {
+            render: function ( data,type, row,all  ) {
+                let conteo_drop_cecom_casinos = {!! $conteo_drop_cecom_casinos !!}.find( i => i.group_drops_casino_id == row.id )
+                let total = conteo_drop_cecom_casinos == undefined ? 0 : conteo_drop_cecom_casinos.total
+                return `$ ${ parseInt( row.extra ? row.extra : 0  ) + parseInt(total ) }`;
+            }
+        },
+
+
+
+
+        
+        {
+            render: function ( data,type, row,all  ) {
                 return moment(row.created_at).format("YYYY-MM-DD");
             }
         },
@@ -122,14 +152,15 @@
             render: function ( data,type, row  ) {
                 return `
                     <a onclick="elim('group_drops_casinos',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
-                    <a onclick="viewDrop(${row.id},${row.sede_id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fa fa-eye"></i></a>
+                    <a onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fa fa-eye"></i></a>
                 `;
             }
         },
     ],"group_name")
 
 
-    function viewDrop(id,sede_id) {
+    function viewDrop(id,sede_id,extra) {
+        let currentGroup = {!! $group_drops_casinos !!}.find( i => i.id == id )
         let timerInterval 
         let payload = {
             _token: $("meta[name='csrf-token']").attr("content"),
@@ -141,13 +172,15 @@
             type: "POST",
             data: payload,
             success: function (res) {
+
+
                 clearInterval(timerInterval)
 
                 let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
                 let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
                 let html = ``;
                 html += `
-                <div class="table-responsive">
+                <div class="table-responsive mt-3">
                     <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
                         <thead style="background-color:paleturquoise;"  >
                             <tr>
@@ -197,11 +230,25 @@
                                     </td>`
                                 });
                                     html += `
-                                    <td class="font-weight-bold bg-primary" >
+                                    <td class="font-weight-bold" style="background-color:paleturquoise;"  >
                                         <input id="total_final" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0 ( 0 )" > 
                                     </td>
 
                             
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
+                                    <input  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="GAÑOTA" > 
+                                </td>
+                                <td colspan="${billetes_casinos.length}" class="font-weight-bold"style="background-color:#EDEDED !important"  >
+                                    <div class="d-flex align-items-center">
+                                        <label for="extra" class="col-6 px-0 text-right pr-1 mb-0"> $ </label>
+                                        <input id="extra"  type="number" onkeyup=totalExtra()  class="pl-1 text-left col-6 form-control p-0 m-auto text-center border-0 font-weight-bold" value="${extra}" > 
+                                    </div>
+                                </td>
+                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
+                                    <input id="total_extra"  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -211,7 +258,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `Conteo de DROP`,
+                    title: `DROP CECOM <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,
@@ -239,6 +286,10 @@
                 let payload = {
                     _token: $("meta[name='csrf-token']").attr("content"),
                     id: { id: $(`#id_${element_mesa.id}_${element_billete.id}`).val() },
+
+                    extra: $(`#extra`).val() == "" ? 0 : parseInt($(`#extra`).val()),
+                    group_drops_casino_id: group_drops_casino_id, 
+
                     data: {
                         group_drops_casino_id: group_drops_casino_id, 
                         mesas_casino_id: element_mesa.id,
@@ -265,8 +316,12 @@
             });
         });
     }
-    
+    function totalExtra() {
+        let extra = $(`#extra`).val() == "" ? 0 : parseInt($(`#extra`).val())
+        $(`#total_extra`).val(`$ ${global_sumTotalFinal+extra}`)
+    }
     function sumMesaBilleteTotal(mesa_id,billete_id,billete_name,sede_id) {
+        let extra = $(`#extra`).val() == "" ? 0 : parseInt($(`#extra`).val())
         let sumTotalMesas = 0
         let sumTotalBilletes = 0
         let sumTotalFinal = 0
@@ -322,7 +377,10 @@
                     cantidadFinal = cantidadFinal+parseInt(dividir[1])
             });
 
+            global_sumTotalFinal = sumTotalFinal
             $(`#total_final`).val(`$ ${sumTotalFinal} ( ${cantidadFinal} )`)
+            $(`#total_extra`).val(`$ ${sumTotalFinal+extra}`)
+
             
     }
 

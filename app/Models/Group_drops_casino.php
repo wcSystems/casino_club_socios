@@ -8,5 +8,6 @@ class Group_drops_casino extends Model
 {
     protected $fillable = [
         'sede_id',
+        'extra',
     ];
 }
