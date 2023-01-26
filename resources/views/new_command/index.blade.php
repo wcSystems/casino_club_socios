@@ -12,11 +12,11 @@
     	<link rel="shortcut icon" type="image/x-icon" href="{{asset('img/logo_wisi.png')}}">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<style>
-			#type-1 { background: #F0F8FF !important; }
+			#type-3 { background: #F0F8FF !important; }
 			#type-5 { background: #FF7F50 !important; }
-			#type-3 { background: #B22222 !important; }
-			#type-4 { background: #FF69B4 !important; }
-			#type-2 { background: #FFFACD !important; }
+			#type-1 { background: #B22222 !important; }
+			#type-2 { background: #FF69B4 !important; }
+			#type-4 { background: #FFFACD !important; }
 			.centrado {
 				display: -ms-flexbox!important;
 				display: flex!important;

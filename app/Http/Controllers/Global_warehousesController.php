@@ -130,20 +130,12 @@ class Global_warehousesController extends Controller
             // CONDICION CAMBIADA
             if( $request["condicion_group_id"] != $current_db->condicion_group_id  ){
 
-                $current_condicion = "";
-                if($current_db->condicion_group_id == 1){ $current_condicion = "Buen estado"; } 
-                if($current_db->condicion_group_id == 2){ $current_condicion = "Defectuosa"; }
-                if($current_db->condicion_group_id == 3){ $current_condicion = "Solo Carcasa"; } 
-                if($current_db->condicion_group_id == 4){ $current_condicion = "Dañada ( Repuesto )"; }
                 
-                $new_condicion = "";
-                if($request["condicion_group_id"] == 1){ $new_condicion = "Buen estado"; } 
-                if($request["condicion_group_id"] == 2){ $new_condicion = "Defectuosa"; }
-                if($request["condicion_group_id"] == 3){ $new_condicion = "Solo Carcasa"; } 
-                if($request["condicion_group_id"] == 4){ $new_condicion = "Dañada ( Repuesto )"; }
+
+                $text =  Condicion_group::find($current_db->condicion_group_id)->name. " -> " . Condicion_group::find($request["condicion_group_id"])->name;
 
                 History_machine::Create([
-                    'name' => $current_condicion. " -> ".$new_condicion,
+                    'name' => $text,
                     'global_warehouse_id' => $current_db->id,
                     'novedades_type_id' => "5",
                 ]);
