@@ -48,10 +48,37 @@
         </div>
     </div>
 </div>
+<div class="row">
+
+    <!-- Drop diario ( MES ) -->
+    <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-12  " >
+        <div class="panel-heading ui-sortable-handle">
+            <h4 class="panel-title">
+                <select id="chart_drop_diario_mes" class="form-control w-100" style="color: #fff !important" onchange="datatableDropDiarioMes()">
+                    <option value="casino_diario_mes"  > Drop ( Casino ) </option>
+                    <option value="vip_diario_mes" > Gañota ( VIP ) </option>
+                    <option value="total_diario_mes" selected > Total ( Casino + Gañota ) </option>
+                </select>
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="chart-container">
+                <canvas id="chart_drop_diario_mes_data" style="max-height:200px !important"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+</div>
 @endsection
 @section('js')
 <script>
     let global_sumTotalFinal = 0
+
+    let all = [];
+    let chart_drop_diario_mes_data;
+    let chart_drop_mes_anual_data;
+
     $('#group_drops_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({
@@ -153,6 +180,13 @@
                 return `
                     <a onclick="elim('group_drops_casinos',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                     <a onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fa fa-eye"></i></a>
+
+                    <a href="https://api.whatsapp.com/send?text=${window.location.origin}/view/drop/${row.id}/cecom/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn bg-green btn-icon btn-circle text-white" >
+                        W
+                    </a>
+                    <a  target="_blank" href="${window.location.origin}/view/drop/${row.id}/cecom/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn btn-info btn-icon btn-circle" >
+                        <i class="fa fa-eye"></i>
+                    </a>
                 `;
             }
         },
@@ -197,21 +231,21 @@
                                 html += `
                                 <tr>
                                     <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:paleturquoise;"> 
-                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold"   value="${mesa.name}" >
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${mesa.name}" >
                                     </td>`
                                     billetes_casinos.forEach(billete => {
                                         let current = res.list.find( i => i.mesas_casino_id == mesa.id && i.billetes_casino_id == billete.id )
                                         let id = ( current == undefined ) ? 0 : parseInt(current.id)
-                                        let cantidad = ( current == undefined ) ? 0 : parseInt(current.cantidad)
+                                        let cantidad = ( current == undefined ) ? "" : parseInt(current.cantidad)
                                         html += `
                                         <td class="font-weight-bold" style="background-color:#EDEDED !important" >
                                             <input type="hidden" id="id_${mesa.id}_${billete.id}" value="${id}"  > 
-                                            <input value="${cantidad}" id="mesa_billete_${mesa.id}_${billete.id}" onkeyup="sumMesaBilleteTotal(${mesa.id},${billete.id},${billete.name},${sede_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold"  class="form-control parsley-normal upper"  > 
+                                            <input  value="${cantidad}" id="mesa_billete_${mesa.id}_${billete.id}" onkeyup="sumMesaBilleteTotal(${mesa.id},${billete.id},${billete.name},${sede_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
                                         </td>`
                                     });
                                 html += `
                                         <td class="font-weight-bold bg-gris" >
-                                            <input id="total_mesa_${mesa.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0 ( 0 )" > 
+                                            <input id="total_mesa_${mesa.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:100px !important" value="$ 0 ( 0 )" > 
                                         </td>
                                 </tr>
                                 `
@@ -387,6 +421,104 @@
 
     function salir() {
         $(".swal2-close").click()
+    }
+
+    function ajaxReloadDatatablesFN(res){
+
+        let conteo_drop_cecom_casinos = {!! $conteo_drop_cecom_casinos !!}
+        let current_month = moment().format("MM")
+        let current_year = moment().format("YYYY")
+        all = res;
+
+        all_current_year = all.filter( i => moment(i.created_at).format("YYYY") == current_year )
+        all_current_month = all.filter( i => moment(i.created_at).format("YYYY") == current_year && moment(i.created_at).format("MM") == current_month )
+
+
+        all_current_month.forEach(element => {
+            element.drop = parseInt(conteo_drop_cecom_casinos.map( i => ( i.group_drops_casino_id == element.id ) ? i.total : "" ).reduce((partialSum, a) => partialSum + a, 0));
+            element.extra = ( !element.extra ) ? 0 : parseInt(element.extra);
+            element.total = element.drop+element.extra;
+        });
+     
+
+        if(chart_drop_diario_mes_data!=null){ chart_drop_diario_mes_data.destroy(); }
+        let new_drop_diario_mes_group = [];
+        all_current_month.forEach((element, index) => {
+            new_drop_diario_mes_group.push({ 'label': [ moment(element.created_at).format("DD") +" ( "+(moment(element.created_at).format("dd")+" )") ] , 'data': [element.total], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+        });
+        chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+            type:'bar',
+            data: {
+                labels: [moment(current_month).format("MMMM")], 
+                datasets: new_drop_diario_mes_group
+            }
+        });
+
+    }  
+
+    function datatableDropDiarioMes(params) {
+
+        if(chart_drop_diario_mes_data!=null){ chart_drop_diario_mes_data.destroy(); }
+
+        let conteo_drop_cecom_casinos = {!! $conteo_drop_cecom_casinos !!}
+        let current_month = moment().format("MM")
+        let current_year = moment().format("YYYY")
+
+        all_current_year = all.filter( i => moment(i.created_at).format("YYYY") == current_year )
+        all_current_month = all.filter( i => moment(i.created_at).format("YYYY") == current_year && moment(i.created_at).format("MM") == current_month )
+
+        all_current_month.forEach(element => {
+            element.drop = parseInt(conteo_drop_cecom_casinos.map( i => ( i.group_drops_casino_id == element.id ) ? i.total : "" ).reduce((partialSum, a) => partialSum + a, 0));
+            element.extra = ( !element.extra ) ? 0 : parseInt(element.extra);
+            element.total = element.drop+element.extra;
+        });
+
+
+        /* drop */
+        if( $("#chart_drop_diario_mes").val() == "casino_diario_mes" ){
+            let new_drop_diario_mes_group = [];
+            all_current_month.forEach((element, index) => {
+                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("YYYY-MM-DD")], 'data': [element.drop], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+            });
+            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+                type:'bar',
+                data: {
+                    labels: [moment(current_month).format("MMMM")], 
+                    datasets: new_drop_diario_mes_group
+                }
+            });
+        }
+
+        /* vip */
+        if( $("#chart_drop_diario_mes").val() == "vip_diario_mes" ){
+            let new_drop_diario_mes_group = [];
+            all_current_month.forEach((element, index) => {
+                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("YYYY-MM-DD")], 'data': [element.extra], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+            });
+            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+                type:'bar',
+                data: {
+                    labels: [moment(current_month).format("MMMM")], 
+                    datasets: new_drop_diario_mes_group
+                }
+            });
+        }
+
+        /* total */
+        if( $("#chart_drop_diario_mes").val() == "total_diario_mes" ){
+            let new_drop_diario_mes_group = [];
+            all_current_month.forEach((element, index) => {
+                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("YYYY-MM-DD")], 'data': [element.total], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+            });
+            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+                type:'bar',
+                data: {
+                    labels: [moment(current_month).format("MMMM")], 
+                    datasets: new_drop_diario_mes_group
+                }
+            });
+        }
+
     }
 
 </script>

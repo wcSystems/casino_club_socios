@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
 use App\Models\Attlog;
+use App\Models\Schedule_template;
 use App\Models\Employee;
+use File;
 
 class isapiController extends Controller
 {
@@ -58,6 +60,11 @@ class isapiController extends Controller
 
     public function addOrUpdateEmployee(Request $request)
     {
+
+        if (File::exists(public_path('public/employees/'.$request["employeeNo"].'.jpg')) && $request["id"] == "" ) {
+            File::delete(public_path('public/employees/'.$request["employeeNo"].'.jpg'));
+        }
+
         $resC = new Client();
         $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
@@ -90,77 +97,22 @@ class isapiController extends Controller
 
             $current_item = Employee::updateOrCreate([ 'id' => $request["id"] ],$current_data);
 
-            if($request->file('image')){
-                $file= $request->file('image');
-                $file->move(public_path('public/employees/'), $current_item->employeeNo.".jpg");       
-            }
-
-            $imgGet = new Client();
-            $imgGetIMG = json_decode($imgGet->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch?format=json" ,[
-                'auth' =>  ['admin', 'Cas1n01234','digest'],
-                'body' => json_encode([
-                "searchResultPosition"=>0,
-                "maxResults"=>100,
-                "faceLibType"=>"blackFD",
-                "FDID"=>"1",
-                "FPID"=>$request["employeeNo"]
-            ])])->getBody()->getContents(), TRUE)["responseStatusStrg"];
-
-            if($imgGetIMG == "OK"){
-                $imgDelete = new Client();
-                $imgDeleteIMG = json_decode($imgDelete->put($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch/Delete?format=json&FDID=1&faceLibType=blackFD" ,[
-                    'auth' =>  ['admin', 'Cas1n01234','digest'],
-                    'body' => json_encode([
-                            "FPID" => [[ "value"=> $request["employeeNo"]
-                        ]]
-                    ])])->getBody()->getContents(), TRUE)["statusString"];
-                if($imgDeleteIMG == "OK"){
-                    $imgSend = new Client();
-                    $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
-                        'auth' =>  ['admin', 'Cas1n01234','digest'],
-                        'body' => json_encode([
-                        "faceURL"=> $request["originIMG"],
-                        "faceLibType"=> "blackFD",
-                        "FDID"=> "1",
-                        "FPID"=> $request["employeeNo"],
-                        "name"=> $request["name"],
-                        "gender"=> "male",
-                        "featurePointType"=>"face"
-                    ])])->getBody()->getContents(), TRUE);
-                }
-            }else{
-                $imgSend = new Client();
-                $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
-                    'auth' =>  ['admin', 'Cas1n01234','digest'],
-                    'body' => json_encode([
-                    "faceURL"=> $request["originIMG"],
-                    "faceLibType"=> "blackFD",
-                    "FDID"=> "1",
-                    "FPID"=> $request["employeeNo"],
-                    "name"=> $request["name"],
-                    "gender"=> "male",
-                    "featurePointType"=>"face"
-                ])])->getBody()->getContents(), TRUE);
-            }
-
             
-            
-
-            
-
             if($current_item){
                 return response()->json([ 'type' => 'success']);
             }else{
                 return response()->json([ 'type' => 'error']);
             }
         }
-
-        return $current;
      
     }
 
     public function elimEmployee(Request $request)
     {
+        if (File::exists(public_path('public/employees/'.$request["employeeNo"].'.jpg')) ) {
+            File::delete(public_path('public/employees/'.$request["employeeNo"].'.jpg'));
+        }
+
         $resC = new Client();
         $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
             'auth' =>  ['admin', 'Cas1n01234','digest'],
@@ -173,6 +125,7 @@ class isapiController extends Controller
         ])->getBody()->getContents(), TRUE);
 
         if( $current['statusCode'] == 1 ){
+            Schedule_template::where('employee_id','=', $request["id"])->delete();
             $current_item = Employee::find($request["id"]);
             if($current_item){
                 $current_item->delete();
@@ -223,4 +176,75 @@ class isapiController extends Controller
             'last_pictureURL' => "http://admin:Cas1n01234@".$request["last_pictureURL"]
         ]);  
     }
+
+
+
+    public function sendImg(Request $request)
+    {
+
+        
+
+        if($request->file('image')){
+            $file= $request->file('image');
+            $file->move(public_path('public/employees/'), $request["employeeNo"].'.jpg');       
+        }
+
+        $imgGet = new Client();
+        $imgGetIMG = json_decode($imgGet->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch?format=json" ,[
+            'auth' =>  ['admin', 'Cas1n01234','digest'],
+            'body' => json_encode([
+            "searchResultPosition"=>0,
+            "maxResults"=>100,
+            "faceLibType"=>"blackFD",
+            "FDID"=>"1",
+            "FPID"=>$request["employeeNo"]
+        ])])->getBody()->getContents(), TRUE)["responseStatusStrg"];
+
+
+
+        if($imgGetIMG == "OK"){
+
+            $imgDelete = new Client();
+            $imgDeleteIMG = json_decode($imgDelete->put($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch/Delete?format=json&FDID=1&faceLibType=blackFD" ,[
+                'auth' =>  ['admin', 'Cas1n01234','digest'],
+                'body' => json_encode([
+                        "FPID" => [[ "value"=> $request["employeeNo"]
+                    ]]
+                ])])->getBody()->getContents(), TRUE)["statusString"];
+
+            if($imgDeleteIMG == "OK"){
+                $imgSend = new Client();
+                $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
+                    'auth' =>  ['admin', 'Cas1n01234','digest'],
+                    'body' => json_encode([
+                        "faceURL"=> $request["originIMG"],
+                        "faceLibType"=>"blackFD",
+                        "FDID"=> "1",
+                        "FPID"=> $request["employeeNo"]
+                    ])])->getBody()->getContents(), TRUE);
+                
+                return response()->json([ 'type' => 'success']);
+            }
+        }else{
+            $imgSend = new Client();
+            $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
+                'auth' =>  ['admin', 'Cas1n01234','digest'],
+                'body' => json_encode([
+                    "faceURL"=> $request["originIMG"],
+                    "faceLibType"=>"blackFD",
+                    "FDID"=> "1",
+                    "FPID"=> $request["employeeNo"]
+                ])])->getBody()->getContents(), TRUE);
+
+            return response()->json([ 'type' => 'success']);
+
+        }
+
+     
+        return response()->json([ 'type' => 'error']);
+        
+    }
+
+
+
 }

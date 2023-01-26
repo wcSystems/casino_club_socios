@@ -56,6 +56,8 @@ Route::get('/fichas_casinos/service', 'Fichas_casinosController@service')->name(
 Route::get('/horas_casinos/service', 'Horas_casinosController@service')->name('horas_casinos.service');
 Route::get('/billetes_casinos/service', 'Billetes_casinosController@service')->name('billetes_casinos.service');
 Route::get('/group_drops_casinos/service', 'Group_drops_casinosController@service')->name('group_drops_casinos.service');
+Route::get('/condicion_groups/service', 'Condicion_groupsController@service')->name('condicion_groups.service');
+Route::get('/novedades_types/service', 'Novedades_typesController@service')->name('novedades_types.service');
 
 
 
@@ -68,7 +70,13 @@ Route::get('/group_drops_casinos/service', 'Group_drops_casinosController@servic
 Route::get('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
 Route::post('/isapi/addOrUpdateEmployee', 'isapiController@addOrUpdateEmployee')->name('isapi.addOrUpdateEmployee');
 Route::post('/isapi/elimEmployee', 'isapiController@elimEmployee')->name('isapi.elimEmployee');
+
+
 Route::post('/isapi/uploadEmployees', 'isapiController@uploadEmployees')->name('isapi.uploadEmployees');
+Route::post('/isapi/sendImg', 'isapiController@sendImg')->name('isapi.sendImg');
+
+
+
 
 //GET
 Route::post('/isapi/authImgIsapi', 'isapiController@authImgIsapi')->name('isapi.authImgIsapi');

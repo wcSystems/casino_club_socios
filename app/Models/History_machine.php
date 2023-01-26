@@ -9,5 +9,6 @@ class History_machine extends Model
     protected $fillable = [
         'name',
         'global_warehouse_id',
+        'novedades_type_id',
     ];
 }

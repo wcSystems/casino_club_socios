@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\History_machine;
 use App\Models\All_machine;
 use App\Models\Sede;
 use App\Models\Brand_machine;
@@ -11,6 +12,11 @@ use App\Models\Range_machine;
 use App\Models\Associated_machine;
 use App\Models\Value_machine;
 use App\Models\Play_machine;
+use App\Models\Room_group;
+use App\Models\Room;
+use App\Models\Condicion_group;
+use App\Models\Associated_group;
+use App\Models\Novedades_type;
 use Illuminate\Support\Facades\DB;
 
 class All_machinesController extends Controller
@@ -31,90 +37,13 @@ class All_machinesController extends Controller
         $value_machines = Value_machine::all();
         $play_machines = Play_machine::all();
 
-        $all_colors = [ "#63b598", "#ce7d78", "#ea9e70", "#a48a9e", "#c6e1e8", "#648177" ,"#0d5ac1" , "#f205e6" ,"#1c0365" ,"#14a9ad" ,"#4ca2f9" ,"#a4e43f" ,"#d298e2" ,"#6119d0", "#d2737d" ,"#c0a43c" ,"#f2510e" ,"#651be6" ,"#79806e" ,"#61da5e" ,"#cd2f00" , "#9348af" ,"#01ac53" ,"#c5a4fb" ,"#996635","#b11573" ,"#4bb473" ,"#75d89e" , "#2f3f94" ,"#2f7b99" ,"#da967d" ,"#34891f" ,"#b0d87b" ,"#ca4751" ,"#7e50a8" , "#c4d647" ,"#e0eeb8" ,"#11dec1" ,"#289812" ,"#566ca0" ,"#ffdbe1" ,"#2f1179" , "#935b6d" ,"#916988" ,"#513d98" ,"#aead3a", "#9e6d71", "#4b5bdc", "#0cd36d", "#250662", "#cb5bea", "#228916", "#ac3e1b", "#df514a", "#539397", "#880977", "#f697c1", "#ba96ce", "#679c9d", "#c6c42c", "#5d2c52", "#48b41b", "#e1cf3b", "#5be4f0", "#57c4d8", "#a4d17a", "#225b8", "#be608b", "#96b00c", "#088baf", "#f158bf", "#e145ba", "#ee91e3", "#05d371", "#5426e0", "#4834d0", "#802234", "#6749e8", "#0971f0", "#8fb413", "#b2b4f0", "#c3c89d", "#c9a941", "#41d158", "#fb21a3", "#51aed9", "#5bb32d", "#807fb", "#21538e", "#89d534", "#d36647", "#7fb411", "#0023b8", "#3b8c2a", "#986b53", "#f50422", "#983f7a", "#ea24a3", "#79352c", "#521250", "#c79ed2", "#d6dd92", "#e33e52", "#b2be57", "#fa06ec", "#1bb699", "#6b2e5f", "#64820f", "#1c271", "#21538e", "#89d534", "#d36647", "#7fb411", "#0023b8", "#3b8c2a", "#986b53", "#f50422", "#983f7a", "#ea24a3", "#79352c", "#521250", "#c79ed2", "#d6dd92", "#e33e52", "#b2be57", "#fa06ec", "#1bb699", "#6b2e5f", "#64820f", "#1c271", "#9cb64a", "#996c48", "#9ab9b7", "#06e052", "#e3a481", "#0eb621", "#fc458e", "#b2db15", "#aa226d", "#792ed8", "#73872a", "#520d3a", "#cefcb8", "#a5b3d9", "#7d1d85", "#c4fd57", "#f1ae16", "#8fe22a", "#ef6e3c", "#243eeb", "#1dc18", "#dd93fd", "#3f8473", "#e7dbce", "#421f79", "#7a3d93", "#635f6d", "#93f2d7", "#9b5c2a", "#15b9ee", "#0f5997", "#409188", "#911e20", "#1350ce", "#10e5b1", "#fff4d7", "#cb2582", "#ce00be", "#32d5d6", "#17232", "#608572", "#c79bc2", "#00f87c", "#77772a", "#6995ba", "#fc6b57", "#f07815", "#8fd883", "#060e27", "#96e591", "#21d52e", "#d00043", "#b47162", "#1ec227", "#4f0f6f", "#1d1d58", "#947002", "#bde052", "#e08c56", "#28fcfd", "#bb09b", "#36486a", "#d02e29", "#1ae6db", "#3e464c", "#a84a8f", "#911e7e", "#3f16d9", "#0f525f", "#ac7c0a", "#b4c086", "#c9d730", "#30cc49", "#3d6751", "#fb4c03", "#640fc1", "#62c03e", "#d3493a", "#88aa0b", "#406df9", "#615af0", "#4be47", "#2a3434", "#4a543f", "#79bca0", "#a8b8d4", "#00efd4", "#7ad236", "#7260d8", "#1deaa7", "#06f43a", "#823c59", "#e3d94c", "#dc1c06", "#f53b2a", "#b46238", "#2dfff6", "#a82b89", "#1a8011", "#436a9f", "#1a806a", "#4cf09d", "#c188a2", "#67eb4b", "#b308d3", "#fc7e41", "#af3101", "#ff065", "#71b1f4", "#a2f8a5", "#e23dd0", "#d3486d", "#00f7f9", "#474893", "#3cec35", "#1c65cb", "#5d1d0c", "#2d7d2a", "#ff3420", "#5cdd87", "#a259a4", "#e4ac44", "#1bede6", "#8798a4", "#d7790f", "#b2c24f", "#de73c2", "#d70a9c", "#25b67", "#88e9b8", "#c2b0e2", "#86e98f", "#ae90e2", "#1a806b", "#436a9e", "#0ec0ff", "#f812b3", "#b17fc9", "#8d6c2f", "#d3277a", "#2ca1ae", "#9685eb", "#8a96c6", "#dba2e6", "#76fc1b", "#608fa4", "#20f6ba", "#07d7f6", "#dce77a", "#77ecca"];
+        $rooms = Room::all();
+        $room_groups = Room_group::all();
+        $associated_groups = Associated_group::all();
+        $condicion_groups = Condicion_group::all();
+        $novedades_types = Novedades_type::all();
 
 
-        $charts = array();
-        $charts["sede_data"] = [
-            'labels' => Sede::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Sedes',
-                    'data' => Sede::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-        $charts["brand_data"] = [
-            'labels' => Brand_machine::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Marcas',
-                    'data' => Brand_machine::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-        $charts["model_data"] = [
-            'labels' => Model_machine::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Modelos',
-                    'data' => Model_machine::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-        $charts["range_data"] = [
-            'labels' => Range_machine::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Rangos',
-                    'data' => Range_machine::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-        $charts["associated_data"] = [
-            'labels' => Associated_machine::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Asociados',
-                    'data' => Associated_machine::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-        $charts["value_data"] = [
-            'labels' => Value_machine::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Denominaciones',
-                    'data' => Value_machine::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-        $charts["play_data"] = [
-            'labels' => Play_machine::withCount('machines')->pluck('name'),
-            'datasets' => [
-                [
-                    'label' => 'Juegos',
-                    'data' => Play_machine::withCount('machines')->pluck('machines_count'),
-                    'backgroundColor' => $all_colors,
-                    'borderWidth' => 1
-                ]
-            ] 
-        ];
-
-
-        $charts = json_encode($charts);
         return view('all_machines.index')
                     ->with('sedes',$sedes)
                     ->with('all_machines',$all_machines)
@@ -123,8 +52,15 @@ class All_machinesController extends Controller
                     ->with('range_machines',$range_machines)
                     ->with('associated_machines',$associated_machines)
                     ->with('value_machines',$value_machines)
-                    ->with('play_machines',$play_machines)
-                    ->with('charts',$charts);
+
+                    ->with('rooms',$rooms)
+                    ->with('room_groups',$room_groups)
+                    ->with('associated_groups',$associated_groups)
+                    ->with('condicion_groups',$condicion_groups)
+
+                    ->with('novedades_types',$novedades_types)
+
+                    ->with('play_machines',$play_machines);
     }
 
     /**
@@ -208,51 +144,123 @@ class All_machinesController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
-
-        $search_sede_machines = $request->get('search_sede_machines');
-        $search_brand_machines = $request->get('search_brand_machines');
-        $search_model_machines = $request->get('search_model_machines');
-        $search_range_machines = $request->get('search_range_machines');
-        $search_associated_machines = $request->get('search_associated_machines');
-        $search_value_machines = $request->get('search_value_machines');
-        $search_play_machines = $request->get('search_play_machines');
+        $search_type_group_associated = $request->get('search_type_group_associated');
+        $search_type_group_room = $request->get('search_type_group_room');
+        $search_associated_select = $request->get('search_associated_select');
+        $search_room_select = $request->get('search_room_select');
+        $search_brand_machines_select = $request->get('search_brand_machines_select');
+        $search_model_machines_select = $request->get('search_model_machines_select');
+        $search_condicion_select = $request->get('search_condicion_select');
+        $search_novedad_select = $request->get('search_novedad_select');
 
         /* QUERY FILTER */
-        $query = All_machine::select(DB::raw('all_machines.*, sedes.name AS group_name, brand_machines.name AS brand_name, model_machines.name AS model_name, range_machines.name AS range_name, associated_machines.name AS associated_name, value_machines.name AS value_name, play_machines.name AS play_name'))
-                    ->orWhere(function($query) use ($search){
-                        $query->orWhere('all_machines.name','LIKE','%'.$search.'%');
-                    })
-                    ->where(function($query) use ($search_sede_machines, $search_brand_machines, $search_model_machines, $search_range_machines, $search_associated_machines, $search_value_machines, $search_play_machines){
-                        if(!empty($search_sede_machines)){
-                            $query->where('all_machines.sede_id', '=', $search_sede_machines);
-                        }else{};
-                        if(!empty($search_brand_machines)){
-                            $query->where('all_machines.brand_machine_id', '=', $search_brand_machines);
-                        }else{};
-                        if(!empty($search_model_machines)){
-                            $query->where('all_machines.model_machine_id', '=', $search_model_machines);
-                        }else{};
-                        if(!empty($search_range_machines)){
-                            $query->where('all_machines.range_machine_id', '=', $search_range_machines);
-                        }else{};
-                        if(!empty($search_associated_machines)){
-                            $query->where('all_machines.associated_machine_id', '=', $search_associated_machines);
-                        }else{};
-                        if(!empty($search_value_machines)){
-                            $query->where('all_machines.value_machine_id', '=', $search_value_machines);
-                        }else{};
-                        if(!empty($search_play_machines)){
-                            $query->where('all_machines.play_machine_id', '=', $search_play_machines);
-                        }else{};
-                    })
-                    ->join('sedes', 'all_machines.sede_id', '=', 'sedes.id')
-                    ->join('brand_machines', 'all_machines.brand_machine_id', '=', 'brand_machines.id')
-                    ->join('model_machines', 'all_machines.model_machine_id', '=', 'model_machines.id')
-                    ->join('range_machines', 'all_machines.range_machine_id', '=', 'range_machines.id')
-                    ->join('associated_machines', 'all_machines.associated_machine_id', '=', 'associated_machines.id')
-                    ->join('value_machines', 'all_machines.value_machine_id', '=', 'value_machines.id')
-                    ->join('play_machines', 'all_machines.play_machine_id', '=', 'play_machines.id')
-                    ->orderBy('id', 'ASC')->get();
+       
+
+                    $query = DB::table('history_machines')
+            ->selectRaw('
+                history_machines.*, 
+                rooms.name AS room_name,
+                room_groups.name AS room_group,
+                room_groups.id AS room_group_id,
+
+                associated_machines.name AS associated_name,
+                associated_groups.name AS associated_group,
+                condicion_groups.name AS condicion_group,
+
+                range_machines.name AS range_group,
+                play_machines.name AS play_group,
+                value_machines.name AS value_group,
+
+                brand_machines.name AS brand_name,
+                model_machines.name AS model_name,
+
+                novedades_types.name AS novedad_name
+            ')
+            ->orWhere(function($query) use ($search){
+                $query->orWhere('history_machines.name','LIKE','%'.$search.'%');
+            })
+            ->where(function($query) use ($search_novedad_select,$search_type_group_associated,$search_associated_select,$search_brand_machines_select,$search_model_machines_select,$search_type_group_room,$search_room_select,$search_condicion_select){
+                
+
+                if(!empty($search_novedad_select)){
+                    $query->where('history_machines.novedades_type_id', '=', $search_novedad_select);
+                }else{};
+
+                if(!empty($search_type_group_associated)){
+                    $query->where('associated_machines.associated_group_id', '=', $search_type_group_associated);
+                }else{};
+
+                if(!empty($search_type_group_room)){
+                    $query->where('rooms.room_group_id', '=', $search_type_group_room);
+                }else{};
+
+
+                if(!empty($search_associated_select)){
+                    $query->where('global_warehouses.associated_machine_id', '=', $search_associated_select);
+                }else{};
+                if(!empty($search_room_select)){
+                    $query->where('global_warehouses.room_id', '=', $search_room_select);
+                }else{};
+                
+                if(!empty($search_brand_machines_select)){
+                    $query->where('global_warehouses.brand_machine_id', '=', $search_brand_machines_select);
+                }else{};
+                if(!empty($search_model_machines_select)){
+                    $query->where('global_warehouses.model_machine_id', '=', $search_model_machines_select);
+                }else{};
+
+                if(!empty($search_condicion_select)){
+                    $query->where('global_warehouses.condicion_group_id', '=', $search_condicion_select);
+                }else{};
+                
+            })
+            ->join('global_warehouses', 'history_machines.global_warehouse_id', '=', 'global_warehouses.id')
+            ->join('rooms', 'global_warehouses.room_id', '=', 'rooms.id')
+            ->join('associated_machines', 'global_warehouses.associated_machine_id', '=', 'associated_machines.id')
+            ->join('brand_machines', 'global_warehouses.brand_machine_id', '=', 'brand_machines.id')
+            ->join('model_machines', 'global_warehouses.model_machine_id', '=', 'model_machines.id')
+
+            ->join('room_groups', 'rooms.room_group_id', '=', 'room_groups.id')
+            ->join('associated_groups', 'associated_machines.associated_group_id', '=', 'associated_groups.id')
+            ->join('condicion_groups', 'global_warehouses.condicion_group_id', '=', 'condicion_groups.id')
+
+            ->leftjoin('range_machines', 'global_warehouses.range_machine_id', '=', 'range_machines.id')
+            ->leftjoin('play_machines', 'global_warehouses.play_machine_id', '=', 'play_machines.id')
+            ->leftjoin('value_machines', 'global_warehouses.value_machine_id', '=', 'value_machines.id')
+            ->join('novedades_types', 'history_machines.novedades_type_id', '=', 'novedades_types.id')
+            ->get();
+
+            $query->each(function ($item) {
+                $item->group_name = "<span class='font-weight-bold'>". $item->room_group . ":&nbsp;</span>" . $item->room_name . "<br>";
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
@@ -261,7 +269,7 @@ class All_machinesController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count(All_machine::all());
+        $totalRecords = count(History_machine::all());
         $totalRecordswithFilter = count($query);
 
         echo json_encode(array(
@@ -272,15 +280,4 @@ class All_machinesController extends Controller
         ));
     }
 
-    public function listModel(Request $request)
-    {   
-
-        $id = $request->id;
-        $current_item = Model_machine::where('brand_machine_id', '=', $id)->get();
-        if($current_item){
-            return response()->json([ 'type' => 'success','data' => $current_item ]);
-        }else{
-            return response()->json([ 'type' => 'error']);
-        }
-    }
 }

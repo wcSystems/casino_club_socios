@@ -132,112 +132,126 @@
             }
         }
         function modal(type,id) {
+            let html = `
+            <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
+                @csrf
+                <div class="row">`
+
+                    if(id){
+                        html+=`
+                        <div class="mx-auto">
+                            <label class="d-flex m-0">
+                                <img id="imgUser" class="rounded-circle"  src='public/users/null.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
+                                <input require onchange="viewImg(this)" type="file" id="image" name="image" style="display:none" >
+                            </label>
+                        </div>
+                        `
+                    }
+                    
+
+
+                    html+=`
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <input required type="text" id="employeeNo" name="employeeNo" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese Su Numero de Cedula" >
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Nombre y Apellido <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Nombre y Apellido porfavor" >
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Fecha de Nacimiento <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <input required type="date" id="nacimiento" name="nacimiento" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Su fecha de nacimiento" >
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Sexos <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="sex_id" class="form-control w-100">
+                                    <option value="" selected >Todos los Sexos</option>
+                                    @foreach( $sexs as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="sede_id" class="form-control w-100">
+                                    <option value="" selected >Todos las Sedes</option>
+                                    @foreach( $sedes as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Departamentos <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="department_id" class="form-control w-100">
+                                    <option value="" selected >Todos los Departamentos</option>
+                                    @foreach( $departments as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Cargos <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="position_id" class="form-control w-100">
+                                    <option value="" selected >Todos los Cargos</option>
+                                    @foreach( $positions as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12" style="margin-top:20px">
+                        <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar Datos </button>
+                        `
+
+                    if(id){
+                        html+=`
+                        <button onclick="guardarIMG(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar Imagen </button>
+                        `
+                        html+=`
+                    </div>
+                </div>
+            </form>`
+
             Swal.fire({
                 title: `${type} Registro`,
                 showConfirmButton: false,
-                html:`
-                    <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
-                    @csrf
-                        <div class="row">
-
-
-                            <div class="mx-auto">
-                                <label class="d-flex m-0">
-                                    <img id="imgUser" class="rounded-circle"  src='public/users/null.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
-                                    <input require onchange="viewImg(this)" type="file" id="image" name="image" style="display:none" >
-                                </label>
-                            </div>
-
-
-
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <input required type="text" id="employeeNo" name="employeeNo" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Ingrese Su Numero de Cedula" >
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Nombre y Apellido <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Nombre y Apellido porfavor" >
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Fecha de Nacimiento <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <input required type="date" id="nacimiento" name="nacimiento" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Su fecha de nacimiento" >
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-6">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Sexos <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <select required id="sex_id" class="form-control w-100">
-                                            <option value="" selected >Todos los Sexos</option>
-                                            @foreach( $sexs as $item )
-                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-6">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <select required id="sede_id" class="form-control w-100">
-                                            <option value="" selected >Todos las Sedes</option>
-                                            @foreach( $sedes as $item )
-                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-6">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Departamentos <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <select required id="department_id" class="form-control w-100">
-                                            <option value="" selected >Todos los Departamentos</option>
-                                            @foreach( $departments as $item )
-                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-6">
-                                <div class="form-group row m-b-0">
-                                    <label class=" text-lg-right col-form-label"> Cargos <span class="text-danger"> *</span> </label>
-                                    <div class="col-lg-12">
-                                        <select required id="position_id" class="form-control w-100">
-                                            <option value="" selected >Todos los Cargos</option>
-                                            @foreach( $positions as $item )
-                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <div class="invalid-feedback text-left">Error campo obligatorio.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12" style="margin-top:20px">
-                                <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
-                            </div>
-                        </div>
-                    </form>`
+                html: html
+                
             })
             if(id){
                 let current={!! $employees !!}.find(i=>i.id===id)
@@ -291,25 +305,61 @@
                     payload.append('sede_id',$('#sede_id').val())
                     payload.append('department_id',$('#department_id').val())
                     payload.append('position_id',$('#position_id').val())
-                    payload.append('originIMG',window.location.origin+"/public/employees/"+$('#employeeNo').val()+".jpg")
-                    
-                    if($('#image').prop('files')[0]){
-                        payload.append('image',await resizeImage({ file: $('#image').prop('files')[0],maxSize: 500 }))
-                    }
-                $.ajax({
-                    url: "{{ route('isapi.addOrUpdateEmployee') }}",
-                    type: "POST",
-                    data: payload,
-                    processData: false,
-                    contentType: false,
-                    enctype: 'multipart/form-data',
-                    headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-                    success: function (res) {
-                        if(res.type === 'success'){
-                            location.reload();
-                        }
-                    }
-                });
+                
+                    $.ajax({
+                        url: "{{ route('isapi.addOrUpdateEmployee') }}",
+                        type: "POST",
+                        data: payload,
+                        processData: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+                        success: function (res) {
+                            if(res.type === 'success'){
+                                location.reload();
+                            }
+                        }   
+                    });  
+            }
+        }
+        async function guardarIMG(id) {
+
+            let validity = document.getElementById('form-all').checkValidity()
+            if(validity){
+            
+       
+
+                let payloadIMG = new FormData(); 
+                        payloadIMG.append('employeeNo',$('#employeeNo').val())
+                        payloadIMG.append('name',$('#name').val())
+                        payloadIMG.append('originIMG',window.location.origin+"/public/employees/"+$('#employeeNo').val()+".jpg")
+
+                       
+                            if($('#image').prop('files')[0]){
+                                payloadIMG.append('image',await resizeImage({ file: $('#image').prop('files')[0],maxSize: 500 }))
+                            }
+                     
+
+                            $.ajax({
+                                url: "{{ route('isapi.sendImg') }}",
+                                type: "POST",
+                                data: payloadIMG,
+                                processData: false,
+                                contentType: false,
+                                enctype: 'multipart/form-data',
+                                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
+                                success: function (res) {
+                                    if(res.type === 'success'){
+                                        location.reload();
+                                    }
+                                }
+                            });
+
+                        
+                        
+
+                   
+                
 
             }
         }

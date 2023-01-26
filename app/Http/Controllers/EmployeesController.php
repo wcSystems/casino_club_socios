@@ -104,6 +104,7 @@ class EmployeesController extends Controller
      */
     public function destroy($id)
     {
+        Schedule_template::where('employee_id', $id)->delete();
         $current_item = Employee::find($id);
         if($current_item){
             $current_item->delete();

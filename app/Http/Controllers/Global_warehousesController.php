@@ -16,6 +16,8 @@ use App\Models\Range_machine;
 use App\Models\Value_machine;
 use App\Models\Play_machine;
 
+use App\Models\Novedades_type;
+
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -44,6 +46,8 @@ class Global_warehousesController extends Controller
         $value_machines = Value_machine::all();
         $play_machines = Play_machine::all();
 
+        $novedades_types = Novedades_type::all();
+
         return view('global_warehouses.index')
             ->with('global_warehouses',$global_warehouses)
             ->with('associated_machines',$associated_machines)
@@ -57,7 +61,7 @@ class Global_warehousesController extends Controller
             ->with('range_machines',$range_machines)
             ->with('value_machines',$value_machines)
             ->with('play_machines',$play_machines)
-
+            ->with('novedades_types',$novedades_types)
             ->with('all_colors',json_encode($all_colors));
     }
 
@@ -84,18 +88,43 @@ class Global_warehousesController extends Controller
         // IF EXISTS
         $current_db = Global_warehouse::where("id","=",$request["id"])->first();
         if( $current_db ){
+            // SERIAL CAMBIADA
+            if( $request["serial"] != $current_db->serial  ){
+                History_machine::Create([
+                    'name' => $current_db->serial. " -> ".$request["serial"],
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "2",
+                ]);
+            }
             // SOCIEDAD CAMBIADA
             if( $request["associated_machine_id"] != $current_db->associated_machine_id  ){
+
+                $current = Associated_machine::select(DB::raw('associated_machines.*, associated_groups.name AS associated_group_name'))
+                            ->where('associated_machines.id','=',$current_db->associated_machine_id)
+                            ->join('associated_groups', 'associated_machines.associated_group_id', '=', 'associated_groups.id')
+                            ->first();
+
+                $new = Associated_machine::select(DB::raw('associated_machines.*, associated_groups.name AS associated_group_name'))
+                            ->where('associated_machines.id','=',$request["associated_machine_id"])
+                            ->join('associated_groups', 'associated_machines.associated_group_id', '=', 'associated_groups.id')
+                            ->first();
+
+                $text = "<span class='font-weight-bold' >" . $current->associated_group_name. ": </span>" . $current->name. " -> <span class='font-weight-bold' >" . $new->associated_group_name. ": </span>" . $new->name;
                 History_machine::Create([
-                    'name' => "SOCIEDAD CAMBIADA / INVITADO CAMBIADO | ".Associated_machine::find($current_db->associated_machine_id)->name. " -> ".Associated_machine::find($request["associated_machine_id"])->name,
-                    'global_warehouse_id' => $current_db->id
+                    'name' => $text,
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "3",
                 ]);
             }
             // MARCA CAMBIADA
             if( $request["brand_machine_id"] != $current_db->brand_machine_id || $request["model_machine_id"] != $current_db->model_machine_id ){
+
+                $text = "<span class='font-weight-bold' >" . Brand_machine::find($current_db->brand_machine_id)->name. ": </span>" . Model_machine::find($current_db->model_machine_id)->name. " -> <span class='font-weight-bold' >" . Brand_machine::find($request["brand_machine_id"])->name. ": </span>" . Model_machine::find($request["model_machine_id"])->name;
+
                 History_machine::Create([
-                    'name' => "MARCA CAMBIADA / MODELO CAMBIADO | ".Brand_machine::find($current_db->brand_machine_id)->name. Model_machine::find($current_db->model_machine_id)->name ." -> ".Brand_machine::find($request["brand_machine_id"])->name . Model_machine::find($request["model_machine_id"])->name,
-                    'global_warehouse_id' => $current_db->id
+                    'name' => $text ,
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "4",
                 ]);
             }
             // CONDICION CAMBIADA
@@ -114,44 +143,64 @@ class Global_warehousesController extends Controller
                 if($request["condicion_group_id"] == 4){ $new_condicion = "Dañada ( Repuesto )"; }
 
                 History_machine::Create([
-                    'name' => "CONDICION CAMBIADA | ".$current_condicion. " -> ".$new_condicion,
-                    'global_warehouse_id' => $current_db->id
+                    'name' => $current_condicion. " -> ".$new_condicion,
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "5",
                 ]);
             }
             // SALA CAMBIADA
             if( $request["room_id"] != $current_db->room_id  ){
+
+                $current = Room::select(DB::raw('rooms.*, room_groups.name AS room_group_name'))
+                            ->where('rooms.id','=',$current_db->room_id)
+                            ->join('room_groups', 'rooms.room_group_id', '=', 'room_groups.id')
+                            ->first();
+
+                $new = Room::select(DB::raw('rooms.*, room_groups.name AS room_group_name'))
+                            ->where('rooms.id','=',$request["room_id"])
+                            ->join('room_groups', 'rooms.room_group_id', '=', 'room_groups.id')
+                            ->first();
+                            
+                $text = "<span class='font-weight-bold' >" . $current->room_group_name. ": </span>" . $current->name. " -> <span class='font-weight-bold' >" . $new->room_group_name. ": </span>" . $new->name;
+
+
                 History_machine::Create([
-                    'name' => "SALA CAMBIADA / GALPON CAMBIADO | ".Room::find($current_db->room_id)->name. " -> ".Room::find($request["room_id"])->name,
-                    'global_warehouse_id' => $current_db->id
+                    'name' => $text,
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "6",
                 ]);
             }
 
             // NOMBRE UNICO CAMBIADO
             if( $request["name_machine_room_active"] != $current_db->name_machine_room_active && $current_db->name_machine_room_active != null ){
                 History_machine::Create([
-                    'name' => "NOMBRE UNICO CAMBIADO | ".$current_db->name_machine_room_active. " -> ".$request["name_machine_room_active"],
-                    'global_warehouse_id' => $current_db->id
+                    'name' => $current_db->name_machine_room_active. " -> ".$request["name_machine_room_active"],
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "7",
                 ]);
             }
             // DENOMINACION CAMBIADA
             if( $request["value_machine_id"] != $current_db->value_machine_id && $current_db->value_machine_id != null ){
                 History_machine::Create([
                     'name' => "DENOMINACION CAMBIADA | ".Value_machine::find($current_db->value_machine_id)->name. " -> ".Value_machine::find($request["value_machine_id"])->name,
-                    'global_warehouse_id' => $current_db->id
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "10",
                 ]);
             }
             // JUEGO CAMBIADO
             if( $request["play_machine_id"] != $current_db->play_machine_id && $current_db->play_machine_id != null ){
                 History_machine::Create([
                     'name' => "JUEGO CAMBIADO | ".Play_machine::find($current_db->play_machine_id)->name. " -> ".Play_machine::find($request["play_machine_id"])->name,
-                    'global_warehouse_id' => $current_db->id
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "9",
                 ]);
             }
             //  RANGO CAMBIADO
             if( $request["range_machine_id"] != $current_db->range_machine_id && $current_db->range_machine_id != null ){
                 History_machine::Create([
                     'name' => "RANGO CAMBIADO | ".Range_machine::find($current_db->range_machine_id)->name. " -> ".Range_machine::find($request["range_machine_id"])->name,
-                    'global_warehouse_id' => $current_db->id
+                    'global_warehouse_id' => $current_db->id,
+                    'novedades_type_id' => "8",
                 ]);
             }
         }
@@ -176,16 +225,18 @@ class Global_warehousesController extends Controller
         // NEW INGRESO
         if( !$current_db ){
             History_machine::Create([
-                'name' => "NUEVO INGRESO",
-                'global_warehouse_id' => $current_item->id
+                'name' => " - - - ",
+                'global_warehouse_id' => $current_item->id,
+                'novedades_type_id' => "1",
             ]);
         }
 
         //NEW NOVEDAD
         if( $request["new_novedad"] ){
             History_machine::Create([
-                'name' => "PERSONALIZADO | ".$request["new_novedad"],
-                'global_warehouse_id' => $current_item->id
+                'name' => $request["new_novedad"],
+                'global_warehouse_id' => $current_item->id,
+                'novedades_type_id' => "11",
             ]);
         }
     

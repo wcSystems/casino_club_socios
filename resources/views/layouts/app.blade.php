@@ -149,16 +149,19 @@
 <body>
     <div class="page-cover" style="background-image: url('{{ asset('img/login-bg/login-bg-11.jpg') }}');"></div>
     <div id="page-loader" class="fade show"><span class="spinner"></span></div>
-    <div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
-        <div id="header" class="header navbar-default">
+    <div id="page-container" class="fade page-sidebar-fixed ">
+        <div id="header" class="header navbar-default d-flex">
+            
             <div class="navbar-header">
-                <a class="navbar-brand"><b>CASINO</b></a>
+                
                 <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <b class="navbar-brand font-weight-bold">CASINO</b>
             </div>
+
             <ul class="navbar-nav navbar-right">
                 <li class="dropdown navbar-user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -178,6 +181,7 @@
                     </div>
                 </li>
             </ul>
+
         </div>
         <div id="sidebar" class="sidebar">
 
@@ -227,7 +231,7 @@
                     <li id="group_drops_casinos_nav" class="has-sub closed">
                         <a href="{{ route('group_drops_casinos') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DROP</span>
+                            <span class="text-white">DROP CECOM</span>
                         </a>
                     </li>
                     <li class="nav-header" style="color: #fff !important">CONFIGURACIONES USUARIOS</li>
@@ -281,7 +285,19 @@
                     <li id="all_machines_nav" class="has-sub closed">
                         <a href="{{ route('all_machines') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MAQUINAS</span>
+                            <span class="text-white">NOVEDADES</span>
+                        </a>
+                    </li>
+                    <li id="condicion_groups_nav" class="has-sub closed">
+                        <a href="{{ route('condicion_groups') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">CONDICIONES</span>
+                        </a>
+                    </li>
+                    <li id="novedades_types_nav" class="has-sub closed">
+                        <a href="{{ route('novedades_types') }}">
+                            <i class="fas fa-circle text-white"></i>
+                            <span class="text-white">TIPOS DE NOVEDADES</span>
                         </a>
                     </li>
                     <li id="brand_machines_nav" class="has-sub closed">
@@ -515,6 +531,7 @@
                             d.search_associated_select = $('#search_associated_select').val(),
                             d.search_brand_machines_select = $('#search_brand_machines_select').val(),
                             d.search_model_machines_select = $('#search_model_machines_select').val(),
+                            d.search_novedad_select = $('#search_novedad_select').val(),
 
                             d.search_club_vip = $("#search_club_vip:checked").val() ? "1" : undefined,
                             d.search_referido = $("#search_referido:checked").val() ? "1" : undefined,
@@ -581,6 +598,7 @@
                 $("#search_room_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_brand_machines_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_model_machines_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_novedad_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
 
                 
 

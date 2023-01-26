@@ -123,7 +123,7 @@
                 <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>UID</th>
                             <th>Serial</th>
                             <th>Sala / Galpon</th>
                             <th>Asociado / Invitado</th>
@@ -485,7 +485,6 @@
     function historico(params) {
 
         let current={!! $global_warehouses !!}.find(i=>i.id===params)
-       
         let htmlTemplate = ``
         htmlTemplate += `
         <div class="panel-body">
@@ -494,14 +493,17 @@
                     <thead>
                         <tr>
                             <th>Fecha</th>
-                            <th>Novedad</th>
+                            <th>Tipo de Novedad</th>
+                            <th>Descripcion</th>
                         </tr>
                     </thead>
                     <tbody>`;
                         current.history.forEach(element => {
+                            let novedad = {!! $novedades_types !!}.find(i=>i.id==element.novedades_type_id)
                             htmlTemplate +=`
                             <tr>
                                 <td>${ moment(element.created_at).format("YYYY-MM-DD") }</td>
+                                <td>${ novedad.name }</td>
                                 <td>${ element.name }</td>
                             </tr>
                             `;
@@ -567,7 +569,7 @@
     dataTable("{{route('global_warehouses.service')}}",[
         {
             render: function ( data,type, row,all  ) {
-                return all.row+1;
+                return "UID_"+row.id;
             }
         },
         { data: 'serial' },

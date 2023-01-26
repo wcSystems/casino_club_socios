@@ -24,6 +24,9 @@ use App\Models\Ayb_item_command;
 use App\Models\Table;
 use App\Models\Year_month_group;
 use App\Models\Horario;
+use App\Models\Group_drops_casino;
+use App\Models\Mesas_casino;
+use App\Models\Billetes_casino;
 
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
@@ -292,6 +295,20 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'conteo_drop_cecom_casinos.update',
         'destroy' => 'conteo_drop_cecom_casinos.destroy'
     ]);
+    
+    Route::resource('condicion_groups', 'Condicion_groupsController')->names([
+        'index' => 'condicion_groups',
+        'create' => 'condicion_groups.create',
+        'update' => 'condicion_groups.update',
+        'destroy' => 'condicion_groups.destroy'
+    ]);
+    
+    Route::resource('novedades_types', 'Novedades_typesController')->names([
+        'index' => 'novedades_types',
+        'create' => 'novedades_types.create',
+        'update' => 'novedades_types.update',
+        'destroy' => 'novedades_types.destroy'
+    ]);
 
 
     // VIEW - GRAPHICS
@@ -338,6 +355,35 @@ Route::get("/schedule_department/{department_id}/{year_month_group_id}/{day_init
             ->get();
 
         return view("schedule_department.index")->with('schedule',$schedule )->with('department',$department )->with('year_month_group',$year_month_group )->with('horarios',$horarios )->with('day_init',$day_init )->with('day_end',$day_end );
+});
+
+
+// VIEW - DROP CECOM
+Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_drops_casino_id,$fecha){
+
+    $group_drops_casino = Group_drops_casino::where("id","=",$group_drops_casino_id)->first();
+
+
+    $mesas_casinos = Mesas_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
+    $billetes_casinos = Billetes_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
+
+
+    $conteo_drop_cecom_casinos = DB::table('conteo_drop_cecom_casinos')
+    ->selectRaw('conteo_drop_cecom_casinos.*, billetes_casinos.name AS billete_name')
+    ->where("group_drops_casino_id","=",$group_drops_casino_id)
+    ->join('billetes_casinos', 'conteo_drop_cecom_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+    ->get();
+       
+
+        return view("view_drop_cecom.index")
+        ->with('sede_id',$group_drops_casino->sede_id )
+        ->with('group_drops_casino',$group_drops_casino )
+        ->with('mesas_casinos',$mesas_casinos )
+        ->with('billetes_casinos',$billetes_casinos )
+        ->with('fecha',$fecha )
+        ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
+
+
 });
 
 

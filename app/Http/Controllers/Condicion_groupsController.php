@@ -3,13 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Sede;
-use App\Models\Mesas_casino;
-use Illuminate\Support\Facades\DB;
-use App\Models\Conteo_drop_cecom_casino;
+use App\Models\Condicion_group;
 
-
-class Mesas_casinosController extends Controller
+class Condicion_groupsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +14,8 @@ class Mesas_casinosController extends Controller
      */
     public function index()
     {
-        $sedes = Sede::all();
-        $mesas_casinos = Mesas_casino::all();
-        return view('mesas_casinos.index')->with('mesas_casinos',$mesas_casinos)->with('sedes',$sedes);
+        $condicion_groups = Condicion_group::all();
+        return view('condicion_groups.index')->with('condicion_groups',$condicion_groups);
     }
 
     /**
@@ -41,7 +36,7 @@ class Mesas_casinosController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Mesas_casino::updateOrCreate($request["id"],$request["data"]);
+        $current_item = Condicion_group::updateOrCreate($request["id"],$request["data"]);
         if($current_item){
             return response()->json([ 'type' => 'success']);
         }else{
@@ -91,8 +86,7 @@ class Mesas_casinosController extends Controller
      */
     public function destroy($id)
     {
-        Conteo_drop_cecom_casino::where("mesas_casino_id","=",$id)->delete();
-        $current_item = Mesas_casino::find($id); 
+        $current_item = Condicion_group::find($id);
         if($current_item){
             $current_item->delete();
             return response()->json([ 'type' => 'success']);
@@ -106,10 +100,7 @@ class Mesas_casinosController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         /* QUERY FILTER */
-        $query = DB::table('mesas_casinos')
-                    ->selectRaw('mesas_casinos.*, sedes.name AS sede_name, sedes.name AS group_name')->where('mesas_casinos.name','LIKE','%'.$search.'%')
-                    ->join('sedes', 'mesas_casinos.sede_id', '=', 'sedes.id')
-                    ->get();
+        $query = Condicion_group::where('name','LIKE','%'.$search.'%')->get();
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
         $start = $request->get("start");
@@ -117,7 +108,7 @@ class Mesas_casinosController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count(Mesas_casino::all());
+        $totalRecords = count(Condicion_group::all());
         $totalRecordswithFilter = count($query);
 
         echo json_encode(array(
