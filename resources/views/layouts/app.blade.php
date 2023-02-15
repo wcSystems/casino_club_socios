@@ -187,95 +187,41 @@
 
             <div data-scrollbar="true" data-height="100%" class="banner-icons">
                 <ul class="nav " data-click="pr-0">
-                    <!-- <li class="nav-header" style="color: #fff !important">DASBOARD</li> -->
-
-                    
-                    <li class="nav-header" style="color: #fff !important">MODULOS</li>
+                    <li class="nav-header" style="color: #fff !important">GRAFICOS</li>
                     <li id="graphics_nav" class="has-sub closed">
                         <a href="{{ route('graphics') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">GRAFICOS</span>
+                            <span class="text-white">QR</span>
                         </a>
                     </li>
+                    <li class="nav-header" style="color: #fff !important">MODULO CUMPLIMIENTO</li>
                     <li id="clients_nav" class="has-sub closed">
                         <a href="{{ route('clients') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">CLIENTES</span>
                         </a>
                     </li>
+                    <li class="nav-header" style="color: #fff !important">MODULO ESTADISTICA</li>
                     <li id="counting_table_stadistics_nav" class="has-sub closed">
                         <a href="{{ route('counting_table_stadistics') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">CONTEO DE MESAS</span>
                         </a>
                     </li>
-                    <li id="ayb_commands_nav" class="has-sub closed">
-                        <a href="{{ route('ayb_commands') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">COMANDAS</span>
-                        </a>
-                    </li>
-                    
-                    <li id="emails_nav" class="has-sub closed">
-                        <a href="{{ route('emails') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CORREOS</span>
-                        </a>
-                    </li>
-                    <li id="attlogs_nav" class="has-sub closed">
-                        <a href="{{ route('attlogs') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ASISTENCIA</span>
-                        </a>
-                    </li>
+                    <li class="nav-header" style="color: #fff !important">MODULO CECOM</li>
                     <li id="group_drops_casinos_nav" class="has-sub closed">
                         <a href="{{ route('group_drops_casinos') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DROP CECOM</span>
+                            <span class="text-white">DROP</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES USUARIOS</li>
-                    <li id="users_nav" class="has-sub closed">
-                        <a href="{{ route('users') }}">
+                    <li id="group_archings_casinos_nav" class="has-sub closed">
+                        <a href="{{ route('group_archings_casinos') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">USUARIOS</span>
+                            <span class="text-white">ARQUEO</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES GLOBALES</li>
-                    <li id="levels_nav" class="has-sub closed">
-                        <a href="{{ route('levels') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">NIVELES</span>
-                        </a>
-                    </li>
-                    <li id="domains_nav" class="has-sub closed">
-                        <a href="{{ route('domains') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DOMINIOS</span>
-                        </a>
-                    </li>
-                    <li id="sedes_nav" class="has-sub closed">
-                        <a href="{{ route('sedes') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">SEDES</span>
-                        </a>
-                    </li>
-                    <li id="sexs_nav" class="has-sub closed">
-                        <a href="{{ route('sexs') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">SEXOS</span>
-                        </a>
-                    </li>
-                   
-                    
-                    
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES MAQUINAS</li>
-                    <li id="rooms_nav" class="has-sub closed">
-                        <a href="{{ route('rooms') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">SALAS / GALPONES</span>
-                        </a>
-                    </li>
+                    <li class="nav-header" style="color: #fff !important">MODULO MAQUINAS</li>
                     <li id="global_warehouses_nav" class="has-sub closed">
                         <a href="{{ route('global_warehouses') }}">
                             <i class="fas fa-circle text-white"></i>
@@ -288,105 +234,30 @@
                             <span class="text-white">NOVEDADES</span>
                         </a>
                     </li>
-                    <li id="condicion_groups_nav" class="has-sub closed">
-                        <a href="{{ route('condicion_groups') }}">
+                    <li class="nav-header" style="color: #fff !important">MODULO A&B</li>
+                    <li id="ayb_commands_nav" class="has-sub closed">
+                        <a href="{{ route('ayb_commands') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CONDICIONES</span>
+                            <span class="text-white">COMANDAS</span>
                         </a>
                     </li>
-                    <li id="novedades_types_nav" class="has-sub closed">
-                        <a href="{{ route('novedades_types') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">TIPOS DE NOVEDADES</span>
-                        </a>
-                    </li>
-                    <li id="brand_machines_nav" class="has-sub closed">
-                        <a href="{{ route('brand_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MARCAS</span>
-                        </a>
-                    </li>
-                    <li id="model_machines_nav" class="has-sub closed">
-                        <a href="{{ route('model_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MODELOS</span>
-                        </a>
-                    </li>
-                    <li id="range_machines_nav" class="has-sub closed">
-                        <a href="{{ route('range_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">RANGOS</span>
-                        </a>
-                    </li>
-                    <li id="associated_machines_nav" class="has-sub closed">
-                        <a href="{{ route('associated_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ASOCIADOS / INVITADOS</span>
-                        </a>
-                    </li>
-                    <li id="value_machines_nav" class="has-sub closed">
-                        <a href="{{ route('value_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DENOMINACIONES</span>
-                        </a>
-                    </li>
-                    <li id="play_machines_nav" class="has-sub closed">
-                        <a href="{{ route('play_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">JUEGOS</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
                     <li id="ayb_items_nav" class="has-sub closed">
                         <a href="{{ route('ayb_items') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">MENÚS</span>
                         </a>
                     </li>
-                    
-                    <li id="group_menus_nav" class="has-sub closed">
-                        <a href="{{ route('group_menus') }}">
+                    <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
+                    <li id="attlogs_nav" class="has-sub closed">
+                        <a href="{{ route('attlogs') }}">
                             <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">GRUPO DE MENUS</span>
+                            <span class="text-white">ASISTENCIA</span>
                         </a>
                     </li>
-                    <li id="type_commands_nav" class="has-sub closed">
-                        <a href="{{ route('type_commands') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">TIPOS DE COMANDAS</span>
-                        </a>
-                    </li>
-                    <li id="tables_nav" class="has-sub closed">
-                        <a href="{{ route('tables') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DESTINOS</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES RRHH</li>
                     <li id="employees_nav" class="has-sub closed">
                         <a href="{{ route('employees') }}">
                             <i class="fas fa-circle text-white"></i>
                             <span class="text-white">EMPLEADOS</span>
-                        </a>
-                    </li>
-                    <li id="departments_nav" class="has-sub closed">
-                        <a href="{{ route('departments') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DEPARTAMENTOS</span>
-                        </a>
-                    </li>
-                    <li id="positions_nav" class="has-sub closed">
-                        <a href="{{ route('positions') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CARGOS</span>
-                        </a>
-                    </li>
-                    <li id="horarios_nav" class="has-sub closed">
-                        <a href="{{ route('horarios') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">HORAS DE ENTRADA</span>
                         </a>
                     </li>
                     <li id="year_month_groups_nav" class="has-sub closed">
@@ -395,36 +266,166 @@
                             <span class="text-white">HORARIOS</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">CONFIGURACIONES CASINO</li>
-                    <li id="mesas_casinos_nav" class="has-sub closed">
-                        <a href="{{ route('mesas_casinos') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MESAS</span>
-                        </a>
-                    </li>
-                    <li id="fichas_casinos_nav" class="has-sub closed">
-                        <a href="{{ route('fichas_casinos') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">FICHAS</span>
-                        </a>
-                    </li>
-                    <li id="horas_casinos_nav" class="has-sub closed">
-                        <a href="{{ route('horas_casinos') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">HORAS CONTEO</span>
-                        </a>
-                    </li>
-                    <li id="billetes_casinos_nav" class="has-sub closed">
-                        <a href="{{ route('billetes_casinos') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">BILLETES</span>
-                        </a>
-                    </li>
-                    
 
+                    @if( Auth::user()->level_id == 1 )
 
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
+                        <li id="group_menus_nav" class="has-sub closed">
+                            <a href="{{ route('group_menus') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">GRUPO DE MENUS</span>
+                            </a>
+                        </li>
+                        <li id="type_commands_nav" class="has-sub closed">
+                            <a href="{{ route('type_commands') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">TIPOS DE COMANDAS</span>
+                            </a>
+                        </li>
+                        <li id="tables_nav" class="has-sub closed">
+                            <a href="{{ route('tables') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DESTINOS</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACION MAQUINAS</li>
+                        <li id="rooms_nav" class="has-sub closed">
+                            <a href="{{ route('rooms') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">SALAS / GALPONES</span>
+                            </a>
+                        </li>
+                        <li id="condicion_groups_nav" class="has-sub closed">
+                            <a href="{{ route('condicion_groups') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CONDICIONES</span>
+                            </a>
+                        </li>
+                        <li id="novedades_types_nav" class="has-sub closed">
+                            <a href="{{ route('novedades_types') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">TIPOS DE NOVEDADES</span>
+                            </a>
+                        </li>
+                        <li id="brand_machines_nav" class="has-sub closed">
+                            <a href="{{ route('brand_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">MARCAS</span>
+                            </a>
+                        </li>
+                        <li id="model_machines_nav" class="has-sub closed">
+                            <a href="{{ route('model_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">MODELOS</span>
+                            </a>
+                        </li>
+                        <li id="range_machines_nav" class="has-sub closed">
+                            <a href="{{ route('range_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">RANGOS</span>
+                            </a>
+                        </li>
+                        <li id="associated_machines_nav" class="has-sub closed">
+                            <a href="{{ route('associated_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">ASOCIADOS / INVITADOS</span>
+                            </a>
+                        </li>
+                        <li id="value_machines_nav" class="has-sub closed">
+                            <a href="{{ route('value_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DENOMINACIONES</span>
+                            </a>
+                        </li>
+                        <li id="play_machines_nav" class="has-sub closed">
+                            <a href="{{ route('play_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">JUEGOS</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACIONES RRHH</li>
+                        <li id="departments_nav" class="has-sub closed">
+                            <a href="{{ route('departments') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DEPARTAMENTOS</span>
+                            </a>
+                        </li>
+                        <li id="positions_nav" class="has-sub closed">
+                            <a href="{{ route('positions') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CARGOS</span>
+                            </a>
+                        </li>
+                        <li id="horarios_nav" class="has-sub closed">
+                            <a href="{{ route('horarios') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HORAS DE ENTRADA</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACIONES CASINO</li>
+                        <li id="mesas_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('mesas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">MESAS</span>
+                            </a>
+                        </li>
+                        <li id="fichas_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('fichas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">FICHAS</span>
+                            </a>
+                        </li>
+                        <li id="horas_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('horas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HORAS CONTEO</span>
+                            </a>
+                        </li>
+                        <li id="billetes_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('billetes_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">BILLETES</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACIONES OTROS</li>
+                        <li id="users_nav" class="has-sub closed">
+                            <a href="{{ route('users') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">USUARIOS</span>
+                            </a>
+                        </li>
+                        <li id="levels_nav" class="has-sub closed">
+                            <a href="{{ route('levels') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">NIVELES</span>
+                            </a>
+                        </li>
+                        <li id="domains_nav" class="has-sub closed">
+                            <a href="{{ route('domains') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DOMINIOS</span>
+                            </a>
+                        </li>
+                        <li id="sedes_nav" class="has-sub closed">
+                            <a href="{{ route('sedes') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">SEDES</span>
+                            </a>
+                        </li>
+                        <li id="sexs_nav" class="has-sub closed">
+                            <a href="{{ route('sexs') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">SEXOS</span>
+                            </a>
+                        </li>
+                        <li id="emails_nav" class="has-sub closed">
+                            <a href="{{ route('emails') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CORREOS</span>
+                            </a>
+                        </li>
 
-                   
+                    @endif
 
                 </ul>
             </div>

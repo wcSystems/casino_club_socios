@@ -131,6 +131,7 @@
                 console.error(e);
             }
         }
+
         function modal(type,id) {
             let html = `
             <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
@@ -242,6 +243,7 @@
                         html+=`
                         <button onclick="guardarIMG(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar Imagen </button>
                         `
+                    }
                         html+=`
                     </div>
                 </div>
@@ -251,8 +253,8 @@
                 title: `${type} Registro`,
                 showConfirmButton: false,
                 html: html
-                
             })
+
             if(id){
                 let current={!! $employees !!}.find(i=>i.id===id)
                 $("#employeeNo").attr("disabled", true)
@@ -265,8 +267,15 @@
                 $("#position_id").val(current.position_id)
                 $("#imgUser").attr("src",`public/employees/${current.employeeNo}.jpg`)
             }
+
             validateForm()
         }
+
+
+
+
+
+
         function uploadEmployees(params) {
             $.ajax({
                 url: "{{ route('isapi.uploadEmployees') }}",
@@ -281,14 +290,14 @@
         }
         
         function viewImg(input) {
-        if (input.files && input.files[0]) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                $('#imgUser').attr('src', e.target.result).width(200).height(200);
-            };
-            reader.readAsDataURL(input.files[0]);
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imgUser').attr('src', e.target.result).width(200).height(200);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
-    }
 
 
         async function guardar(id) {

@@ -10,6 +10,7 @@ use App\Models\Position;
 use App\Models\Sede;
 use App\Models\Attlog;
 use App\Models\Schedule_template;
+use App\Models\Ayb_command;
 use Illuminate\Support\Facades\DB;
 
 class EmployeesController extends Controller
@@ -105,6 +106,7 @@ class EmployeesController extends Controller
     public function destroy($id)
     {
         Schedule_template::where('employee_id', $id)->delete();
+        Ayb_command::where('employee_id','=', $request["id"])->delete();
         $current_item = Employee::find($id);
         if($current_item){
             $current_item->delete();

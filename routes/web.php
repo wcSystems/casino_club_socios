@@ -25,8 +25,10 @@ use App\Models\Table;
 use App\Models\Year_month_group;
 use App\Models\Horario;
 use App\Models\Group_drops_casino;
+use App\Models\Group_archings_casino;
 use App\Models\Mesas_casino;
 use App\Models\Billetes_casino;
+use App\Models\Fichas_casino;
 
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
@@ -288,12 +290,33 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'group_drops_casinos.destroy'
     ]);
 
+    Route::resource('group_archings_casinos', 'Group_archings_casinosController')->names([
+        'index' => 'group_archings_casinos',
+        'create' => 'group_archings_casinos.create',
+        'update' => 'group_archings_casinos.update',
+        'destroy' => 'group_archings_casinos.destroy'
+    ]);
+
     
     Route::resource('conteo_drop_cecom_casinos', 'Conteo_drop_cecom_casinosController')->names([
         'index' => 'conteo_drop_cecom_casinos',
         'create' => 'conteo_drop_cecom_casinos.create',
         'update' => 'conteo_drop_cecom_casinos.update',
         'destroy' => 'conteo_drop_cecom_casinos.destroy'
+    ]);
+
+    Route::resource('conteo_archings_cecom_casinos', 'Conteo_archings_cecom_casinosController')->names([
+        'index' => 'conteo_archings_cecom_casinos',
+        'create' => 'conteo_archings_cecom_casinos.create',
+        'update' => 'conteo_archings_cecom_casinos.update',
+        'destroy' => 'conteo_archings_cecom_casinos.destroy'
+    ]);
+
+    Route::resource('stack_casinos', 'Stack_casinosController')->names([
+        'index' => 'stack_casinos',
+        'create' => 'stack_casinos.create',
+        'update' => 'stack_casinos.update',
+        'destroy' => 'stack_casinos.destroy'
     ]);
     
     Route::resource('condicion_groups', 'Condicion_groupsController')->names([
@@ -382,6 +405,33 @@ Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_d
         ->with('billetes_casinos',$billetes_casinos )
         ->with('fecha',$fecha )
         ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
+
+
+});
+// VIEW - ARCHINGS CECOM
+Route::get("/view/archings/{group_archings_casino_id}/cecom/{fecha}", function($group_archings_casino_id,$fecha){
+
+    $group_archings_casino = Group_archings_casino::where("id","=",$group_archings_casino_id)->first();
+
+
+    $mesas_casinos = Mesas_casino::where("sede_id","=",$group_archings_casino->sede_id)->get();
+    $fichas_casinos = Fichas_casino::where("sede_id","=",$group_archings_casino->sede_id)->get();
+
+
+    $conteo_archings_cecom_casinos = DB::table('conteo_archings_cecom_casinos')
+    ->selectRaw('conteo_archings_cecom_casinos.*, fichas_casinos.name AS ficha_name')
+    ->where("group_archings_casino_id","=",$group_archings_casino_id)
+    ->join('billetes_casinos', 'conteo_archings_cecom_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+    ->get();
+       
+
+        return view("view_archings_cecom.index")
+        ->with('sede_id',$group_archings_casino->sede_id )
+        ->with('group_archings_casino',$group_archings_casino )
+        ->with('mesas_casinos',$mesas_casinos )
+        ->with('billetes_casinos',$billetes_casinos )
+        ->with('fecha',$fecha )
+        ->with('conteo_archings_cecom_casinos',$conteo_archings_cecom_casinos );
 
 
 });

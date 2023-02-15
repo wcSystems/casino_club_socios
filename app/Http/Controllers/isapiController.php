@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7;
 use App\Models\Attlog;
 use App\Models\Schedule_template;
 use App\Models\Employee;
+use App\Models\Ayb_command;
 use File;
 
 class isapiController extends Controller
@@ -125,7 +126,10 @@ class isapiController extends Controller
         ])->getBody()->getContents(), TRUE);
 
         if( $current['statusCode'] == 1 ){
+
             Schedule_template::where('employee_id','=', $request["id"])->delete();
+            Ayb_command::where('employee_id','=', $request["id"])->delete();
+            
             $current_item = Employee::find($request["id"]);
             if($current_item){
                 $current_item->delete();

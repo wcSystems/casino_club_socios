@@ -52,10 +52,12 @@ Route::get('/type_commands/service', 'Type_commandsController@service')->name('t
 Route::get('/year_month_groups/service', 'Year_month_groupsController@service')->name('year_month_groups.service');
 Route::get('/horarios/service', 'HorariosController@service')->name('horarios.service');
 Route::get('/mesas_casinos/service', 'Mesas_casinosController@service')->name('mesas_casinos.service');
+Route::get('/stack_casinos/service', 'Stack_casinosController@service')->name('stack_casinos.service');
 Route::get('/fichas_casinos/service', 'Fichas_casinosController@service')->name('fichas_casinos.service');
 Route::get('/horas_casinos/service', 'Horas_casinosController@service')->name('horas_casinos.service');
 Route::get('/billetes_casinos/service', 'Billetes_casinosController@service')->name('billetes_casinos.service');
 Route::get('/group_drops_casinos/service', 'Group_drops_casinosController@service')->name('group_drops_casinos.service');
+Route::get('/group_archings_casinos/service', 'Group_archings_casinosController@service')->name('group_archings_casinos.service');
 Route::get('/condicion_groups/service', 'Condicion_groupsController@service')->name('condicion_groups.service');
 Route::get('/novedades_types/service', 'Novedades_typesController@service')->name('novedades_types.service');
 
@@ -97,3 +99,10 @@ Route::post('/ayb_commands/pjoin', 'Ayb_commandsController@pjoin')->name('ayb_co
 
 // LIST
 Route::post('/conteo_drop_cecom_casinos/list', 'Conteo_drop_cecom_casinosController@list')->name('conteo_drop_cecom_casinos.list');
+Route::post('/conteo_archings_cecom_casinos/list', 'Conteo_archings_cecom_casinosController@list')->name('conteo_archings_cecom_casinos.list');
+
+
+
+
+// LIST FICHAS SEDES
+Route::get('/stack_casinos/fichas/sede/{sede_id}/{mesa_casino_id}', 'Stack_casinosController@fichasSede')->name('stack_casinos.fichasSede');

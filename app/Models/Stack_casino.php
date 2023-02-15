@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Group_drops_casino extends Model
+class Stack_casino extends Model
 {
     protected $fillable = [
-        'sede_id',
-        'extra',
-        'created_at',
+        'cantidad',
+        'mesas_casino_id',
+        'fichas_casino_id',
     ];
 }

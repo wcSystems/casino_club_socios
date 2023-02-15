@@ -7,6 +7,8 @@ use App\Models\Sede;
 use App\Models\Mesas_casino;
 use Illuminate\Support\Facades\DB;
 use App\Models\Conteo_drop_cecom_casino;
+use App\Models\Fichas_casino;
+
 
 
 class Mesas_casinosController extends Controller
@@ -20,7 +22,8 @@ class Mesas_casinosController extends Controller
     {
         $sedes = Sede::all();
         $mesas_casinos = Mesas_casino::all();
-        return view('mesas_casinos.index')->with('mesas_casinos',$mesas_casinos)->with('sedes',$sedes);
+        $fichas_casinos = Fichas_casino::all();
+        return view('mesas_casinos.index')->with('mesas_casinos',$mesas_casinos)->with('sedes',$sedes)->with('fichas_casinos',$fichas_casinos);
     }
 
     /**

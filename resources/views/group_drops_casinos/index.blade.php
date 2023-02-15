@@ -54,7 +54,7 @@
     <div class="panel bg-transparent panel-inverse col-sm-6 col-md-6 col-lg-6 col-xl-12  " >
         <div class="panel-heading ui-sortable-handle">
             <h4 class="panel-title">
-                <select id="chart_drop_diario_mes" class="form-control w-100" style="color: #fff !important" onchange="datatableDropDiarioMes()">
+                <select id="chart_drop_diario_mesID" class="form-control w-100" style="color: #fff !important" onchange="datatableDropDiarioMes()">
                     <option value="casino_diario_mes"  > Drop ( Casino ) </option>
                     <option value="vip_diario_mes" > Gañota ( VIP ) </option>
                     <option value="total_diario_mes" selected > Total ( Casino + Gañota ) </option>
@@ -63,7 +63,7 @@
         </div>
         <div class="panel-body">
             <div class="chart-container">
-                <canvas id="chart_drop_diario_mes_data" style="max-height:200px !important"></canvas>
+                <canvas id="chart_drop_diario_mes_dataID" style="max-height:200px !important"></canvas>
             </div>
         </div>
     </div>
@@ -77,7 +77,6 @@
 
     let all = [];
     let chart_drop_diario_mes_data;
-    let chart_drop_mes_anual_data;
 
     $('#group_drops_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
@@ -102,6 +101,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Fecha <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <input required type="date" id="created_at" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         </div>
@@ -111,6 +119,7 @@
         if(id){
             let current={!! $group_drops_casinos !!}.find(i=>i.id===id)
             $("#sede_id").val(current.sede_id)
+            $("#created_at").val(current.created_at)
         }
         validateForm()
     }
@@ -122,7 +131,8 @@
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    sede_id: $('#sede_id').val()
+                    sede_id: $('#sede_id').val(),
+                    created_at: $('#created_at').val()
                 }
             }
             setLoading(timerInterval)
@@ -424,12 +434,11 @@
     }
 
     function ajaxReloadDatatablesFN(res){
-
+       
         let conteo_drop_cecom_casinos = {!! $conteo_drop_cecom_casinos !!}
         let current_month = moment().format("MM")
         let current_year = moment().format("YYYY")
         all = res;
-
         all_current_year = all.filter( i => moment(i.created_at).format("YYYY") == current_year )
         all_current_month = all.filter( i => moment(i.created_at).format("YYYY") == current_year && moment(i.created_at).format("MM") == current_month )
 
@@ -439,14 +448,13 @@
             element.extra = ( !element.extra ) ? 0 : parseInt(element.extra);
             element.total = element.drop+element.extra;
         });
-     
 
         if(chart_drop_diario_mes_data!=null){ chart_drop_diario_mes_data.destroy(); }
         let new_drop_diario_mes_group = [];
         all_current_month.forEach((element, index) => {
             new_drop_diario_mes_group.push({ 'label': [ moment(element.created_at).format("DD") +" ( "+(moment(element.created_at).format("dd")+" )") ] , 'data': [element.total], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
         });
-        chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+        chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_dataID').getContext('2d'),{ 
             type:'bar',
             data: {
                 labels: [moment(current_month).format("MMMM")], 
@@ -475,12 +483,12 @@
 
 
         /* drop */
-        if( $("#chart_drop_diario_mes").val() == "casino_diario_mes" ){
+        if( $("#chart_drop_diario_mesID").val() == "casino_diario_mes" ){
             let new_drop_diario_mes_group = [];
             all_current_month.forEach((element, index) => {
-                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("YYYY-MM-DD")], 'data': [element.drop], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("DD") +" ( "+(moment(element.created_at).format("dd")+" )")], 'data': [element.drop], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
             });
-            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_dataID').getContext('2d'),{ 
                 type:'bar',
                 data: {
                     labels: [moment(current_month).format("MMMM")], 
@@ -490,12 +498,12 @@
         }
 
         /* vip */
-        if( $("#chart_drop_diario_mes").val() == "vip_diario_mes" ){
+        if( $("#chart_drop_diario_mesID").val() == "vip_diario_mes" ){
             let new_drop_diario_mes_group = [];
             all_current_month.forEach((element, index) => {
-                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("YYYY-MM-DD")], 'data': [element.extra], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("DD") +" ( "+(moment(element.created_at).format("dd")+" )")], 'data': [element.extra], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
             });
-            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_dataID').getContext('2d'),{ 
                 type:'bar',
                 data: {
                     labels: [moment(current_month).format("MMMM")], 
@@ -505,12 +513,12 @@
         }
 
         /* total */
-        if( $("#chart_drop_diario_mes").val() == "total_diario_mes" ){
+        if( $("#chart_drop_diario_mesID").val() == "total_diario_mes" ){
             let new_drop_diario_mes_group = [];
             all_current_month.forEach((element, index) => {
-                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("YYYY-MM-DD")], 'data': [element.total], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
+                new_drop_diario_mes_group.push({ 'label': [moment(element.created_at).format("DD") +" ( "+(moment(element.created_at).format("dd")+" )")], 'data': [element.total], 'backgroundColor': {!! $all_colors !!}[index], 'borderWidth': 1 })
             });
-            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_data').getContext('2d'),{ 
+            chart_drop_diario_mes_data = new Chart(document.getElementById('chart_drop_diario_mes_dataID').getContext('2d'),{ 
                 type:'bar',
                 data: {
                     labels: [moment(current_month).format("MMMM")], 
