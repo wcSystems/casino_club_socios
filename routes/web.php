@@ -135,6 +135,12 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'ayb_commands.update',
         'destroy' => 'ayb_commands.destroy'
     ]);
+    Route::resource('ayb_records', 'Ayb_recordsController')->names([
+        'index' => 'ayb_records',
+        'create' => 'ayb_records.create',
+        'update' => 'ayb_records.update',
+        'destroy' => 'ayb_records.destroy'
+    ]);
     Route::resource('attlogs', 'AttlogsController')->names([
         'index' => 'attlogs',
         'create' => 'attlogs.create',

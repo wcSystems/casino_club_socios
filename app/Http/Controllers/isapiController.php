@@ -11,6 +11,8 @@ use App\Models\Employee;
 use App\Models\Ayb_command;
 use File;
 
+use GuzzleHttp\Exception\RequestException;
+
 class isapiController extends Controller
 {
     private $IP_PLC_MARCAJE = "http://192.168.5.181";
@@ -19,43 +21,52 @@ class isapiController extends Controller
 
     public function getEvent(Request $request)
     {
-        $resC = new Client();
-        $totalMatches = json_decode($resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
-            'body' => json_encode([
-                "AcsEventCond"=> [
-                    "searchID"=> "1",
-                    "searchResultPosition"=> 0,
-                    "maxResults"=> 1,
-                    "major"=> 5,
-                    "minor"=> 75,
-                    "startTime"=> "2023-01-01T00:00:00+00:00",
-                    "endTime"=> "2023-12-31T23:59:00+0:00"
-                ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
-        
-        $totalMatches30 = floor($totalMatches/30);
-        $searchResultPosition = count(Attlog::all());
-        set_time_limit(1000);
-        if( $totalMatches > $searchResultPosition ){
-            for ($i=0; $i < $totalMatches30 ; $i++) {
-                $res = new Client();
-                $query2 = json_decode($res->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
-                    'auth' =>  ['admin', 'Cas1n01234','digest'],
-                    'body' => json_encode([
-                        "AcsEventCond"=> [
-                            "searchID"=> "1",
-                            "searchResultPosition"=> $searchResultPosition,
-                            "maxResults"=> 30,
-                            "major"=> 5,
-                            "minor"=> 75,
-                            "startTime"=> "2023-01-01T00:00:00+00:00",
-                            "endTime"=> "2023-12-31T23:59:00+0:00"
-                        ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
-                $searchResultPosition +=30;
-                foreach ($query2 as $key => $value) { Attlog::create($value); }
+        try {
+            $resC = new Client();
+            Attlog::where('time','LIKE','%'.$request->year."-".$request->month.'%')->delete();
+            $totalMatches = json_decode($resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
+                'auth' =>  ['admin', 'Cas1n01234','digest'], 'body' => json_encode([
+                    "AcsEventCond"=> [
+                        "searchID"=> "1",
+                        "searchResultPosition"=> 0,
+                        "maxResults"=> 30,
+                        "major"=> 5,
+                        "minor"=> 75,
+                        "startTime"=> $request->year."-".$request->month."-01T00:00:00+00:00",
+                        "endTime"=> $request->year."-".$request->month."-".$request->end."T23:59:00+0:00"
+                    ]
+                ])])->getBody()->getContents(), TRUE)["AcsEvent"]["totalMatches"];
+                
+            if( $totalMatches == 0 ){
+                return response()->json([ 'type' => 'error']);
             }
-            
-            
+
+            $totalMatches30 = floor($totalMatches/30);
+            $searchResultPosition = 0;
+            set_time_limit(1000);
+            if( $totalMatches > $searchResultPosition ){
+                for ($i=0; $i < $totalMatches30 ; $i++) {
+                    $res = new Client();
+                    $query2 = json_decode($res->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
+                        'auth' =>  ['admin', 'Cas1n01234','digest'],
+                        'body' => json_encode([
+                            "AcsEventCond"=> [
+                                "searchID"=> "1",
+                                "searchResultPosition"=> $searchResultPosition,
+                                "maxResults"=> 30,
+                                "major"=> 5,
+                                "minor"=> 75,
+                                "startTime"=> $request->year."-".$request->month."-01T00:00:00+00:00",
+                                "endTime"=> $request->year."-".$request->month."-".$request->end."T23:59:00+0:00"
+                            ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
+                    $searchResultPosition +=30;
+                    foreach ($query2 as $key => $value) { Attlog::create($value); }
+                }
+            }
+
+            return response()->json([ 'type' => 'success']);
+        } catch (RequestException $e) {
+            return response()->json([ 'type' => 'error_server', 'info' => $e->getMessage()]);
         }
     }
 

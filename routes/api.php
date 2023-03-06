@@ -34,6 +34,7 @@ Route::get('/domains/service', 'DomainsController@service')->name('domains.servi
 Route::get('/emails/service', 'EmailsController@service')->name('emails.service');
 Route::get('/ayb_items/service', 'Ayb_itemsController@service')->name('ayb_items.service');
 Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb_commands.service');
+Route::get('/ayb_records/service', 'Ayb_recordsController@service')->name('ayb_records.service');
 Route::get('/attlogs/service', 'AttlogsController@service')->name('attlogs.service');
 Route::get('/all_machines/service', 'All_machinesController@service')->name('all_machines.service');
 Route::get('/brand_machines/service', 'Brand_machinesController@service')->name('brand_machines.service');
@@ -69,7 +70,7 @@ Route::get('/novedades_types/service', 'Novedades_typesController@service')->nam
 
 // ISAPI
 //POST
-Route::get('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
+Route::post('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
 Route::post('/isapi/addOrUpdateEmployee', 'isapiController@addOrUpdateEmployee')->name('isapi.addOrUpdateEmployee');
 Route::post('/isapi/elimEmployee', 'isapiController@elimEmployee')->name('isapi.elimEmployee');
 

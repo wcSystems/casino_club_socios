@@ -205,6 +205,8 @@
 
     function viewDrop(id,sede_id,extra) {
         let currentGroup = {!! $group_drops_casinos !!}.find( i => i.id == id )
+       
+        console.log("total_archings_casinos",currentGroup)
         let timerInterval 
         let payload = {
             _token: $("meta[name='csrf-token']").attr("content"),

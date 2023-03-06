@@ -186,7 +186,8 @@
         <div id="sidebar" class="sidebar">
 
             <div data-scrollbar="true" data-height="100%" class="banner-icons">
-                <ul class="nav " data-click="pr-0">
+
+                    <ul class="nav " data-click="pr-0">
                     <li class="nav-header" style="color: #fff !important">GRAFICOS</li>
                     <li id="graphics_nav" class="has-sub closed">
                         <a href="{{ route('graphics') }}">
@@ -194,79 +195,94 @@
                             <span class="text-white">QR</span>
                         </a>
                     </li>
-                    <li class="nav-header" style="color: #fff !important">MODULO CUMPLIMIENTO</li>
-                    <li id="clients_nav" class="has-sub closed">
-                        <a href="{{ route('clients') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CLIENTES</span>
-                        </a>
-                    </li>
-                    <li class="nav-header" style="color: #fff !important">MODULO ESTADISTICA</li>
-                    <li id="counting_table_stadistics_nav" class="has-sub closed">
-                        <a href="{{ route('counting_table_stadistics') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">CONTEO DE MESAS</span>
-                        </a>
-                    </li>
-                    <li class="nav-header" style="color: #fff !important">MODULO CECOM</li>
-                    <li id="group_drops_casinos_nav" class="has-sub closed">
-                        <a href="{{ route('group_drops_casinos') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">DROP</span>
-                        </a>
-                    </li>
-                    <li id="group_archings_casinos_nav" class="has-sub closed">
-                        <a href="{{ route('group_archings_casinos') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ARQUEO</span>
-                        </a>
-                    </li>
-                    <li class="nav-header" style="color: #fff !important">MODULO MAQUINAS</li>
-                    <li id="global_warehouses_nav" class="has-sub closed">
-                        <a href="{{ route('global_warehouses') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ALMACEN GLOBAL</span>
-                        </a>
-                    </li>
-                    <li id="all_machines_nav" class="has-sub closed">
-                        <a href="{{ route('all_machines') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">NOVEDADES</span>
-                        </a>
-                    </li>
-                    <li class="nav-header" style="color: #fff !important">MODULO A&B</li>
-                    <li id="ayb_commands_nav" class="has-sub closed">
-                        <a href="{{ route('ayb_commands') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">COMANDAS</span>
-                        </a>
-                    </li>
-                    <li id="ayb_items_nav" class="has-sub closed">
-                        <a href="{{ route('ayb_items') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">MENÚS</span>
-                        </a>
-                    </li>
-                    <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
-                    <li id="attlogs_nav" class="has-sub closed">
-                        <a href="{{ route('attlogs') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">ASISTENCIA</span>
-                        </a>
-                    </li>
-                    <li id="employees_nav" class="has-sub closed">
-                        <a href="{{ route('employees') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">EMPLEADOS</span>
-                        </a>
-                    </li>
-                    <li id="year_month_groups_nav" class="has-sub closed">
-                        <a href="{{ route('year_month_groups') }}">
-                            <i class="fas fa-circle text-white"></i>
-                            <span class="text-white">HORARIOS</span>
-                        </a>
-                    </li>
 
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id != 6 )
+                        
+                        <li class="nav-header" style="color: #fff !important">MODULO CUMPLIMIENTO</li>
+                        <li id="clients_nav" class="has-sub closed">
+                            <a href="{{ route('clients') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CLIENTES</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO ESTADISTICA</li>
+                        <li id="counting_table_stadistics_nav" class="has-sub closed">
+                            <a href="{{ route('counting_table_stadistics') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CONTEO DE MESAS</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO MAQUINAS</li>
+                        <li id="global_warehouses_nav" class="has-sub closed">
+                            <a href="{{ route('global_warehouses') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">ALMACEN GLOBAL</span>
+                            </a>
+                        </li>
+                        <li id="all_machines_nav" class="has-sub closed">
+                            <a href="{{ route('all_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">NOVEDADES</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO A&B</li>
+                        <li id="ayb_commands_nav" class="has-sub closed">
+                            <a href="{{ route('ayb_commands') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">COMANDAS</span>
+                            </a>
+                        </li>
+                        <li id="ayb_items_nav" class="has-sub closed">
+                            <a href="{{ route('ayb_items') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">MENÚS</span>
+                            </a>
+                        </li>
+                        <li id="ayb_records_nav" class="has-sub closed">
+                            <a href="{{ route('ayb_records') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HISTORICO</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
+                        <li id="attlogs_nav" class="has-sub closed">
+                            <a href="{{ route('attlogs') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">ASISTENCIA</span>
+                            </a>
+                        </li>
+                        <li id="employees_nav" class="has-sub closed">
+                            <a href="{{ route('employees') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">EMPLEADOS</span>
+                            </a>
+                        </li>
+                        <li id="year_month_groups_nav" class="has-sub closed">
+                            <a href="{{ route('year_month_groups') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HORARIOS</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 6 )
+                        <li class="nav-header" style="color: #fff !important">MODULO CECOM</li>
+                        <li id="group_drops_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('group_drops_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DROP</span>
+                            </a>
+                        </li>
+                        <li id="group_archings_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('group_archings_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">ARQUEO</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    
                     @if( Auth::user()->level_id == 1 )
 
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
@@ -854,6 +870,7 @@
                 title: 'Cargando datos!',
                 text: 'porfavor espere...',
                 timer: 300000,
+                allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading()
                     const b = Swal.getHtmlContainer().querySelector('b')
