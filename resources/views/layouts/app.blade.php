@@ -187,6 +187,7 @@
 
             <div data-scrollbar="true" data-height="100%" class="banner-icons">
 
+                    <!-- TODOS -->
                     <ul class="nav " data-click="pr-0">
                     <li class="nav-header" style="color: #fff !important">GRAFICOS</li>
                     <li id="graphics_nav" class="has-sub closed">
@@ -196,8 +197,8 @@
                         </a>
                     </li>
 
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id != 6 )
-                        
+                    <!-- DESARROLLADOR / ADMINISTRADOR -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 )
                         <li class="nav-header" style="color: #fff !important">MODULO CUMPLIMIENTO</li>
                         <li id="clients_nav" class="has-sub closed">
                             <a href="{{ route('clients') }}">
@@ -212,6 +213,10 @@
                                 <span class="text-white">CONTEO DE MESAS</span>
                             </a>
                         </li>
+                    @endif
+
+                    <!-- DESARROLLADOR / ADMINISTRADOR / MAQUINAS -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 11 )
                         <li class="nav-header" style="color: #fff !important">MODULO MAQUINAS</li>
                         <li id="global_warehouses_nav" class="has-sub closed">
                             <a href="{{ route('global_warehouses') }}">
@@ -225,6 +230,10 @@
                                 <span class="text-white">NOVEDADES</span>
                             </a>
                         </li>
+                    @endif
+
+                    <!-- DESARROLLADOR / ADMINISTRADOR -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 )
                         <li class="nav-header" style="color: #fff !important">MODULO A&B</li>
                         <li id="ayb_commands_nav" class="has-sub closed">
                             <a href="{{ route('ayb_commands') }}">
@@ -244,11 +253,15 @@
                                 <span class="text-white">HISTORICO</span>
                             </a>
                         </li>
+                    @endif
+
+                    <!-- DESARROLLADOR / ADMINISTRADOR / RRHH -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 12 )
                         <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
                         <li id="attlogs_nav" class="has-sub closed">
                             <a href="{{ route('attlogs') }}">
                                 <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">ASISTENCIA</span>
+                                <span class="text-white">MARCAJES</span>
                             </a>
                         </li>
                         <li id="employees_nav" class="has-sub closed">
@@ -265,8 +278,8 @@
                         </li>
                     @endif
 
-                    
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 6 )
+                    <!-- DESARROLLADOR / ADMINISTRADOR / CECOM -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 6 )
                         <li class="nav-header" style="color: #fff !important">MODULO CECOM</li>
                         <li id="group_drops_casinos_nav" class="has-sub closed">
                             <a href="{{ route('group_drops_casinos') }}">
@@ -282,9 +295,8 @@
                         </li>
                     @endif
 
-                    
+                    <!-- DESARROLLADOR -->                    
                     @if( Auth::user()->level_id == 1 )
-
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
                         <li id="group_menus_nav" class="has-sub closed">
                             <a href="{{ route('group_menus') }}">
@@ -304,6 +316,10 @@
                                 <span class="text-white">DESTINOS</span>
                             </a>
                         </li>
+                    @endif
+
+                    <!-- DESARROLLADOR / MAQUINAS -->  
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 11 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACION MAQUINAS</li>
                         <li id="rooms_nav" class="has-sub closed">
                             <a href="{{ route('rooms') }}">
@@ -359,6 +375,10 @@
                                 <span class="text-white">JUEGOS</span>
                             </a>
                         </li>
+                    @endif
+
+                    <!-- DESARROLLADOR / RRHH -->  
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 12 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES RRHH</li>
                         <li id="departments_nav" class="has-sub closed">
                             <a href="{{ route('departments') }}">
@@ -378,6 +398,9 @@
                                 <span class="text-white">HORAS DE ENTRADA</span>
                             </a>
                         </li>
+                    @endif
+
+                    @if( Auth::user()->level_id == 1 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES CASINO</li>
                         <li id="mesas_casinos_nav" class="has-sub closed">
                             <a href="{{ route('mesas_casinos') }}">
@@ -440,19 +463,16 @@
                                 <span class="text-white">CORREOS</span>
                             </a>
                         </li>
-
                     @endif
 
                 </ul>
             </div>
-
         </div>
         <div class="sidebar-bg"></div>
         <div id="content" class="content">
             @yield('content')
         </div>
     </div>
-
     <script src="{{ asset('js/app.min.js') }}"></script>
     <script src="{{ asset('js/theme/transparent.min.js') }}"></script>
     <script src="{{ asset('plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js') }}"></script>
@@ -497,7 +517,7 @@
                     processing: true,
                     lengthChange: true,
                     columns: columns,
-                    order: (order_by) ?  [[1, 'asc']] : [],
+                    order: (order_by) ? order_by : [],
                     drawCallback: function (settings) {
                         ajaxReloadDatatablesFN(settings.aoData.map( i => i._aData ))
                         if(group_name_all){
@@ -506,7 +526,7 @@
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
                                 if (last !== data.group_name) {
-                                    $(rows).eq(i).before('<tr class="group_name font-weight-bold"><td colspan="3">' + data.group_name + '</td></tr>');
+                                    $(rows).eq(i).before(`<tr class="group_name font-weight-bold"><td colspan="${columns.length}">` + data.group_name + `</td></tr>`);
                                     last = data.group_name;
                                 }
                             });
@@ -690,13 +710,19 @@
             XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
             XLSX.writeFile(wb, fn || ( user.name+'-'+title+'-'+moment().format('MMMM Do YYYY, h:mm:ss a')+'.'+('xlsx' || 'xlsx')));
         }
-        function pdfExport(title) {
+        function pdfExport(title,quitar) {
                 let user = {!! Auth::user() !!}
                 var doc = new jsPDF()
 
                 let jsonTabla = doc.autoTableHtmlToJson(document.getElementById("data-table-default"));
-                    jsonTabla.columns = jsonTabla.columns.splice(0,jsonTabla.columns.length-1)
-                    jsonTabla.data.map( i => ( i.length > 1 ) ? i.splice(i.length-1) : i )
+                   
+                    
+                    if( !quitar ){
+                        jsonTabla.columns = jsonTabla.columns.splice(0,jsonTabla.columns.length-1)
+                        jsonTabla.data.map( i => ( i.length > 1 ) ? i.splice(i.length-1) : i )
+                    }else{
+                        jsonTabla.columns = jsonTabla.columns
+                    }
 
                 let tabla = doc.autoTable(jsonTabla.columns,jsonTabla.data,{})
 
@@ -754,7 +780,7 @@
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
                                 if (last !== data.date) {
-                                    $(rows).eq(i).before('<tr class="authDate"><td colspan="5">FECHA: ' + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dd') +" ) </span>"+ '</td></tr>');
+                                    $(rows).eq(i).before(`<tr class="authDate"><td colspan="${columns.length}">FECHA: ` + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dd') +" ) </span>"+ '</td></tr>');
                                     last = data.date;
                                 }
                             });

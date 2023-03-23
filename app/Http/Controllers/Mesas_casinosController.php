@@ -7,6 +7,8 @@ use App\Models\Sede;
 use App\Models\Mesas_casino;
 use Illuminate\Support\Facades\DB;
 use App\Models\Conteo_drop_cecom_casino;
+use App\Models\Conteo_archings_cecom_casino;
+use App\Models\Stack_casino;
 use App\Models\Fichas_casino;
 
 
@@ -95,6 +97,8 @@ class Mesas_casinosController extends Controller
     public function destroy($id)
     {
         Conteo_drop_cecom_casino::where("mesas_casino_id","=",$id)->delete();
+        Conteo_archings_cecom_casino::where("mesas_casino_id","=",$id)->delete();
+        Stack_casino::where("mesas_casino_id","=",$id)->delete();
         $current_item = Mesas_casino::find($id); 
         if($current_item){
             $current_item->delete();

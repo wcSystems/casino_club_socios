@@ -7,6 +7,7 @@ use App\Models\Schedule_template;
 use Illuminate\Support\Facades\DB;
 use App\Models\Employee;
 use App\Models\Department;
+use App\Models\Horario;
 use Carbon\Carbon;
 
 class Schedule_templatesController extends Controller
@@ -90,85 +91,93 @@ class Schedule_templatesController extends Controller
 
     public function viewSchedule(Request $request)
     {
-        $all_data = Schedule_template::all();
 
-        $query = DB::table('attlogs')
-        ->selectRaw('
-            attlogs.employeeNoString, 
-            employees.id AS employee_id, 
-            employees.name, 
-            employees.sede_id, 
-            sedes.name AS sedes_name, 
-            employees.department_id, 
-            departments.name AS departments_name ,  
-            employees.position_id, 
-            positions.name AS positions_name, 
-            employees.sex_id, 
-            sexs.name AS sexs_name, 
-            attlogs.serialNo, 
-            attlogs.pictureURL, 
-            attlogs.time, 
-            MIN(attlogs.time) AS first, 
-            MAX(attlogs.time) AS last, 
-            MIN(attlogs.pictureURL) AS first_pictureURL, 
-            MAX(attlogs.pictureURL) AS last_pictureURL, 
-            STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date
-        ')
-        
-        ->groupBy('date','employeeNoString','employees.name')
-        ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
-        ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
-        ->join('departments', 'employees.department_id', '=', 'departments.id')
-        ->join('positions', 'employees.position_id', '=', 'positions.id')
-        ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
-        ->get();
+        try {
 
+            // EMPLOYEE
+            $employee_schedule = DB::table('attlogs')
+            ->selectRaw('
+                attlogs.employeeNoString, 
+                employees.name, 
+                sedes.name AS sedes_name, 
+                departments.name AS departments_name ,  
+                positions.name AS positions_name, 
+                sexs.name AS sexs_name, 
+                schedule_templates.horario AS horario,
+                year_month_groups.year AS year,
+                year_month_groups.month AS month
+            ')
+            ->where('employees.employeeNo','=',$request->employeeNo)
+            ->where('schedule_templates.id','=',$request->schedule_template_id)
+            ->where('attlogs.time','LIKE','%'.$request->year_month.'%')
+            ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
+            ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('positions', 'employees.position_id', '=', 'positions.id')
+            ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
+            ->join('schedule_templates', 'employees.id', '=', 'schedule_templates.employee_id')
+            ->join('year_month_groups', 'schedule_templates.year_month_group_id', '=', 'year_month_groups.id')
+            ->first();
 
+            //MARCAJES
+            $marcajes = DB::table('attlogs')
+            ->selectRaw('
+                MIN(attlogs.time) AS first, 
+                MAX(attlogs.time) AS last, 
+                STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date
+            ')
+            ->where('employees.employeeNo','=',$request->employeeNo)
+            ->where('schedule_templates.id','=',$request->schedule_template_id)
+            ->where('attlogs.time','LIKE','%'.$request->year_month.'%')
+            ->groupBy('date','employeeNoString','employees.name')
+            ->orderBy('date')
+            ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
+            ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('positions', 'employees.position_id', '=', 'positions.id')
+            ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
+            ->join('schedule_templates', 'employees.id', '=', 'schedule_templates.employee_id')
+            ->join('year_month_groups', 'schedule_templates.year_month_group_id', '=', 'year_month_groups.id')
+            ->get();
 
+            //TEMPLATE SCHEDULE
+            $new_arr = [];
+            $horario_arr = explode (",", $employee_schedule->horario); 
+            foreach ($horario_arr as $key_horario_arr => $value_horario_arr) {
+                $key_horario_arr_cero = ( ($key_horario_arr+1) <= 9 ) ? "0".($key_horario_arr+1) : "".($key_horario_arr+1);
+                $horarioSchedule = Horario::where("id","=",$value_horario_arr)->first();
+                array_push($new_arr, [
+                    "dia" => $key_horario_arr_cero,
+                    "turno" => $horarioSchedule->name,
+                    "hora_entrada" => $horarioSchedule->hora_entrada,
+                    "hora_trabajo" => $horarioSchedule->hora_trabajo,
+                    "leyenda" => $horarioSchedule->leyenda,
+                    "date" => $employee_schedule->year."-".$employee_schedule->month."-".($key_horario_arr_cero),
+                    "status" => "NO MARCO",
+                    "first" => "00:00:00",
+                    "last" => "00:00:00"
+                ]);
+            }
 
+            
 
-        $current = DB::table('schedule_templates')->selectRaw('year, month, employee_id')->where('employee_id','=',$request["employee_id"])
-                        ->groupBy('year','month','employee_id')
-                        ->orderBy('year','desc')
-                        ->orderBy('month','desc')
-                        ->get();
-
-
-
-
-
-            /* $employees = Employee::All();
-            foreach ($employees as $key => $valueEmployee) {
-    
-                $employee_schedule_template = DB::table('schedule_templates')->selectRaw('year, month, employee_id')->where('employee_id','=',$value["valueEmployee"])
-                                                ->groupBy('year','month','employee_id')
-                                                ->orderBy('year','desc')
-                                                ->orderBy('month','desc')
-                                                ->get();
-    
-
-                foreach ($employee_schedule_template as $key => $valueGroupSchedule) {
-                    echo $valueGroupSchedule;
+            // MARCO
+            foreach ($marcajes as $key_marcajes => $value_marcajes) {
+                foreach ($new_arr as $key_new_arr => $value_new_arr) {
+                    if( $value_new_arr['date'] == $value_marcajes->date ){
+                        $new_arr[$key_new_arr]['status'] = "MARCO";
+                        $new_arr[$key_new_arr]['first'] = $value_marcajes->first;
+                        $new_arr[$key_new_arr]['last'] = $value_marcajes->last;
+                    }  
                 }
-                                             
-                $employee_attlog = DB::table('attlogs')->selectRaw('attlogs.employeeNoString, employees.id AS employee_id, employees.name, employees.sede_id, sedes.name AS sedes_name, employees.department_id, departments.name AS departments_name ,  
-                            employees.position_id, positions.name AS positions_name, employees.sex_id, sexs.name AS sexs_name, attlogs.serialNo, attlogs.pictureURL, attlogs.time, MIN(attlogs.time) AS first, MAX(attlogs.time) AS last, 
-                            MIN(attlogs.pictureURL) AS first_pictureURL, MAX(attlogs.pictureURL) AS last_pictureURL, STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date')->groupBy('date','employeeNoString','employees.name')
-                        ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')->join('sedes', 'employees.sede_id', '=', 'sedes.id')
-                        ->join('departments', 'employees.department_id', '=', 'departments.id')->join('positions', 'employees.position_id', '=', 'positions.id')
-                        ->join('sexs', 'employees.sex_id', '=', 'sexs.id')->get();
-            } */
+            }
 
+            $employee_schedule->marcajes = $new_arr;
+            return response()->json([ 'type' => 'success','employee_schedule' => $employee_schedule, "marcajes" => $marcajes  ]);
 
-
-
-
-
-            $new_data = Employee::with("group_schedule")->with("schedule_templates")->get();
-
-
-                        
-        return response()->json([ 'type' => 'success','data' => $current,'all_data' => $all_data,'query' => $query, 'new_data' => $new_data]);
+        } catch (\Exception $e) {
+            return response()->json([ 'type' => 'error','message' => $e->getMessage() ]);
+        }
     }
 
     public function viewScheduleAll(Request $request)
@@ -188,4 +197,14 @@ class Schedule_templatesController extends Controller
 
         return response()->json([ 'type' => 'success','employees' => $employees, 'schedules' => $schedules]);
     }
+
+    public function ViewYearMonthGroup(Request $request)
+    {
+        $schedules = DB::table('schedule_templates')->selectRaw('schedule_templates.id, year_month_groups.year AS year, year_month_groups.month AS month')
+        ->where('employee_id','=',$request["employee_id"])
+        ->join('year_month_groups', 'schedule_templates.year_month_group_id', '=', 'year_month_groups.id')
+        ->get();
+        return response()->json([ 'type' => 'success', 'schedules' => $schedules]);
+    }
+
 }

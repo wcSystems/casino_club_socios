@@ -1,16 +1,25 @@
 @extends('layouts.app')
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
-    <div class="panel-heading ui-sortable-handle">
-        <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
-            <a class="d-flex btn btn-danger" href="/new_command" target="_blank" >
-                GENERADOR DE COMANDAS
-            </a>
-            <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
-                <i class="m-auto fa fa-lg fa-plus"></i>
-            </button>
+
+    
+
+    @foreach( $sedes as $item )
+        <div class="panel-heading ui-sortable-handle">
+            <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
+                <a class="d-flex btn btn-danger" href="/new_command/{{ $item->id }}" target="_blank" >
+                    GENERADOR DE COMANDAS | {{ $item->name }}
+                </a>
+                <a class="d-flex btn btn-success"  onclick="modal('Crear',{{ $item->id }})" >
+                    SIMPLE | {{ $item->name }}
+                </a>
+              
+            </div>
         </div>
-    </div>
+    @endforeach
+
+
+    
     <div class="panel-body">
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
@@ -32,19 +41,17 @@
 <script>
     $('#ayb_commands_nav').removeClass("closed").addClass("active").addClass("expand")
     let arrayItems  = 2
-    function modal(type,id) {
-        Swal.fire({
-            title: `${type} Registro`,
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            showCloseButton: true,
-            width: '50em',
-            html:`
+    function modal(type,sede_id) {
+        let departments = {!! $departments !!}
+        let employees = {!! $employees !!}
+        let group_menus = {!! $group_menus !!}
+        let ayb_items = {!! $ayb_items !!}
+        console.log(sede_id)
+        let html = ``
+            html += `
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                 @csrf
                     <div class="col-12">
-
-
                         <div id="comand" class="my-5">
                             <div class="row " >
 
@@ -62,31 +69,29 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                
-
-                                
+                        
                                 <div class="col-xs-6">
                                     <div class="form-group row m-b-0">
                                         <label class=" text-lg-right col-form-label"> Comandado por: <span class="text-danger"> *</span> </label>
                                         <div class="col-lg-12">
                                             <select required id="employee_id" name="employee_id" class="form-control w-100">
-                                                <option disabled value="" selected >Autorizado ( a )</option>
+                                                <option disabled value="" selected >Autorizado ( a )</option>`
                                               
 
-                                                @foreach( $departments as $itemGroup )
-                                                    <optgroup label="{{ $itemGroup->name }}">
-                                                        @foreach( $employees as $item )
-                                                            @if( $item->department_id == $itemGroup->id )
-                                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                @endforeach
+                                              
+                                                departments.forEach(itemGroup => {
+                                                    html+=`<optgroup label="${ itemGroup.name }">`
+                                                        employees.forEach(item => {
+                                                            if( item.department_id == itemGroup.id && item.sede_id == sede_id ){ 
+                                                                html+=`<option value="${ item.id }" > ${ item.name } </option>`   
+                                                            }
+                                                        });
+                                                        html+=`</optgroup>`
+                                                });
 
 
 
-                                            </select>
+                                                html+=`</select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
@@ -105,17 +110,25 @@
                                     <div class="form-group row m-b-0">
                                         <div class="col-lg-12">
                                             <select required id="ayb_item_id" name="ayb_item_id" class="form-control w-100">
-                                                <option disabled value="" selected > Seleccione un menú</option>
-                                                @foreach( $group_menus as $itemGroup )
-                                                    <optgroup label="{{ $itemGroup->name }}">
-                                                        @foreach( $ayb_items as $item )
-                                                            @if( $item->group_menu_id == $itemGroup->id )
-                                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                @endforeach
-                                            </select>
+                                                <option disabled value="" selected > Seleccione un menú</option>`
+
+
+
+                        
+
+
+                                                group_menus.forEach(itemGroup => {
+                                                    html+=`<optgroup label="${ itemGroup.name }">`
+                                                        ayb_items.forEach(item => {
+                                                            if( item.department_id == itemGroup.id && item.sede_id == sede_id ){ 
+                                                                html+=`<option value="${ item.id }" > ${ item.name } </option>`   
+                                                            }
+                                                        });
+                                                        html+=`</optgroup>`
+                                                });
+
+
+                                    html+=`</select>
                                             <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                         </div>
                                     </div>
@@ -152,11 +165,19 @@
 
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="itemCrud('-')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> - </button>
-                            <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                            <button onclick="guardar(${sede_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                             <button onclick="itemCrud('+')" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> + </button>
                         </div>
                     </div>
                 </form>`
+        Swal.fire({
+            title: `${type} Registro`,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            showCloseButton: true,
+            width: '50em',
+            html: html
+            
         })
         validateForm()
     }

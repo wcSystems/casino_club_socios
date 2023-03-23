@@ -87,6 +87,7 @@ Route::post('/isapi/authImgIsapi', 'isapiController@authImgIsapi')->name('isapi.
 
 Route::post('/schedule_templates/viewSchedule', 'Schedule_templatesController@viewSchedule')->name('schedule_templates.viewSchedule');
 Route::post('/schedule_templates/viewScheduleAll', 'Schedule_templatesController@viewScheduleAll')->name('schedule_templates.viewScheduleAll');
+Route::post('/schedule_templates/viewYearMonthGroup', 'Schedule_templatesController@viewYearMonthGroup')->name('schedule_templates.viewYearMonthGroup');
 
 // list
 Route::post('/all_machines/listModel', 'All_machinesController@listModel')->name('all_machines.listModel');

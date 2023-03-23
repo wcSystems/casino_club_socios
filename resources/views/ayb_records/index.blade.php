@@ -4,7 +4,7 @@
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
         <div class="panel-heading-btn">
-            <button onclick="pdfExport('ayb_history')" class="d-flex btn btn-1 btn-secondary mx-1">
+            <button onclick="pdfExport('ayb_history','q')" class="d-flex btn btn-1 btn-secondary mx-1">
                 <i class="m-auto fas fa-lg fa-file-pdf"></i>
             </button>
             <button onclick="excelExport('ayb_history')" class="d-flex btn btn-1 btn-secondary mx-1">
@@ -65,7 +65,7 @@
             }
         },
        
-    ],"group_name_all")
+    ],"group_name_all",[[2,'desc'],[3,'desc']])
 
    
     

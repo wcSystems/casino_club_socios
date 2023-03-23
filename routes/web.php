@@ -353,10 +353,10 @@ Route::get("/menu/{sede_id}", function($sede_id){
 });
 
 // VIEW - MENU DINAMIC
-Route::get("/new_command/", function( ){
+Route::get("/new_command/{sede_id}", function( $sede_id ){
         return view("new_command.index")
-            ->with('ayb_items',Ayb_item::all() )
-            ->with('sede',Sede::all() )
+            ->with('ayb_items',Ayb_item::where(['sede_id' => $sede_id])->get() )
+            ->with('sede',Sede::where(['id' => $sede_id])->get() )
             ->with('group_menus',Group_menu::all() )
             ->with('type_commands',Type_command::all() )
             
@@ -364,7 +364,7 @@ Route::get("/new_command/", function( ){
             ->with('ayb_item_commands',Ayb_item_command::all())
             ->with('tables',Table::all())
 
-            ->with('employees',Employee::whereIn('department_id', [16])->get()  );
+            ->with('employees',Employee::where(['sede_id' => $sede_id])->whereIn('department_id', [16])->get()  );
 });
 
 // VIEW - SCHEDULE DEPARTMENT

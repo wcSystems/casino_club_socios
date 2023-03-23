@@ -129,10 +129,7 @@ class AttlogsController extends Controller
                 attlogs.serialNo, 
                 attlogs.pictureURL, 
                 attlogs.time, 
-                MIN(attlogs.time) AS first, 
-                MAX(attlogs.time) AS last, 
-                MIN(attlogs.pictureURL) AS first_pictureURL, 
-                MAX(attlogs.pictureURL) AS last_pictureURL, 
+               
                 STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date
             ')
             ->orWhere(function($query) use ($search){
@@ -154,7 +151,7 @@ class AttlogsController extends Controller
                     $query->where('employees.sex_id', '=', $search_sex_attlogs);
                 }else{};
             })
-            ->groupBy('date','employeeNoString','employees.name')
+            /* ->groupBy('date','employeeNoString','employees.name') */
             ->whereBetween('attlogs.time', [$start, $end])
             ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
             ->join('sedes', 'employees.sede_id', '=', 'sedes.id')

@@ -12,6 +12,7 @@ use App\Models\Department;
 use App\Models\Group_menu;
 use App\Models\Type_command;
 use Illuminate\Support\Facades\DB;
+use App\Models\Sede;
 use App\User;
 
 class Ayb_commandsController extends Controller
@@ -29,6 +30,7 @@ class Ayb_commandsController extends Controller
 
         $ayb_items = Ayb_item::all();
         $users = User::all();
+        $sedes = Sede::all();
         
         $group_menus = Group_menu::all();
         $type_commands = Type_command::all();
@@ -39,6 +41,7 @@ class Ayb_commandsController extends Controller
                     ->with('ayb_commands',$ayb_commands)
                     ->with('ayb_items',$ayb_items)
                     ->with('ayb_item_commands',$ayb_item_commands)
+                    ->with('sedes',$sedes)
                     ->with('tables',$tables)
                     ->with('employees',$employees)
                     ->with('group_menus',$group_menus)

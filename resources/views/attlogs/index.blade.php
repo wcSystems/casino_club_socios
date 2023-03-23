@@ -114,20 +114,16 @@
         {
             render: function ( data,type, row,all  ) { 
 
-                    return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
-                            <a href='http://admin:Cas1n01234@192.168.5.181${row.first_pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
-                            <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
-                            <a href='http://admin:Cas1n01234@192.168.5.181${row.last_pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
+                    return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
+                            <a href='http://admin:Cas1n01234@192.168.5.181${row.pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
                     
             }
         },
         {
             render: function ( data,type, row,all  ) { 
 
-                    return `<span class='font-weight-bold'>Entrada: </span>` +moment(row.first).format('h:mm:ss a')+`
-                            <a href='http://admin:Cas1n01234@${row.first_pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>
-                            <span class='font-weight-bold'>Salida: </span>`+ moment(row.last).format('h:mm:ss a')+`
-                            <a href='http://admin:Cas1n01234@${row.last_pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`;
+                    return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
+                            <a href='http://admin:Cas1n01234@${row.pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
                     
             }
         },

@@ -171,7 +171,7 @@
                 `;
             }
         },
-    ],"group_all","order_by")
+    ],"group_all",1,"asc")
 
     function addHorario(year_month_group_id,department_id,year,month,day_init,day_end) {
         let timerInterval 

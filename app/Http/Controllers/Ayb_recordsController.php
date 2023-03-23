@@ -111,7 +111,11 @@ class Ayb_recordsController extends Controller
             ->join('type_commands', 'ayb_commands.type_command_id', '=', 'type_commands.id')
             ->join('sedes', 'ayb_items.sede_id', '=', 'sedes.id')
             ->groupBy('ayb_item_id', DB::raw("DATE_FORMAT(ayb_item_commands.created_at, '%Y-%m-%d')"), 'ayb_items.sede_id', 'ayb_commands.type_command_id' )
-            ->orderBy('ayb_item_commands.created_at','desc')->orderBy('type_commands.name','desc')
+            
+            ->orderBy('ayb_item_commands.created_at','desc')
+            ->orderBy('sedes.id','desc')
+            ->orderBy('type_commands.id','desc')
+            
             ->get();
 
             
