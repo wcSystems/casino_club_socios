@@ -71,6 +71,9 @@ Route::get('/novedades_types/service', 'Novedades_typesController@service')->nam
 // ISAPI
 //POST
 Route::post('/isapi/getEvent', 'isapiController@getEvent')->name('isapi.getEvent');
+Route::post('/isapi/getMatches', 'isapiController@getMatches')->name('isapi.getMatches');
+
+
 Route::post('/isapi/addOrUpdateEmployee', 'isapiController@addOrUpdateEmployee')->name('isapi.addOrUpdateEmployee');
 Route::post('/isapi/elimEmployee', 'isapiController@elimEmployee')->name('isapi.elimEmployee');
 

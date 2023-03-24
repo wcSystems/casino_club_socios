@@ -11,6 +11,7 @@ use App\Models\Sede;
 use App\Models\Attlog;
 use App\Models\Schedule_template;
 use App\Models\Ayb_command;
+use App\Models\Horario;
 use Illuminate\Support\Facades\DB;
 
 class EmployeesController extends Controller
@@ -27,6 +28,7 @@ class EmployeesController extends Controller
         $departments = Department::all();
         $positions = Position::all();
         $sedes = Sede::all();
+        $horario = Horario::all();
         $schedule_templates = Schedule_template::all();
         return view('employees.index')
             ->with('employees',$employees)
@@ -34,6 +36,7 @@ class EmployeesController extends Controller
             ->with('sexs',$sexs)
             ->with('departments',$departments)
             ->with('positions',$positions)
+            ->with('horario',$horario)
             ->with('sedes',$sedes);
     }
 

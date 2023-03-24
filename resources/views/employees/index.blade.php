@@ -4,6 +4,10 @@
     input[type="file"] {
     display: none;
 }
+
+#horarioTitle > br {
+    display: none !important;
+}
 </style>
 @endsection
 @section('content')
@@ -462,16 +466,69 @@
                 data: { employeeNo: employeeNo, schedule_template_id: schedule_template_id, year_month: `${year}-${month}` },
                 success: function (res) {
 
-                    console.log("data",res)
+                    let horarios = {!! $horario !!}
+                    let horarioUniqueCurrent = res.employee_schedule.horario.split(',')
+                        horarioUniqueCurrent = new Set(horarioUniqueCurrent);
+                        horarioUniqueCurrent = [...horarioUniqueCurrent];
+                    
+                    
                     
                     clearInterval(timerInterval)
                     if(res.type == "success" ){
 
-                        let html = ``;
                         let days_in_month = (res.employee_schedule.marcajes).length;
-                        html += `
-                            <div class="table-responsive">
-                                <table id="data-table-default-schedule-${res.employee_schedule.year}-${res.employee_schedule.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+
+                        let htmlTitle = ``;
+                            htmlTitle += `
+                                <div id="horarioTitle" class="table-responsive">
+                                    <div class="col-12 mx-auto">
+                                        <img id="imgUser" class="rounded-circle"  src='public/employees/${employeeNo}.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
+                                    </div>
+                                    <div class="col-12 my-3"> Horario ${moment(res.employee_schedule.month).format('MMMM')} ${res.employee_schedule.year}
+                                        ${ res.employee_schedule.name }
+                                        ${ res.employee_schedule.positions_name }, ${ res.employee_schedule.departments_name }
+                                    </div>
+                                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle  d-inline mx-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
+                                        <thead style="background-color:paleturquoise;">
+                                            <tr>
+                                                <th class="text-center text-uppercase " > Leyenda </th>
+                                                <th class="text-center text-uppercase " > H. Entrada </th>
+                                                <th class="text-center text-uppercase " > H. Salida </th>
+                                                <th class="text-center text-uppercase " > H. Trabajo </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`
+                                            horarios.forEach(horarioItem => {
+                                                if( horarioUniqueCurrent.find( i => i == horarioItem.id ) ){
+                                                    if( horarioItem.leyenda != "L" ){
+                                                        htmlTitle += `
+                                                        <tr>
+                                                            <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                ${ horarioItem.name }
+                                                            </td>
+                                                            <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).format('LT') }
+                                                            </td>
+                                                            <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                            ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).add(horarioItem.hora_trabajo, 'h').format('LT') }
+                                                            </td>
+                                                            <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                ${ horarioItem.hora_trabajo }
+                                                            </td>`
+                                                            htmlTitle += `
+                                                        </tr>`
+                                                    }
+                                                }
+                                                
+                                            });
+                                            htmlTitle +=`
+                                        </tbody>
+                                    </table>
+                                </div>`;
+                        let html = ``;
+                            html += `
+                            <div class="table-responsive d-flex flex-column">
+                                <table id="data-table-default-schedule-${res.employee_schedule.year}-${res.employee_schedule.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline mx-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
                                     
                                     <thead style="background-color:paleturquoise;" >
                                         <tr>
@@ -515,7 +572,7 @@
                                         <tr>
                                             <td class="font-weight-bold" style="background-color:paleturquoise;">Salida</td>`;
                                             (res.employee_schedule.marcajes).forEach( (elementMarcaje, index) => {
-                                              
+                                            
 
                                                 if( elementMarcaje.leyenda == "T1" ){
                                                     let validMarcajeFirstT1 = ( elementMarcaje.first == elementMarcaje.last ) ? "- - -" : moment(elementMarcaje.last).format('h:mm:ss a')
@@ -538,7 +595,7 @@
 
                                         <tr>
                                             <td class="font-weight-bold" style="background-color:paleturquoise"> Diferencia </td>`;
-                                   
+                                
                                             (res.employee_schedule.marcajes).forEach( (elementMarcaje, index) => {
                                                 if( elementMarcaje.leyenda == "T1" ){
                                                     if( elementMarcaje.status == "NO MARCO" || elementMarcaje.first == elementMarcaje.last ){
@@ -603,20 +660,16 @@
                                 
 
 
-                            </div>
-                        `;
+                            </div>`;
                         
                         Swal.fire({
-                            title: `Horario ${moment(res.employee_schedule.month).format('MMMM')} ${res.employee_schedule.year}
-                                    ${ res.employee_schedule.name }
-                                    ${ res.employee_schedule.positions_name }, ${ res.employee_schedule.departments_name }`,
+                            title: htmlTitle.trim(),
                             showConfirmButton: true,
                             showCloseButton: true,
                             width: "95%",
                             confirmButtonText: 'Ok',
                             html: html
                         }) 
-
                     }
 
                     if(res.type == "error" ){
