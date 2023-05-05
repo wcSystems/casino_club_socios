@@ -47,8 +47,6 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'clients.update',
         'destroy' => 'clients.destroy'
     ]);
-
-
     Route::resource('levels', 'LevelsController')->names([
         'index' => 'levels',
         'create' => 'levels.create',
@@ -103,8 +101,6 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'tables.update',
         'destroy' => 'tables.destroy'
     ]);
-
-
     Route::resource('counting_table_stadistics', 'Counting_table_stadisticsController')->names([
         'index' => 'counting_table_stadistics',
         'create' => 'counting_table_stadistics.create',
@@ -147,8 +143,6 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'attlogs.update',
         'destroy' => 'attlogs.destroy'
     ]);
-
-
     Route::resource('all_machines', 'All_machinesController')->names([
         'index' => 'all_machines',
         'create' => 'all_machines.create',
@@ -191,28 +185,24 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'value_machines.update',
         'destroy' => 'value_machines.destroy'
     ]);
-
     Route::resource('sexs', 'SexsController')->names([
         'index' => 'sexs',
         'create' => 'sexs.create',
         'update' => 'sexs.update',
         'destroy' => 'sexs.destroy'
     ]);
-
     Route::resource('departments', 'DepartmentsController')->names([
         'index' => 'departments',
         'create' => 'departments.create',
         'update' => 'departments.update',
         'destroy' => 'departments.destroy'
     ]);
-
     Route::resource('positions', 'PositionsController')->names([
         'index' => 'positions',
         'create' => 'positions.create',
         'update' => 'positions.update',
         'destroy' => 'positions.destroy'
     ]);
-
     Route::resource('employees', 'EmployeesController')->names([
         'index' => 'employees',
         'create' => 'employees.create',
@@ -225,14 +215,13 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'schedule_templates.update',
         'destroy' => 'schedule_templates.destroy'
     ]);
-
     Route::resource('global_warehouses', 'Global_warehousesController')->names([
         'index' => 'global_warehouses',
         'create' => 'global_warehouses.create',
         'update' => 'global_warehouses.update',
         'destroy' => 'global_warehouses.destroy'
     ]);
- 
+
     Route::resource('rooms', 'RoomsController')->names([
         'index' => 'rooms',
         'create' => 'rooms.create',
@@ -338,6 +327,39 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'novedades_types.update',
         'destroy' => 'novedades_types.destroy'
     ]);
+
+
+
+
+
+    Route::resource('cierre_mesas', 'Cierre_mesasController')->names([
+        'index' => 'cierre_mesas',
+        'create' => 'cierre_mesas.create',
+        'update' => 'cierre_mesas.update',
+        'destroy' => 'cierre_mesas.destroy'
+    ]);
+
+    Route::resource('conteo_drop_boveda_casinos', 'Conteo_drop_boveda_casinosController')->names([
+        'index' => 'conteo_drop_boveda_casinos',
+        'create' => 'conteo_drop_boveda_casinos.create',
+        'update' => 'conteo_drop_boveda_casinos.update',
+        'destroy' => 'conteo_drop_boveda_casinos.destroy'
+    ]);
+    Route::resource('conteo_arching_boveda_casinos', 'Conteo_arching_boveda_casinosController')->names([
+        'index' => 'conteo_arching_boveda_casinos',
+        'create' => 'conteo_arching_boveda_casinos.create',
+        'update' => 'conteo_arching_boveda_casinos.update',
+        'destroy' => 'conteo_arching_boveda_casinos.destroy'
+    ]);
+    Route::resource('conteo_efectivo_boveda_casinos', 'Conteo_efectivo_boveda_casinosController')->names([
+        'index' => 'conteo_efectivo_boveda_casinos',
+        'create' => 'conteo_efectivo_boveda_casinos.create',
+        'update' => 'conteo_efectivo_boveda_casinos.update',
+        'destroy' => 'conteo_efectivo_boveda_casinos.destroy'
+    ]);
+
+
+
 
 
     // VIEW - GRAPHICS

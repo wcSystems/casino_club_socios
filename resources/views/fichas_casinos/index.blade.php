@@ -40,7 +40,7 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Denominacion <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="number" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la denominacion aqui..." >
+                                    <input required type="text" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la denominacion aqui..." >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>

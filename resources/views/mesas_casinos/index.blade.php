@@ -1,14 +1,22 @@
 @extends('layouts.app')
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
+    
     <div class="panel-heading ui-sortable-handle">
-        <h4 class="panel-title"></h4>
-        <div class="panel-heading-btn">
-            <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
-                <i class="m-auto fa fa-lg fa-plus"></i>
-            </button>
+            <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
+              
+                <a class="d-flex btn btn-success"   onclick="modal('Crear')" >
+                    Bancada de Salas 
+                </a>
+                <a class="d-flex btn btn-success"   onclick="modal('Crear')" >
+                    Bancada de Bovedas 
+                </a>
+                <a class="d-flex btn btn-success"  onclick="modal('Crear')"  >
+                    Bancada de mesas 
+                </a>
+              
+            </div>
         </div>
-    </div>
     <div class="panel-body">
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
@@ -132,15 +140,15 @@
         let fichas_casinos={!! $fichas_casinos !!}.filter(i=>i.sede_id==sede_id).map( f => f.id )
 
 
-        let cantidad = ( $(`#cantidad-${id}`).val() == "" ) ? 0 : parseInt($(`#cantidad-${id}`).val())
-        let valor = parseInt(ficha)
+        let cantidad = ( $(`#cantidad-${id}`).val() == "" ) ? 0 : parseFloat($(`#cantidad-${id}`).val())
+        let valor = parseFloat(ficha)
         let total_final = 0
 
         $(`#total-${id}`).val(`$ ${cantidad*valor}`)
 
         fichas_casinos.forEach(element => {
-            let cantidad_total = ( $(`#cantidad-${element}`).val() == "" ) ? 0 : parseInt($(`#cantidad-${element}`).val())
-            let valor_total =  parseInt($(`#ficha-${element}`).val().slice(1))
+            let cantidad_total = ( $(`#cantidad-${element}`).val() == "" ) ? 0 : parseFloat($(`#cantidad-${element}`).val())
+            let valor_total =  parseFloat($(`#ficha-${element}`).val().slice(1))
             total_final = total_final + (cantidad_total*valor_total)
 
         });
@@ -180,8 +188,8 @@ console.log(list.stack)
                             list.fichas.forEach(item => {
                                 
                                 let current = list.stack.find( i => i.fichas_casino_id == item.id && i.mesas_casino_id == id )
-                                let item_id = ( current == undefined ) ? 0 : parseInt(current.id)
-                                let item_value = ( current == undefined ) ? "" : parseInt(current.cantidad)
+                                let item_id = ( current == undefined ) ? 0 : parseFloat(current.id)
+                                let item_value = ( current == undefined ) ? "" : parseFloat(current.cantidad)
 
 
                                 html += `
@@ -263,7 +271,7 @@ console.log(list.stack)
                 data: {
                     mesas_casino_id: id,
                     fichas_casino_id: element.id,
-                    cantidad: ( $(`#cantidad-${element.id}`).val() == "" ) ? 0 : parseInt($(`#cantidad-${element.id}`).val())
+                    cantidad: ( $(`#cantidad-${element.id}`).val() == "" ) ? 0 : parseFloat($(`#cantidad-${element.id}`).val())
                 }
             }
 

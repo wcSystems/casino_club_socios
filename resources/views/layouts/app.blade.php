@@ -295,6 +295,61 @@
                         </li>
                     @endif
 
+                    <!-- DESARROLLADOR / ADMINISTRADOR / BOVEDA -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 15 )
+                        <li class="nav-header" style="color: #fff !important">MODULO BOVEDA</li>
+                        <li id="cierre_mesas_nav" class="has-sub closed">
+                            <a href="{{ route('cierre_mesas') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CIERRE MESAS</span>
+                            </a>
+                        </li>
+                        <li id="group_arc2hings_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('group_archings_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DETALLE SEDES</span>
+                            </a>
+                        </li>
+                        <li id="group2_archings_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('group_archings_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CIERRE DE MAQUINAS</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACION BOVEDA</li>
+                        <li id="mes2as_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('mesas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">VENTANILLA INICIAL</span>
+                            </a>
+                        </li>
+                        
+                        <li id="mesa2s_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('mesas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">METODOS DE PAGO</span>
+                            </a>
+                        </li>
+                        <li id="mesas_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('mesas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">BANCADAS</span>
+                            </a>
+                        </li>
+                        <li id="fichas_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('fichas_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">FICHAS</span>
+                            </a>
+                        </li>
+                        <li id="billetes_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('billetes_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">BILLETES</span>
+                            </a>
+                        </li>
+                    @endif
+
                     <!-- DESARROLLADOR -->                    
                     @if( Auth::user()->level_id == 1 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
@@ -402,28 +457,11 @@
 
                     @if( Auth::user()->level_id == 1 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES CASINO</li>
-                        <li id="mesas_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('mesas_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">MESAS</span>
-                            </a>
-                        </li>
-                        <li id="fichas_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('fichas_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">FICHAS</span>
-                            </a>
-                        </li>
+                        
                         <li id="horas_casinos_nav" class="has-sub closed">
                             <a href="{{ route('horas_casinos') }}">
                                 <i class="fas fa-circle text-white"></i>
                                 <span class="text-white">HORAS CONTEO</span>
-                            </a>
-                        </li>
-                        <li id="billetes_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('billetes_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">BILLETES</span>
                             </a>
                         </li>
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES OTROS</li>

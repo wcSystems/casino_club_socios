@@ -559,7 +559,10 @@
                                                 }
                                                 if( elementMarcaje.leyenda == "T2" ){
                                                     let validMarcajeFirstT2 = ( elementMarcaje.status == "NO MARCO" ) ? "- - -" : moment(elementMarcaje.last).format('h:mm:ss a')
-                                                    html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT2 }</td>`;
+                                                    
+                                                    let validMarcajeFirstT2E = (res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ) ? moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first).format('h:mm:ss a') : "- - -"
+                                                        validMarcajeFirstT2E = ( validMarcajeFirstT2E == "Invalid date" ) ? "- - -" : validMarcajeFirstT2
+                                                    html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT2E }</td>`;
                                                     
                                                 }
                                                 if( elementMarcaje.leyenda == "L" ){
@@ -579,7 +582,10 @@
                                                     html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT1 }</td>`;
                                                 }
                                                 if( elementMarcaje.leyenda == "T2" ){
-                                                    let validMarcajeFirstT2 = ( elementMarcaje[index+1] == undefined ) ? "- - -" : moment(elementMarcaje[index+1].first).format('h:mm:ss a')
+
+                                                    let validMarcajeFirstT2 = (res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ) ? moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first).format('h:mm:ss a') : "- - -"
+                                                        validMarcajeFirstT2 = ( validMarcajeFirstT2 == "Invalid date" ) ? "- - -" : validMarcajeFirstT2
+                                                    
                                                     html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT2 }</td>`;
                                                     
                                                 }
@@ -622,12 +628,14 @@
                                                 }
 
                                                 if( elementMarcaje.leyenda == "T2" ){
-                                                    if( elementMarcaje.status == "NO MARCO" || elementMarcaje[index+1] == undefined ){
+                                                    let validMarcajeFirstT2 = (res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ) ? moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first).format('h:mm:ss a') : "- - -"
+                                                     
+                                                    if( elementMarcaje.status == "NO MARCO" || validMarcajeFirstT2 == "Invalid date" ){
                                                         html += `<td class="text-uppercase font-weight-bold"> - - - </td>`;
                                                     }else{
 
                                                         let hora_marcada_entrada = moment(elementMarcaje.last)
-                                                        let hora_marcada_salida = moment(elementMarcaje[index+1].last)
+                                                        let hora_marcada_salida =   moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first)
                                                         let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
                                                         let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
                                                         let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
@@ -646,7 +654,12 @@
                                                 }
                                                 
                                                 if( elementMarcaje.leyenda == "L" ){
-                                                    html += `<td class="text-uppercase font-weight-bold"> ${ elementMarcaje.turno }</td>`;
+                                                    if( elementMarcaje.status == "MARCO" ){
+                                                        html += `<td class="text-uppercase font-weight-bold"> M </td>`;
+                                                    }else{
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ elementMarcaje.turno }</td>`;
+                                                    }
+                                                    
                                                 }        
                                             });
                                         html += `

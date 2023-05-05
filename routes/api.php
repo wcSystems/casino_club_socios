@@ -61,6 +61,7 @@ Route::get('/group_drops_casinos/service', 'Group_drops_casinosController@servic
 Route::get('/group_archings_casinos/service', 'Group_archings_casinosController@service')->name('group_archings_casinos.service');
 Route::get('/condicion_groups/service', 'Condicion_groupsController@service')->name('condicion_groups.service');
 Route::get('/novedades_types/service', 'Novedades_typesController@service')->name('novedades_types.service');
+Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
 
 
 
@@ -105,6 +106,11 @@ Route::post('/ayb_commands/pjoin', 'Ayb_commandsController@pjoin')->name('ayb_co
 // LIST
 Route::post('/conteo_drop_cecom_casinos/list', 'Conteo_drop_cecom_casinosController@list')->name('conteo_drop_cecom_casinos.list');
 Route::post('/conteo_archings_cecom_casinos/list', 'Conteo_archings_cecom_casinosController@list')->name('conteo_archings_cecom_casinos.list');
+
+// LIST
+Route::post('/conteo_drop_boveda_casinos/list', 'Conteo_drop_boveda_casinosController@list')->name('conteo_drop_boveda_casinos.list');
+Route::post('/conteo_arching_cecom_casinos/list', 'Conteo_arching_boveda_casinosController@list')->name('conteo_arching_boveda_casinos.list');
+Route::post('/conteo_efectivo_cecom_casinos/list', 'Conteo_efectivo_boveda_casinosController@list')->name('conteo_efectivo_boveda_casinos.list');
 
 
 

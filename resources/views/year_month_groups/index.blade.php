@@ -14,13 +14,19 @@
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
     <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
+        @if(  strncasecmp(Auth::user()->name, "horario", 7) !== 0 )
             <a class="d-flex btn btn-danger" onclick="viewGroup()"  >
                 BORRAR
             </a>
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
-     
+        @endif
+        @if(  strncasecmp(Auth::user()->name, "horario", 7) === 0 )
+            <a class="d-flex btn "   >
+                CREACION DE HORARIOS
+            </a>
+        @endif
     </div>
     <div class="panel-body">
         <div class="table-responsive">
@@ -174,6 +180,7 @@
     ],"group_all",1,"asc")
 
     function addHorario(year_month_group_id,department_id,year,month,day_init,day_end) {
+            month = ( month <= 9 ) ? "0"+month : month
         let timerInterval 
         let payload = { 
             _token: $("meta[name='csrf-token']").attr("content"), 
@@ -412,6 +419,8 @@
     function salir() {
         $(".swal2-close").click()
     }
+
+   
 
 </script>
 @endsection

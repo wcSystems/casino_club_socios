@@ -171,16 +171,11 @@
             data: payload,
             success: function (res) {
                 //clearInterval(timerInterval)
-
-                
-
                 if( res.type == "success" ){
-
-                    let totalMatches = ( Math.trunc(res.totalMatches/30) >= 30 ) ? Math.trunc(res.totalMatches/30) : 1
+                    let totalMatches = ( res.totalMatches > 30 ) ? Math.trunc(res.totalMatches/30) : 1
+                    let tota30Matches = ( totalMatches == 1 ) ? res.totalMatches : (res.totalMatches-(totalMatches*30))
                     let position = 0;
-
                     for (let index = 1; index <= totalMatches; index++) {
-
                         let payloadGetEvent = {
                             init: res.time,
                             position: position,
@@ -188,22 +183,21 @@
                             month: payload.month,
                             year: payload.year
                         }
-
                         $.ajax({ 
                             url: "{{route('isapi.getEvent')}}",
                             type: "POST",
                             data: payloadGetEvent,
-                            success: function (res) {
+                            success: function (resGet) {
 
-                                if( res.type == "success" ){
-                                    $("#swal2-content").replaceWith(`<div id="swal2-content" class="swal2-html-container" style="display: block;">porfavor espere mientra se extraen los registros del biometrico...<br /> Rgistros totales insertados: ${index} de ${totalMatches}  </div>`)
+                                if( resGet.type == "success" ){
+                                    $("#swal2-content").replaceWith(`<div id="swal2-content" class="swal2-html-container" style="display: block;">porfavor espere mientra se extraen los registros del biometrico...<br /> Rgistros totales insertados: ${index} de ${totalMatches} <br /> En espera: ${ tota30Matches } </div>`)
                                     if( index == totalMatches ){
                                         clearInterval(timerInterval)
                                         location.reload();
                                     }
                                 }
 
-                                if( res.type == "error" ){
+                                if( resGet.type == "error" ){
                                     clearInterval(timerInterval)
                                     Swal.fire({
                                         title: 'ERROR',
@@ -216,7 +210,7 @@
                                         confirmButtonColor: '#fd7e14',
                                     })
                                 }
-                                if( res.type == "error_server" ){
+                                if( resGet.type == "error_server" ){
                                     clearInterval(timerInterval)
                                     Swal.fire({
                                         title: 'ERROR SERVIDOR',
@@ -231,12 +225,8 @@
                                 }
                             }
                         });
-                        
                         position = position + 30;
                     }
-                    
-
-
                 }
                 if( res.type == "error" ){
                     clearInterval(timerInterval)

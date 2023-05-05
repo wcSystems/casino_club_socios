@@ -7,6 +7,10 @@ use App\Models\Year_month_group;
 use App\Models\Department;
 use App\Models\Horario;
 use App\Models\Schedule_template;
+use App\Models\Level;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Year_month_groupsController extends Controller
 {
@@ -19,9 +23,15 @@ class Year_month_groupsController extends Controller
     {
         $year_month_groups = Year_month_group::all();
         $horarios = Horario::all();
+        $levels = Level::all();
         $schedule_templates = Schedule_template::all();
         $departments = Department::with("employees")->get();
-        return view('year_month_groups.index')->with('year_month_groups',$year_month_groups)->with('horarios',$horarios)->with('departments',$departments)->with('schedule_templates',$schedule_templates);
+        return view('year_month_groups.index')
+                    ->with('levels',$levels)
+                    ->with('year_month_groups',$year_month_groups)
+                    ->with('horarios',$horarios)
+                    ->with('departments',$departments)
+                    ->with('schedule_templates',$schedule_templates);
     }
 
     /**
@@ -106,16 +116,36 @@ class Year_month_groupsController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        $user_data = $request->get('user_data');
         /* QUERY FILTER */
 
         $query = array();
+
+        
+
+        $dataUser = DB::table('users')
+                    ->selectRaw('levels.name AS level_name')
+                    ->where("users.id","=",  $user_data["id"] )
+                    ->join('levels', 'users.level_id', '=', 'levels.id')->first();
+
         foreach (Year_month_group::all() as $key => $value) {
-            foreach (Department::all() as $key => $valueDepartment) {
-                array_push($query, [ 'id' => $value->id, 'year' => $value->year, 'month' => $value->month, 'department_id' => $valueDepartment->id, 'department_name' => $valueDepartment->name, 'group_name' => $valueDepartment->name ]);
+            if(  strncasecmp($dataUser->level_name, "horario", 7) === 0   ){
+                
+                
+                $department = Department::where('name','LIKE','%'.substr($dataUser->level_name,7).'%')->get();
+              
+                foreach ( $department as $key => $valueDepartment) {
+                    array_push($query, [ 'id' => $value->id, 'year' => $value->year, 'month' => $value->month, 'department_id' => $valueDepartment->id, 'department_name' => $valueDepartment->name, 'group_name' => $valueDepartment->name ]);
+                }
+
+            }else{
+                foreach (Department::all() as $key => $valueDepartment) {
+                    array_push($query, [ 'id' => $value->id, 'year' => $value->year, 'month' => $value->month, 'department_id' => $valueDepartment->id, 'department_name' => $valueDepartment->name, 'group_name' => $valueDepartment->name ]);
+                }
             }
         }
         
-
+        
         
 
 
