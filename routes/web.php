@@ -332,6 +332,15 @@ Route::middleware(['auth'])->group(function () {
 
 
 
+    Route::resource('metodo_pagos', 'Metodo_pago_boveda_casinosController')->names([
+        'index' => 'metodo_pagos',
+        'create' => 'metodo_pagos.create',
+        'update' => 'metodo_pagos.update',
+        'destroy' => 'metodo_pagos.destroy'
+    ]);
+
+
+
     Route::resource('cierre_mesas', 'Cierre_mesasController')->names([
         'index' => 'cierre_mesas',
         'create' => 'cierre_mesas.create',

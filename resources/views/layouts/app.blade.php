@@ -304,18 +304,6 @@
                                 <span class="text-white">CIERRE MESAS</span>
                             </a>
                         </li>
-                        <li id="group_arc2hings_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('group_archings_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">DETALLE SEDES</span>
-                            </a>
-                        </li>
-                        <li id="group2_archings_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('group_archings_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">CIERRE DE MAQUINAS</span>
-                            </a>
-                        </li>
                         <li class="nav-header" style="color: #fff !important">CONFIGURACION BOVEDA</li>
                         <li id="mes2as_casinos_nav" class="has-sub closed">
                             <a href="{{ route('mesas_casinos') }}">
@@ -324,8 +312,8 @@
                             </a>
                         </li>
                         
-                        <li id="mesa2s_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('mesas_casinos') }}">
+                        <li id="metodo_pago_nav" class="has-sub closed">
+                            <a href="{{ route('metodo_pagos') }}">
                                 <i class="fas fa-circle text-white"></i>
                                 <span class="text-white">METODOS DE PAGO</span>
                             </a>
@@ -583,6 +571,7 @@
                             d.search = $('#search').val(),
                             d.search_transportation = $('#search_transportation').val(),
                             d.search_brands = $('#search_brands').val(),
+                            d.search_sede_all = $('#search_sede_all').val(),
                             d.search_sede_machines = $('#search_sede_machines').val(),
                             d.search_brand_machines = $('#search_brand_machines').val(),
                             d.search_model_machines = $('#search_model_machines').val(),
@@ -648,6 +637,7 @@
                 $("#search").keyup( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_transportation").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
 
+                $("#search_sede_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_sede_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_brand_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_model_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });

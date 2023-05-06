@@ -32,11 +32,11 @@
         </div>
     </div>
     <div class="panel-body">
-    <div class="row">
+        <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <select id="search_sede_employees" class="form-control w-100">
+                        <select id="search_sede_all" class="form-control w-100">
                             <option value="" selected >Todos las sedes</option>
                             @foreach( $sedes as $item )
                                 <option value="{{ $item->id }}" > {{ $item->name }} </option>
@@ -180,6 +180,7 @@
                     btns +=`<a class="btn btn-gray m-5" > Comparativo </a>`
                     btns +=`<a class="btn btn-gray m-5" > Mesas </a>`
                     btns +=`<a class="btn btn-gray m-5" > Fichas </a>`
+                    btns +=`<a class="btn btn-gray m-5" > Sedes </a>`
                     btns +=`</div>`
                 return btns;
             }

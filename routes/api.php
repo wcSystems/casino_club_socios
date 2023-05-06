@@ -63,6 +63,8 @@ Route::get('/condicion_groups/service', 'Condicion_groupsController@service')->n
 Route::get('/novedades_types/service', 'Novedades_typesController@service')->name('novedades_types.service');
 Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
 
+Route::get('/metodo_pagos/service', 'Metodo_pago_boveda_casinosController@service')->name('metodo_pagos.service');
+
 
 
 
