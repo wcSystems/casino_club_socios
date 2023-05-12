@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="panel-body">
-    <div class="row">
+        <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
@@ -29,7 +29,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Denominacion</th>
+                        <th>IP Local</th>
+                        <th>IP Publica</th>
                         <th>Sede</th>
                         <th>Acciones</th>
                     </tr>
@@ -41,7 +42,7 @@
 @endsection
 @section('js')
 <script>
-    $('#billetes_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
+    $('#device_hikvision_facial_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
         Swal.fire({
             title: `${type} Registro`,
@@ -50,16 +51,36 @@
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                 @csrf
                     <div class="row">
-                        <div class="col-md-6 col-sm-12">
+                        
+                        <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Denominacion <span class="text-danger"> *</span> </label>
+                                <label class=" text-lg-right col-form-label"> IP Local <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="number" id="name" name="name" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la denominacion aqui..." >
+                                    <input required type="text" id="local" name="local" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la IP local aqui..." >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-12">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> IP Publica <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <input required type="text" id="public" name="public" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la IP publica aqui..." >
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Password <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <input required type="password" id="password" name="password" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la clave aqui..." >
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
@@ -80,9 +101,11 @@
                 </form>`
         })
         if(id){
-            let current={!! $billetes_casinos !!}.find(i=>i.id===id)
-            $("#name").val(current.name)
+            let current={!! $device_hikvision_facial_casinos !!}.find(i=>i.id===id)
+            $("#local").val(current.local)
+            $("#public").val(current.public)
             $("#sede_id").val(current.sede_id)
+            $("#password").val(current.password)
         }
         validateForm()
     }
@@ -93,12 +116,14 @@
                 _token: $("meta[name='csrf-token']").attr("content"),
                 id: { id: id ? id : "" },
                 data: {
-                    name: $('#name').val(),
-                    sede_id: $('#sede_id').val()
+                    local: $('#local').val(),
+                    public: $('#public').val(),
+                    sede_id: $('#sede_id').val(),
+                    password: $('#password').val()
                 }
             }
             $.ajax({
-                url: "{{ route('billetes_casinos.store') }}",
+                url: "{{ route('device_hikvision_facial_casinos.store') }}",
                 type: "POST",
                 data: payload,
                 success: function (res) {
@@ -109,22 +134,19 @@
             });
         }
     }
-    dataTable("{{route('billetes_casinos.service')}}",[
+    dataTable("{{route('device_hikvision_facial_casinos.service')}}",[
         {
             render: function ( data,type, row,all  ) {
                 return all.row+1;
             }
         },
-        {
-            render: function ( data,type, row,all  ) {
-                return `$ ${row.name}`
-            }
-        },
-        { data: 'sede_name' },
+        { data: 'local' },
+        { data: 'public' },
+        { data: 'group_name' },
         {
             render: function ( data,type, row  ) {
                 return `
-                    <a onclick="elim('billetes_casinos',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
+                    <a onclick="elim('device_hikvision_facial_casinos',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                     <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
                 `;
             }

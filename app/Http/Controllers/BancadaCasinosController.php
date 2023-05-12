@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 use App\Models\Sede;
-use App\Models\Billetes_casino;
+use App\Models\Fichas_casino;
+
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
-class Billetes_casinosController extends Controller
+class BancadaCasinosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +18,8 @@ class Billetes_casinosController extends Controller
     public function index()
     {
         $sedes = Sede::all();
-        $billetes_casinos = Billetes_casino::all();
-        return view('billetes_casinos.index')->with('billetes_casinos',$billetes_casinos)->with('sedes',$sedes);
+        $fichas_casinos = Fichas_casino::all();
+        return view('bancada_casinos.index')->with('sedes',$sedes)->with('fichas_casinos',$fichas_casinos);
     }
 
     /**
@@ -39,12 +40,7 @@ class Billetes_casinosController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Billetes_casino::updateOrCreate($request["id"],$request["data"]);
-        if($current_item){
-            return response()->json([ 'type' => 'success']);
-        }else{
-            return response()->json([ 'type' => 'error']);
-        }
+        //
     }
 
     /**
@@ -89,32 +85,24 @@ class Billetes_casinosController extends Controller
      */
     public function destroy($id)
     {
-        $current_item = Billetes_casino::find($id);
-        if($current_item){
-            $current_item->delete();
-            return response()->json([ 'type' => 'success']);
-        }else{
-            return response()->json([ 'type' => 'error']);
-        }
+        //
     }
-
     public function service(Request $request)
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         $search_sede_all = $request->get('search_sede_all');
         /* QUERY FILTER */
-        $query = DB::table('billetes_casinos')
-                    ->selectRaw('billetes_casinos.*, sedes.name AS sede_name, sedes.name AS group_name')
+        $query = DB::table('sedes')
+                    ->selectRaw('sedes.*, sedes.name AS sede_name')
                     ->orWhere(function($query) use ($search){
-                        $query->orWhere('billetes_casinos.name','LIKE','%'.$search.'%');
+                        $query->orWhere('name','LIKE','%'.$search.'%');
                     })
                     ->where(function($query) use ($search_sede_all){
                         if(!empty($search_sede_all)){
-                            $query->where('billetes_casinos.sede_id', '=', $search_sede_all);
+                            $query->where('sedes.id', '=', $search_sede_all);
                         }else{};
                     })
-                    ->join('sedes', 'billetes_casinos.sede_id', '=', 'sedes.id')
                     ->get();
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
@@ -123,7 +111,7 @@ class Billetes_casinosController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count(Billetes_casino::all());
+        $totalRecords = count(Sede::all());
         $totalRecordswithFilter = count($query);
 
         echo json_encode(array(

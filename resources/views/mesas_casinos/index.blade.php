@@ -2,22 +2,29 @@
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
     
-    <div class="panel-heading ui-sortable-handle">
-            <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
-              
-                <a class="d-flex btn btn-success"   onclick="modal('Crear')" >
-                    Bancada de Salas 
-                </a>
-                <a class="d-flex btn btn-success"   onclick="modal('Crear')" >
-                    Bancada de Bovedas 
-                </a>
-                <a class="d-flex btn btn-success"  onclick="modal('Crear')"  >
-                    Bancada de mesas 
-                </a>
-              
+<div class="panel-heading ui-sortable-handle">
+        <h4 class="panel-title"></h4>
+        <div class="panel-heading-btn">
+            <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
+                <i class="m-auto fa fa-lg fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="panel-body">
+    <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                        <select id="search_sede_all" class="form-control w-100">
+                            <option value="" selected >Todos las sedes</option>
+                            @foreach( $sedes as $item )
+                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
-    <div class="panel-body">
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
                 <thead>
@@ -26,6 +33,7 @@
                         <th>Nombre</th>
                         <th>N de Puestos</th>
                         <th>Sede</th>
+                        <th>Stack Mesas</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -127,9 +135,15 @@
         {
             render: function ( data,type, row  ) {
                 return `
+                    <a onclick="stack(${row.id},${row.sede_id})" style="color: var(--global-2)" class="btn btn-blue btn-icon btn-circle"><i class="fas fa-coins"></i></a>
+                `;
+            }
+        },
+        {
+            render: function ( data,type, row  ) {
+                return `
                     <a onclick="elim('mesas_casinos',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle"><i class="fa fa-times"></i></a>
                     <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle"><i class="fas fa-pen"></i></a>
-                    <a onclick="stack(${row.id},${row.sede_id})" style="color: var(--global-2)" class="btn btn-blue btn-icon btn-circle"><i class="fas fa-coins"></i></a>
                 `;
             }
         },
@@ -170,8 +184,9 @@
             success: function (res) {
                 let list = res
                 let current={!! $mesas_casinos !!}.find(i=>i.id===id)
+                let sede_current={!! $sedes !!}.find(i=>i.id===sede_id)
                 clearInterval(timerInterval)
-console.log(list.stack)
+    
                 let html = ``;
 
                 html += `
@@ -241,7 +256,7 @@ console.log(list.stack)
                 </div>`
 
                 Swal.fire({
-                    title: `Banca ${ current.name }`,
+                    title: `Banca <br /> Mesa ${ current.name } <br /> ${sede_current.name}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,

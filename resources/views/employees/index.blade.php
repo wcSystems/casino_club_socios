@@ -141,22 +141,15 @@
             let html = `
             <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                 @csrf
-                <div class="row">`
+                <div class="row">
 
-                    if(id){
-                        html+=`
                         <div class="mx-auto">
                             <label class="d-flex m-0">
                                 <img id="imgUser" class="rounded-circle"  src='public/users/null.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
                                 <input require onchange="viewImg(this)" type="file" id="image" name="image" style="display:none" >
                             </label>
                         </div>
-                        `
-                    }
-                    
-
-
-                    html+=`
+                  
                     <div class="col-md-12 col-sm-12">
                         <div class="form-group row m-b-0">
                             <label class=" text-lg-right col-form-label"> Cedula <span class="text-danger"> *</span> </label>
@@ -242,14 +235,7 @@
                     </div>
                     <div class="col-sm-12" style="margin-top:20px">
                         <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar Datos </button>
-                        `
-
-                    if(id){
-                        html+=`
-                        <button onclick="guardarIMG(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar Imagen </button>
-                        `
-                    }
-                        html+=`
+                      
                     </div>
                 </div>
             </form>`
@@ -319,7 +305,13 @@
                     payload.append('sede_id',$('#sede_id').val())
                     payload.append('department_id',$('#department_id').val())
                     payload.append('position_id',$('#position_id').val())
-                
+
+                    payload.append('originIMG',window.location.origin+"/public/employees/"+$('#employeeNo').val()+".jpg")                 
+                    
+                    if($('#image').prop('files')[0]){
+                        payload.append('image',await resizeImage({ file: $('#image').prop('files')[0],maxSize: 2000 }))
+                    }
+                                    
                     $.ajax({
                         url: "{{ route('isapi.addOrUpdateEmployee') }}",
                         type: "POST",
@@ -336,47 +328,7 @@
                     });  
             }
         }
-        async function guardarIMG(id) {
-
-            let validity = document.getElementById('form-all').checkValidity()
-            if(validity){
-            
-       
-
-                let payloadIMG = new FormData(); 
-                        payloadIMG.append('employeeNo',$('#employeeNo').val())
-                        payloadIMG.append('name',$('#name').val())
-                        payloadIMG.append('originIMG',window.location.origin+"/public/employees/"+$('#employeeNo').val()+".jpg")
-
-                       
-                            if($('#image').prop('files')[0]){
-                                payloadIMG.append('image',await resizeImage({ file: $('#image').prop('files')[0],maxSize: 500 }))
-                            }
-                     
-
-                            $.ajax({
-                                url: "{{ route('isapi.sendImg') }}",
-                                type: "POST",
-                                data: payloadIMG,
-                                processData: false,
-                                contentType: false,
-                                enctype: 'multipart/form-data',
-                                headers: {'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')},
-                                success: function (res) {
-                                    if(res.type === 'success'){
-                                        location.reload();
-                                    }
-                                }
-                            });
-
-                        
-                        
-
-                   
-                
-
-            }
-        }
+     
         function elim(id) {
             let current={!! $employees !!}.find(i=>i.id===id)
                 Swal.fire({
@@ -392,7 +344,8 @@
                             data: {
                                 _token: $("meta[name='csrf-token']").attr("content"),
                                 id: id,
-                                employeeNo: current.employeeNo
+                                employeeNo: current.employeeNo,
+                                sede_id: current.sede_id
                             },
                             success: function (res) {
                                 if(res.type === 'success'){

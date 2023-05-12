@@ -63,7 +63,10 @@ Route::get('/condicion_groups/service', 'Condicion_groupsController@service')->n
 Route::get('/novedades_types/service', 'Novedades_typesController@service')->name('novedades_types.service');
 Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
 
+Route::get('/bancada_casinos/service', 'BancadaCasinosController@service')->name('bancada_casinos.service');
+
 Route::get('/metodo_pagos/service', 'Metodo_pago_boveda_casinosController@service')->name('metodo_pagos.service');
+Route::get('/device_hikvision_facial_casinos/service', 'Device_hikvision_facial_casinosController@service')->name('device_hikvision_facial_casinos.service');
 
 
 
@@ -119,3 +122,6 @@ Route::post('/conteo_efectivo_cecom_casinos/list', 'Conteo_efectivo_boveda_casin
 
 // LIST FICHAS SEDES
 Route::get('/stack_casinos/fichas/sede/{sede_id}/{mesa_casino_id}', 'Stack_casinosController@fichasSede')->name('stack_casinos.fichasSede');
+
+Route::get('/bancada_sede_casinos/sede/{sede_id}', 'Bancada_sede_casinosController@fichasBancada')->name('bancada_sede_casinos.fichasBancada');
+Route::get('/bancada_sede_bovedas/sede/{sede_id}', 'Bancada_sede_bovedasController@fichasBancada')->name('bancada_sede_bovedas.fichasBancada');

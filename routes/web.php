@@ -313,6 +313,19 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'stack_casinos.update',
         'destroy' => 'stack_casinos.destroy'
     ]);
+
+    Route::resource('bancada_sede_bovedas', 'Bancada_sede_bovedasController')->names([
+        'index' => 'bancada_sede_bovedas',
+        'create' => 'bancada_sede_bovedas.create',
+        'update' => 'bancada_sede_bovedas.update',
+        'destroy' => 'bancada_sede_bovedas.destroy'
+    ]);
+    Route::resource('bancada_sede_casinos', 'Bancada_sede_casinosController')->names([
+        'index' => 'bancada_sede_casinos',
+        'create' => 'bancada_sede_casinos.create',
+        'update' => 'bancada_sede_casinos.update',
+        'destroy' => 'bancada_sede_casinos.destroy'
+    ]);
     
     Route::resource('condicion_groups', 'Condicion_groupsController')->names([
         'index' => 'condicion_groups',
@@ -327,8 +340,12 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'novedades_types.update',
         'destroy' => 'novedades_types.destroy'
     ]);
-
-
+    Route::resource('bancada_casinos', 'BancadaCasinosController')->names([
+        'index' => 'bancada_casinos',
+        'create' => 'bancada_casinos.create',
+        'update' => 'bancada_casinos.update',
+        'destroy' => 'bancada_casinos.destroy'
+    ]);
 
 
 
@@ -365,6 +382,13 @@ Route::middleware(['auth'])->group(function () {
         'create' => 'conteo_efectivo_boveda_casinos.create',
         'update' => 'conteo_efectivo_boveda_casinos.update',
         'destroy' => 'conteo_efectivo_boveda_casinos.destroy'
+    ]);
+
+    Route::resource('device_hikvision_facial_casinos', 'Device_hikvision_facial_casinosController')->names([
+        'index' => 'device_hikvision_facial_casinos',
+        'create' => 'device_hikvision_facial_casinos.create',
+        'update' => 'device_hikvision_facial_casinos.update',
+        'destroy' => 'device_hikvision_facial_casinos.destroy'
     ]);
 
 

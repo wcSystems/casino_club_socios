@@ -9,22 +9,26 @@ use App\Models\Attlog;
 use App\Models\Schedule_template;
 use App\Models\Employee;
 use App\Models\Ayb_command;
+use App\Models\Device_hikvision_facial_casino;
 use File;
 
 use GuzzleHttp\Exception\RequestException;
 
 class isapiController extends Controller
 {
-    private $IP_PLC_MARCAJE = "http://192.168.5.181";
-    //private $IP_PLC_MARCAJE = "http://190.121.239.210:8061";
+    // private $IP_PLC_MARCAJE = "http://192.168.1.111";
+    // private $IP_PLC_MARCAJE = "http://190.121.239.210:8061";
+    // private $IP_PLC_PASSWORD = "S0p0rt3S0p0rt3";
     
 
     public function getEvent(Request $request)
     {
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
+
         $position = (int)$request->position;
         $res = new Client();
-        $records = json_decode($res->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
+        $records = json_decode($res->post($credentials->public."/ISAPI/AccessControl/AcsEvent?format=json" ,[
+            'auth' =>  ['admin', $credentials->password,'digest'],
             'body' => json_encode([
                 "AcsEventCond"=> [
                     "searchID"=> "1",
@@ -45,12 +49,13 @@ class isapiController extends Controller
     }
     public function getMatches(Request $request)
     {
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
         $attlogs = Attlog::where('time','LIKE','%'.$request->year."-".$request->month.'%')->orderBy('time', 'desc')->first();
         if( !is_null($attlogs) ){
             try {
                 $resC = new Client();
-                $totalMatches = json_decode($resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
-                    'auth' =>  ['admin', 'Cas1n01234','digest'], 'body' => json_encode([
+                $totalMatches = json_decode($resC->post($credentials->public."/ISAPI/AccessControl/AcsEvent?format=json" ,[
+                    'auth' =>  ['admin', $credentials->password,'digest'], 'body' => json_encode([
                         "AcsEventCond"=> [
                             "searchID"=> "1",
                             "searchResultPosition"=> 0,
@@ -72,8 +77,8 @@ class isapiController extends Controller
         }else{
             try {
                 $resC = new Client();
-                $totalMatches = json_decode($resC->post($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/AcsEvent?format=json" ,[
-                    'auth' =>  ['admin', 'Cas1n01234','digest'], 'body' => json_encode([
+                $totalMatches = json_decode($resC->post($credentials->public."/ISAPI/AccessControl/AcsEvent?format=json" ,[
+                    'auth' =>  ['admin', $credentials->password,'digest'], 'body' => json_encode([
                         "AcsEventCond"=> [
                             "searchID"=> "1",
                             "searchResultPosition"=> 0,
@@ -98,13 +103,18 @@ class isapiController extends Controller
     public function addOrUpdateEmployee(Request $request)
     {
 
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
+        
+
         if (File::exists(public_path('public/employees/'.$request["employeeNo"].'.jpg')) && $request["id"] == "" ) {
             File::delete(public_path('public/employees/'.$request["employeeNo"].'.jpg'));
         }
 
+        
+
         $resC = new Client();
-        $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
+        $current = json_decode($resC->put($credentials->public."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+            'auth' =>  ['admin', $credentials->password,'digest'],
             'body' => json_encode([
                 "UserInfo"=> [
                     "employeeNo" =>$request["employeeNo"],
@@ -136,6 +146,56 @@ class isapiController extends Controller
 
             
             if($current_item){
+
+
+                if($request->file('image')){
+                    $file= $request->file('image');
+                    $file->move(public_path('public/employees/'), $request["employeeNo"].'.jpg');       
+                }
+
+                // busca si existe alguna imagen
+                $imgGet = new Client();
+                $imgGetIMG = json_decode($imgGet->post($credentials->public."/ISAPI/Intelligent/FDLib/FDSearch?format=json" ,[
+                    'auth' =>  ['admin', $credentials->password,'digest'],
+                    'body' => json_encode([
+                    "searchResultPosition"=>0,
+                    "maxResults"=>100,
+                    "faceLibType"=>"blackFD",
+                    "FDID"=>"1",
+                    "FPID"=>$request["employeeNo"]
+                ])])->getBody()->getContents(), TRUE)["responseStatusStrg"];
+
+                
+    
+
+                // si existe borrala primero
+                if($imgGetIMG == "OK"){
+                    $imgDelete = new Client();
+                    $imgDeleteIMG = json_decode($imgDelete->put($credentials->public."/ISAPI/Intelligent/FDLib/FDSearch/Delete?format=json&FDID=1&faceLibType=blackFD" ,[
+                        'auth' =>  ['admin', $credentials->password,'digest'],
+                        'body' => json_encode([
+                                "FPID" => [[ "value"=> $request["employeeNo"]
+                            ]]
+                        ])])->getBody()->getContents(), TRUE)["statusString"];
+                }
+
+                // agrega la nueva imagen
+                $imgSend = new Client();
+                $imgSendIMG = json_decode($imgSend->post($credentials->public."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
+                    'auth' =>  ['admin', $credentials->password,'digest'],
+                    'body' => json_encode([
+                        "faceURL"=> $request["originIMG"],
+                        "faceLibType"=>"blackFD",
+                        "FDID"=> "1",
+                        "FPID"=> $request["employeeNo"]
+                    ])])->getBody()->getContents(), TRUE);
+                    return response()->json([ 'imgSendIMG' => $imgSendIMG]);
+
+    
+
+
+
+
                 return response()->json([ 'type' => 'success']);
             }else{
                 return response()->json([ 'type' => 'error']);
@@ -146,13 +206,15 @@ class isapiController extends Controller
 
     public function elimEmployee(Request $request)
     {
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
+
         if (File::exists(public_path('public/employees/'.$request["employeeNo"].'.jpg')) ) {
             File::delete(public_path('public/employees/'.$request["employeeNo"].'.jpg'));
         }
 
         $resC = new Client();
-        $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
+        $current = json_decode($resC->put($credentials->public."/ISAPI/AccessControl/UserInfo/Delete?format=json" ,[
+            'auth' =>  ['admin', $credentials->password,'digest'],
             'body' => json_encode([
                 "UserInfoDelCond"=> [
                     "EmployeeNoList"=>[[
@@ -181,10 +243,12 @@ class isapiController extends Controller
 
     public function uploadEmployees(Request $request)
     {
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
+
         foreach ($request["upload"] as $key => $value) {
             $resC = new Client();
-            $current = json_decode($resC->put($this->IP_PLC_MARCAJE."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
-                'auth' =>  ['admin', 'Cas1n01234','digest'],
+            $current = json_decode($resC->put($credentials->public."/ISAPI/AccessControl/UserInfo/SetUp?format=json" ,[
+                'auth' =>  ['admin', $credentials->password,'digest'],
                 'body' => json_encode([
                     "UserInfo"=> [
                         "employeeNo" =>$value["employeeNo"],
@@ -211,9 +275,11 @@ class isapiController extends Controller
 
     public function authImgIsapi(Request $request)
     {    
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
+
         return response()->json([ 
-            'first_pictureURL' => "http://admin:Cas1n01234@".$request["first_pictureURL"],
-            'last_pictureURL' => "http://admin:Cas1n01234@".$request["last_pictureURL"]
+            'first_pictureURL' => "http://admin@".$credentials->password."".$request["first_pictureURL"],
+            'last_pictureURL' => "http://admin@".$credentials->password."".$request["last_pictureURL"]
         ]);  
     }
 
@@ -224,65 +290,7 @@ class isapiController extends Controller
 
         
 
-        if($request->file('image')){
-            $file= $request->file('image');
-            $file->move(public_path('public/employees/'), $request["employeeNo"].'.jpg');       
-        }
-
-        $imgGet = new Client();
-        $imgGetIMG = json_decode($imgGet->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch?format=json" ,[
-            'auth' =>  ['admin', 'Cas1n01234','digest'],
-            'body' => json_encode([
-            "searchResultPosition"=>0,
-            "maxResults"=>100,
-            "faceLibType"=>"blackFD",
-            "FDID"=>"1",
-            "FPID"=>$request["employeeNo"]
-        ])])->getBody()->getContents(), TRUE)["responseStatusStrg"];
-
-
-
-        if($imgGetIMG == "OK"){
-
-            $imgDelete = new Client();
-            $imgDeleteIMG = json_decode($imgDelete->put($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FDSearch/Delete?format=json&FDID=1&faceLibType=blackFD" ,[
-                'auth' =>  ['admin', 'Cas1n01234','digest'],
-                'body' => json_encode([
-                        "FPID" => [[ "value"=> $request["employeeNo"]
-                    ]]
-                ])])->getBody()->getContents(), TRUE)["statusString"];
-
-            if($imgDeleteIMG == "OK"){
-                $imgSend = new Client();
-                $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
-                    'auth' =>  ['admin', 'Cas1n01234','digest'],
-                    'body' => json_encode([
-                        "faceURL"=> $request["originIMG"],
-                        "faceLibType"=>"blackFD",
-                        "FDID"=> "1",
-                        "FPID"=> $request["employeeNo"]
-                    ])])->getBody()->getContents(), TRUE);
-                
-                return response()->json([ 'type' => 'success']);
-            }
-        }else{
-            $imgSend = new Client();
-            $imgSendIMG = json_decode($imgSend->post($this->IP_PLC_MARCAJE."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
-                'auth' =>  ['admin', 'Cas1n01234','digest'],
-                'body' => json_encode([
-                    "faceURL"=> $request["originIMG"],
-                    "faceLibType"=>"blackFD",
-                    "FDID"=> "1",
-                    "FPID"=> $request["employeeNo"]
-                ])])->getBody()->getContents(), TRUE);
-
-            return response()->json([ 'type' => 'success']);
-
-        }
-
-     
-        return response()->json([ 'type' => 'error']);
-        
+        return "0";
     }
 
 

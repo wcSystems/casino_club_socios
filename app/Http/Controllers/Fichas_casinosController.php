@@ -102,9 +102,18 @@ class Fichas_casinosController extends Controller
     {
         /* FIELDS TO FILTER */
         $search = $request->get('search');
+        $search_sede_all = $request->get('search_sede_all');
         /* QUERY FILTER */
         $query = DB::table('fichas_casinos')
-                    ->selectRaw('fichas_casinos.*, sedes.name AS sede_name, sedes.name AS group_name')->where('fichas_casinos.name','LIKE','%'.$search.'%')
+                    ->selectRaw('fichas_casinos.*, sedes.name AS sede_name, sedes.name AS group_name')
+                    ->orWhere(function($query) use ($search){
+                        $query->orWhere('fichas_casinos.name','LIKE','%'.$search.'%');
+                    })
+                    ->where(function($query) use ($search_sede_all){
+                        if(!empty($search_sede_all)){
+                            $query->where('fichas_casinos.sede_id', '=', $search_sede_all);
+                        }else{};
+                    })
                     ->join('sedes', 'fichas_casinos.sede_id', '=', 'sedes.id')
                     ->get();
         /* FIELDS DEFAULTS DATATABLES */

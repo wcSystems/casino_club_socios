@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Sede;
-use App\Models\Billetes_casino;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
+use App\Models\Sede;
+use App\Models\Device_hikvision_facial_casino;
+use Illuminate\Support\Facades\DB;
 
-class Billetes_casinosController extends Controller
+class Device_hikvision_facial_casinosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +17,11 @@ class Billetes_casinosController extends Controller
     public function index()
     {
         $sedes = Sede::all();
-        $billetes_casinos = Billetes_casino::all();
-        return view('billetes_casinos.index')->with('billetes_casinos',$billetes_casinos)->with('sedes',$sedes);
+        $device_hikvision_facial_casinos = Device_hikvision_facial_casino::all();
+        
+        return view('device_hikvision_facial_casinos.index')
+                    ->with('sedes',$sedes)
+                    ->with('device_hikvision_facial_casinos',$device_hikvision_facial_casinos);
     }
 
     /**
@@ -39,7 +42,7 @@ class Billetes_casinosController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Billetes_casino::updateOrCreate($request["id"],$request["data"]);
+        $current_item = Device_hikvision_facial_casino::updateOrCreate($request["id"],$request["data"]);
         if($current_item){
             return response()->json([ 'type' => 'success']);
         }else{
@@ -89,7 +92,7 @@ class Billetes_casinosController extends Controller
      */
     public function destroy($id)
     {
-        $current_item = Billetes_casino::find($id);
+        $current_item = Device_hikvision_facial_casino::find($id);
         if($current_item){
             $current_item->delete();
             return response()->json([ 'type' => 'success']);
@@ -103,18 +106,17 @@ class Billetes_casinosController extends Controller
         /* FIELDS TO FILTER */
         $search = $request->get('search');
         $search_sede_all = $request->get('search_sede_all');
+
         /* QUERY FILTER */
-        $query = DB::table('billetes_casinos')
-                    ->selectRaw('billetes_casinos.*, sedes.name AS sede_name, sedes.name AS group_name')
-                    ->orWhere(function($query) use ($search){
-                        $query->orWhere('billetes_casinos.name','LIKE','%'.$search.'%');
-                    })
+        $query = DB::table('device_hikvision_facial_casinos')
+                    ->selectRaw('device_hikvision_facial_casinos.*, sedes.name AS sede_name, sedes.name AS group_name')
+                    
                     ->where(function($query) use ($search_sede_all){
                         if(!empty($search_sede_all)){
-                            $query->where('billetes_casinos.sede_id', '=', $search_sede_all);
+                            $query->where('device_hikvision_facial_casinos.sede_id', '=', $search_sede_all);
                         }else{};
                     })
-                    ->join('sedes', 'billetes_casinos.sede_id', '=', 'sedes.id')
+                    ->join('sedes', 'device_hikvision_facial_casinos.sede_id', '=', 'sedes.id')
                     ->get();
         /* FIELDS DEFAULTS DATATABLES */
         $draw = $request->get('draw');
@@ -123,7 +125,7 @@ class Billetes_casinosController extends Controller
         $columnIndex_arr = $request->get('order');
         $columnName_arr = $request->get('columns');
         $order_arr = $request->get('order');
-        $totalRecords = count(Billetes_casino::all());
+        $totalRecords = count(Device_hikvision_facial_casino::all());
         $totalRecordswithFilter = count($query);
 
         echo json_encode(array(

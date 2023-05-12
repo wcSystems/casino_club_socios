@@ -115,7 +115,7 @@
             render: function ( data,type, row,all  ) { 
 
                     return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
-                            <a href='http://admin:Cas1n01234@192.168.5.181${row.pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
+                            <a href='http://admin:${row.password}@${row.local}${row.pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
                     
             }
         },
@@ -123,7 +123,7 @@
             render: function ( data,type, row,all  ) { 
 
                     return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
-                            <a href='http://admin:Cas1n01234@${row.pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
+                            <a href='http://admin:${row.password}@${row.pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
                     
             }
         },
@@ -148,6 +148,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select required id="sede_id" class="form-control w-100" >
+                                        <option value="" selected disabled >Selecione una Sede</option>
+                                        @foreach( $sedes as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="getSyncBiometric()" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Sincronizar </button>
                         </div>
@@ -162,7 +176,8 @@
         let payload = {
             end: moment(month).daysInMonth(),
             month: month,
-            year: $("#year_month").val().slice(0,4)
+            year: $("#year_month").val().slice(0,4),
+            sede_id: $("#sede_id").val(),
         }
         setLoading(timerInterval)
         $.ajax({ 
@@ -181,7 +196,8 @@
                             position: position,
                             end: payload.end,
                             month: payload.month,
-                            year: payload.year
+                            year: payload.year,
+                            sede_id: payload.sede_id,
                         }
                         $.ajax({ 
                             url: "{{route('isapi.getEvent')}}",
