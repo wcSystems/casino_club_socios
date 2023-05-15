@@ -365,6 +365,19 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'cierre_mesas.destroy'
     ]);
 
+    Route::resource('group_cierre_boveda_casinos', 'Group_cierre_boveda_casinosController')->names([
+        'index' => 'group_cierre_boveda_casinos',
+        'create' => 'group_cierre_boveda_casinos.create',
+        'update' => 'group_cierre_boveda_casinos.update',
+        'destroy' => 'group_cierre_boveda_casinos.destroy'
+    ]);
+
+    Route::resource('operaciones_mesas_casinos', 'Operaciones_mesas_casinosController')->names([
+        'index' => 'operaciones_mesas_casinos',
+        'create' => 'operaciones_mesas_casinos.create',
+        'update' => 'operaciones_mesas_casinos.update',
+        'destroy' => 'operaciones_mesas_casinos.destroy'
+    ]);
     Route::resource('conteo_drop_boveda_casinos', 'Conteo_drop_boveda_casinosController')->names([
         'index' => 'conteo_drop_boveda_casinos',
         'create' => 'conteo_drop_boveda_casinos.create',

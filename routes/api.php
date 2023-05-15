@@ -64,6 +64,7 @@ Route::get('/novedades_types/service', 'Novedades_typesController@service')->nam
 Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
 
 Route::get('/bancada_casinos/service', 'BancadaCasinosController@service')->name('bancada_casinos.service');
+Route::get('/group_cierre_boveda_casinos/service', 'Group_cierre_boveda_casinosController@service')->name('group_cierre_boveda_casinos.service');
 
 Route::get('/metodo_pagos/service', 'Metodo_pago_boveda_casinosController@service')->name('metodo_pagos.service');
 Route::get('/device_hikvision_facial_casinos/service', 'Device_hikvision_facial_casinosController@service')->name('device_hikvision_facial_casinos.service');
@@ -116,6 +117,8 @@ Route::post('/conteo_archings_cecom_casinos/list', 'Conteo_archings_cecom_casino
 Route::post('/conteo_drop_boveda_casinos/list', 'Conteo_drop_boveda_casinosController@list')->name('conteo_drop_boveda_casinos.list');
 Route::post('/conteo_arching_cecom_casinos/list', 'Conteo_arching_boveda_casinosController@list')->name('conteo_arching_boveda_casinos.list');
 Route::post('/conteo_efectivo_cecom_casinos/list', 'Conteo_efectivo_boveda_casinosController@list')->name('conteo_efectivo_boveda_casinos.list');
+
+Route::post('/operaciones_mesas_casinos/list', 'Operaciones_mesas_casinosController@list')->name('operaciones_mesas_casinos.list');
 
 
 

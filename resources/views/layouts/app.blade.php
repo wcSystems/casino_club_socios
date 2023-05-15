@@ -304,6 +304,12 @@
                                 <span class="text-white">CIERRE MESAS</span>
                             </a>
                         </li>
+                        <li id="group_cierre_boveda_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('group_cierre_boveda_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CIERRE BOVEDA</span>
+                            </a>
+                        </li>
                         <li class="nav-header" style="color: #fff !important">CONFIGURACION BOVEDA</li>
                         <li id="mes2as_casinos_nav" class="has-sub closed">
                             <a href="{{ route('mesas_casinos') }}">
