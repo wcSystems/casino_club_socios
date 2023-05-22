@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Group_cierre_boveda;
-use App\Models\Conteo_efectivo_boveda_casino;
+use App\Models\Conteo_efect_boveda;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ class Conteo_efectivo_boveda_casinosController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Conteo_efectivo_boveda_casino::updateOrCreate($request->id,$request->data);
+        $current_item = Conteo_efect_boveda::updateOrCreate($request->id,$request->data);
         if($current_item){
             return response()->json([ 'type' => 'success']);
         }else{
@@ -92,10 +92,10 @@ class Conteo_efectivo_boveda_casinosController extends Controller
 
     public function list(Request $request)
     {
-        $list = DB::table('conteo_efectivo_boveda_casinos')
-        ->selectRaw('conteo_efectivo_boveda_casinos.*, billetes_casinos.name AS billete_name')
-        ->where("group_cierre_boveda_id","=",$request["id"])
-        ->join('billetes_casinos', 'conteo_efectivo_boveda_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+        $list = DB::table('conteo_efect_bovedas')
+        ->selectRaw('conteo_efect_bovedas.*, billetes_casinos.name AS billete_name')
+        ->where("group_cierre_boveda_casino_id","=",$request["id"])
+        ->join('billetes_casinos', 'conteo_efect_bovedas.billetes_casino_id', '=', 'billetes_casinos.id')
         ->get();
     
         return response()->json([ 'list' => $list ]);

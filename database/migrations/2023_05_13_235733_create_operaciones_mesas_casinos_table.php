@@ -25,19 +25,8 @@ class CreateOperacionesMesasCasinosTable extends Migration
             $table->bigInteger('billetes_casino_id')->nullable()->unsigned();
             $table->foreign('billetes_casino_id')->references('id')->on('billetes_casinos')->onUpdate('cascade');
 
-            $table->string('fill_1',100);
-            $table->string('fill_2',100);
-            $table->string('fill_3',100);
-            $table->string('fill_cierre',100);
-
-            $table->string('cred_1',100);
-            $table->string('cred_2',100);
-            $table->string('cred_3',100);
-            $table->string('cred_cierre',100);
-
-            $table->string('conteo_1',100);
-            $table->string('conteo_2',100);
-            $table->string('conteo_cierre',100);
+            $table->string('tipo',100)->nullable();
+            $table->string('cantidad',100)->nullable();
 
             $table->timestamps();
         });

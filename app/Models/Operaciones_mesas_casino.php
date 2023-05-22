@@ -12,19 +12,8 @@ class Operaciones_mesas_casino extends Model
         'fichas_casino_id',
         'billetes_casino_id',
         
-        'fill_1',
-        'fill_2',
-        'fill_3',
-        'fill_cierre',
-
-        'cred_1',
-        'cred_2',
-        'cred_3',
-        'cred_cierre',
-
-        'conteo_1',
-        'conteo_2',
-        'conteo_cierre',
+        'tipo',
+        'cantidad',
 
         
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
+use App\Models\Operaciones_mesas_casino;
 
 use Illuminate\Http\Request;
 
@@ -35,7 +36,12 @@ class Operaciones_mesas_casinosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $current_item = Operaciones_mesas_casino::updateOrCreate($request->id,$request->data);
+        if($current_item){
+            return response()->json([ 'type' => 'success', 'current_item' => $current_item ]);
+        }else{
+            return response()->json([ 'type' => 'error']);
+        }
     }
 
     /**
@@ -87,17 +93,13 @@ class Operaciones_mesas_casinosController extends Controller
     {
   
 
-                        $list = DB::table('operaciones_mesas_casinos')
-                        ->selectRaw('operaciones_mesas_casinos.*, billetes_casinos.name AS billete_name')
-
-                        ->where("operaciones_mesas_casinos.group_cierre_boveda_casino_id","=",$request["id"])
-
-                        ->join('billetes_casinos', 'operaciones_mesas_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
-                        ->join('mesas_casinos', 'operaciones_mesas_casinos.mesas_casino_id', '=', 'mesas_casinos.id')
-                        ->join('fichas_casinos', 'operaciones_mesas_casinos.fichas_casino_id', '=', 'fichas_casinos.id')
-
-                        ->get();
     
+        $list = DB::table('operaciones_mesas_casinos')
+                        ->selectRaw('operaciones_mesas_casinos.*, billetes_casinos.name AS billete_name, fichas_casinos.name AS ficha_name')
+                        ->where("group_cierre_boveda_casino_id","=",$request["id"])
+                        ->leftjoin('billetes_casinos', 'operaciones_mesas_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+                        ->leftjoin('fichas_casinos', 'operaciones_mesas_casinos.fichas_casino_id', '=', 'fichas_casinos.id')
+                        ->get();
 
 
         return response()->json([ 'list' => $list ]);

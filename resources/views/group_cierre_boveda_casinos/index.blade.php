@@ -53,7 +53,7 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Sede</th>
-                        <th>Ventanillas ( Cajas )</th>
+                        <!-- <th>Ventanillas ( Cajas )</th> -->
                         <th>Mesas</th>
                         <th>Cuadros ( Vistas )</th>
                         <th>Reporte Final ( Cierre )</th>
@@ -151,7 +151,7 @@
             }
         },
         { data: 'sede_name' },
-        {
+        /* {
             render: function ( data,type, row  ) {
                 let btns = ``;
                     btns +=`<div class="text-center">`
@@ -159,7 +159,7 @@
                     btns +=`</div>`
                 return btns;
             }
-        },
+        }, */
         {
             render: function ( data,type, row  ) {
                 let btns = ``;
@@ -173,10 +173,10 @@
             render: function ( data,type, row  ) {
                 let btns = ``;
                     btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-gray m-5" > Comparativo </a>`
-                    btns +=`<a class="btn btn-gray m-5" > Mesas </a>`
-                    btns +=`<a class="btn btn-gray m-5" > Fichas </a>`
-                    btns +=`<a class="btn btn-gray m-5" > Sedes </a>`
+                    /* btns +=`<a class="btn btn-gray m-5" > Comparativo </a>` */
+                    btns +=`<a class="btn btn-gray m-5" onclick="viewResultadosMesas(${row.id},${row.sede_id})" > Mesas </a>`
+                    /* btns +=`<a class="btn btn-gray m-5" > Fichas </a>`
+                    btns +=`<a class="btn btn-gray m-5" > Sedes </a>` */
                     btns +=`</div>`
                 return btns;
             }
@@ -214,224 +214,340 @@
                 let fichas_casinos = {!! $fichas_casinos !!}.filter( i => i.sede_id == sede_id )
                 let html = ``;
 
-                mesas_casinos.forEach(mesa => {
-                    html += `
-                    <div class="mt-2 mb-5">
-                        <div class="d-flex flex-row">
-                            <div style="background-color:#ccc;" class="table-responsive">
-                                <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
-                                    <thead   >
-                                        <tr>
-                                            <th  class="text-center text-uppercase font-weight-bold border-0" >${mesa.name} </th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-around">
+                    html += `<form id="form-data-cierre" class="needs-validation" action="javascript:void(0);" novalidate>`;
+                    html += `@csrf`;
+
+                    mesas_casinos.forEach(mesa => {
+                        html += `
+                            <div class="mt-2 mb-5">
+                                <div class="d-flex flex-row">
+                                    <div style="background-color:#ccc;" class="table-responsive">
+                                        <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                            <thead   >
+                                                <tr>
+                                                    <th  class="text-center text-uppercase font-weight-bold border-0" >${mesa.name} </th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-around">
 
 
-                            <div class="table-responsive">
-                                <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
-                                    <thead   >
-                                        <tr>
-                                            <th COLSPAN="6" class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF" >FILL</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF" > Ficha </th>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> FILL 1 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> FILL 2 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> FILL 3 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> CIERRE </td>
-                                            <th class="text-center text-uppercase font-weight-bold" style="background-color:#ccc" > TOTAL </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>`
-                                        fichas_casinos.forEach(ficha => {
-                                            
-                                            html += `
-                                            <tr>
-                                                <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#CCFFFF;"> 
-                                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${ficha.name}" >
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-fill_1" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="fillChange(this)" type="number"  class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-fill_2" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="fillChange(this)"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-fill_3" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="fillChange(this)"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-fill_cierre" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="fillChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold " style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-${ficha.id}-fill_total" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="0" > 
-                                                </td>
-                                            </tr>
-                                            `
-                                        });
-                                        
-                                        html += `
-                                            <tr>
-                                                <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
-                                                    <input type="text"  disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-fill_1_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-fill_2_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-fill_3_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-fill_cierre_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold"  style="background-color:#CCFFFF;">
-                                                    <input disabled id="${id}-${mesa.id}-fill_cierre_total_final" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                            </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    <div class="table-responsive">
+                                        <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                            <thead   >
+                                                <tr>
+                                                    <th COLSPAN="6" class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF" >REPOSICIONES</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF" > Ficha </th>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> FILL 1 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> FILL 2 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> FILL 3 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> CIERRE </td>
+                                                    <th class="text-center text-uppercase font-weight-bold" style="background-color:#ccc" > TOTAL </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`
+
+                                                let totalxFichas_fill_1 = 0
+                                                let totalxFichas_fill_2 = 0
+                                                let totalxFichas_fill_3 = 0
+                                                let totalxFichas_fill_cierre = 0
+                                                let total_fill_final = 0
+                                                fichas_casinos.forEach(ficha => {
+
+                                                    let current_fill_1 = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "fill_1" )
+                                                    let current_fill_2 = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "fill_2" )
+                                                    let current_fill_3 = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "fill_3" )
+                                                    let current_fill_cierre = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "fill_cierre" )
+
+                                                    let id_fill_1 = ( current_fill_1 == undefined ) ? 0 : parseFloat(current_fill_1.id)
+                                                    let id_fill_2 = ( current_fill_2 == undefined ) ? 0 : parseFloat(current_fill_2.id)
+                                                    let id_fill_3 = ( current_fill_3 == undefined ) ? 0 : parseFloat(current_fill_3.id)
+                                                    let id_fill_cierre = ( current_fill_cierre == undefined ) ? 0 : parseFloat(current_fill_cierre.id)
+
+                                                    let cantidad_fill_1 = ( current_fill_1 == undefined ) ? 0 : parseFloat(current_fill_1.cantidad)
+                                                    let cantidad_fill_2 = ( current_fill_2 == undefined ) ? 0 : parseFloat(current_fill_2.cantidad)
+                                                    let cantidad_fill_3 = ( current_fill_3 == undefined ) ? 0 : parseFloat(current_fill_3.cantidad)
+                                                    let cantidad_fill_cierre = ( current_fill_cierre == undefined ) ? 0 : parseFloat(current_fill_cierre.cantidad)
+                                                    
+                                                    
+                                                    let t_cantidad_fill_1 = ( cantidad_fill_1 == 0 ) ? "" : cantidad_fill_1
+                                                    let t_cantidad_fill_2 = ( cantidad_fill_2 == 0 ) ? "" : cantidad_fill_2
+                                                    let t_cantidad_fill_3 = ( cantidad_fill_3 == 0 ) ? "" : cantidad_fill_3
+                                                    let t_cantidad_fill_cierre = ( cantidad_fill_cierre == 0 ) ? "" : cantidad_fill_cierre
+
+                                                    let current_sum_fillxficha = parseFloat(cantidad_fill_1) + parseFloat(cantidad_fill_2) + parseFloat(cantidad_fill_3) + parseFloat(cantidad_fill_cierre)
+                                                 
+                                                        totalxFichas_fill_1 = ( current_fill_1 == undefined ) ? totalxFichas_fill_1 + 0 : totalxFichas_fill_1 + parseFloat(current_fill_1.cantidad)*parseFloat(current_fill_1.ficha_name)
+                                                        totalxFichas_fill_2 = ( current_fill_2 == undefined ) ? totalxFichas_fill_2 + 0 : totalxFichas_fill_2 + parseFloat(current_fill_2.cantidad)*parseFloat(current_fill_2.ficha_name)
+                                                        totalxFichas_fill_3 = ( current_fill_3 == undefined ) ? totalxFichas_fill_3 + 0 : totalxFichas_fill_3 + parseFloat(current_fill_3.cantidad)*parseFloat(current_fill_3.ficha_name)
+                                                        totalxFichas_fill_cierre = ( current_fill_cierre == undefined ) ? totalxFichas_fill_cierre + 0 : totalxFichas_fill_cierre + parseFloat(current_fill_cierre.cantidad)*parseFloat(current_fill_cierre.ficha_name)
+                                                        total_fill_final = parseFloat(totalxFichas_fill_1) + parseFloat(totalxFichas_fill_2) + parseFloat(totalxFichas_fill_3) + parseFloat(totalxFichas_fill_cierre)
+
+                                                    html += `
+                                                    <tr>
+                                                        <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#CCFFFF;"> 
+                                                            <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${ficha.name}" >
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_fill_1}" value="${t_cantidad_fill_1}" id="${id}-${mesa.id}-${ficha.id}-fill_1" onchange="saveDropNew('fill_1',this)" onkeyup="fillChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_fill_2}" value="${t_cantidad_fill_2}" id="${id}-${mesa.id}-${ficha.id}-fill_2" onchange="saveDropNew('fill_2',this)" onkeyup="fillChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_fill_3}" value="${t_cantidad_fill_3}" id="${id}-${mesa.id}-${ficha.id}-fill_3" onchange="saveDropNew('fill_3',this)" onkeyup="fillChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_fill_cierre}" value="${t_cantidad_fill_cierre}" id="${id}-${mesa.id}-${ficha.id}-fill_cierre" onchange="saveDropNew('fill_cierre',this)" onkeyup="fillChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold " style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-${ficha.id}-fill_total" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="${current_sum_fillxficha}" > 
+                                                        </td>
+                                                    </tr>
+                                                    `
+                                                });
+                                                
+                                                html += `
+                                                    <tr>
+                                                        <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                                            <input type="text"  disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-fill_1_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_fill_1}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-fill_2_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_fill_2}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-fill_3_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_fill_3}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-fill_cierre_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_fill_cierre}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold"  style="background-color:#CCFFFF;">
+                                                            <input disabled id="${id}-${mesa.id}-fill_cierre_total_final" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${total_fill_final}" > 
+                                                        </td>
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
 
-                            <div class="table-responsive">
-                                <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
-                                    <thead style="background-color:#ccc;"  >
-                                        <tr>
-                                            <th COLSPAN="6" class="text-center text-uppercase font-weight-bold" style="background-color:#CC99CC" >CRED</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center text-uppercase font-weight-bold" style="background-color:#CC99CC" > Ficha </th>
-                                            <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CRED 1 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CRED 2 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CRED 3 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CIERRE </td>
-                                            <th class="text-center text-uppercase font-weight-bold" style="background-color:#ccc" > TOTAL </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>`
-                                        fichas_casinos.forEach(ficha => {
-                                            html += `
-                                            <tr>
-                                                <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#CC99CC"> 
-                                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${ficha.name}" >
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-cred_1" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="credChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-cred_2" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="credChange(this)"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-cred_3" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="credChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${ficha.id}-cred_cierre" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}" onkeyup="credChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold " style="background-color:#ccc" >
-                                                    <input disabled id="${id}-${mesa.id}-${ficha.id}-cred_total" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="0" > 
-                                                </td>
-                                            </tr>
-                                            `
-                                        });
-                                        
-                                        html += `
-                                            <tr>
-                                                <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc"> 
-                                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc" >
-                                                    <input disabled id="${id}-${mesa.id}-cred_1_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc" >
-                                                    <input disabled id="${id}-${mesa.id}-cred_2_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc" >
-                                                    <input disabled id="${id}-${mesa.id}-cred_3_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc" >
-                                                    <input disabled id="${id}-${mesa.id}-cred_cierre_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold"  style="background-color:#CC99CC" >
-                                                    <input disabled id="${id}-${mesa.id}-cred_cierre_total_final" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                            </tr>
-                                    </tbody>
-                                </table>
+                                    <div class="table-responsive">
+                                        <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                            <thead style="background-color:#ccc;"  >
+                                                <tr>
+                                                    <th COLSPAN="6" class="text-center text-uppercase font-weight-bold" style="background-color:#CC99CC" >SOBRANTES</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center text-uppercase font-weight-bold" style="background-color:#CC99CC" > Ficha </th>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CRED 1 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CRED 2 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CRED 3 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CC99CC;font-size:12px !important"> CIERRE </td>
+                                                    <th class="text-center text-uppercase font-weight-bold" style="background-color:#ccc" > TOTAL </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`
+                                                let totalxFichas_cred_1 = 0
+                                                let totalxFichas_cred_2 = 0
+                                                let totalxFichas_cred_3 = 0
+                                                let totalxFichas_cred_cierre = 0
+                                                let total_cred_final = 0
+                                                fichas_casinos.forEach(ficha => {
+
+                                                    let current_cred_1 = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "cred_1" )
+                                                    let current_cred_2 = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "cred_2" )
+                                                    let current_cred_3 = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "cred_3" )
+                                                    let current_cred_cierre = res.list.find( i => i.mesas_casino_id == mesa.id && i.fichas_casino_id == ficha.id && i.tipo == "cred_cierre" )
+
+                                                    let id_cred_1 = ( current_cred_1 == undefined ) ? 0 : parseFloat(current_cred_1.id)
+                                                    let id_cred_2 = ( current_cred_2 == undefined ) ? 0 : parseFloat(current_cred_2.id)
+                                                    let id_cred_3 = ( current_cred_3 == undefined ) ? 0 : parseFloat(current_cred_3.id)
+                                                    let id_cred_cierre = ( current_cred_cierre == undefined ) ? 0 : parseFloat(current_cred_cierre.id)
+
+                                                    let cantidad_cred_1 = ( current_cred_1 == undefined ) ? 0 : parseFloat(current_cred_1.cantidad)
+                                                    let cantidad_cred_2 = ( current_cred_2 == undefined ) ? 0 : parseFloat(current_cred_2.cantidad)
+                                                    let cantidad_cred_3 = ( current_cred_3 == undefined ) ? 0 : parseFloat(current_cred_3.cantidad)
+                                                    let cantidad_cred_cierre = ( current_cred_cierre == undefined ) ? 0 : parseFloat(current_cred_cierre.cantidad)
+
+                                                    let t_cantidad_cred_1 = ( cantidad_cred_1 == 0 ) ? "" : cantidad_cred_1
+                                                    let t_cantidad_cred_2 = ( cantidad_cred_2 == 0 ) ? "" : cantidad_cred_2
+                                                    let t_cantidad_cred_3 = ( cantidad_cred_3 == 0 ) ? "" : cantidad_cred_3
+                                                    let t_cantidad_cred_cierre = ( cantidad_cred_cierre == 0 ) ? "" : cantidad_cred_cierre
+
+                                                    let current_sum_credxficha = parseFloat(cantidad_cred_1) + parseFloat(cantidad_cred_2) + parseFloat(cantidad_cred_3) + parseFloat(cantidad_cred_cierre)
+                                                        
+                                                        totalxFichas_cred_1 = ( current_cred_1 == undefined ) ? totalxFichas_cred_1 + 0 : totalxFichas_cred_1 + parseFloat(current_cred_1.cantidad)*parseFloat(current_cred_1.ficha_name)
+                                                        totalxFichas_cred_2 = ( current_cred_2 == undefined ) ? totalxFichas_cred_2 + 0 : totalxFichas_cred_2 + parseFloat(current_cred_2.cantidad)*parseFloat(current_cred_2.ficha_name)
+                                                        totalxFichas_cred_3 = ( current_cred_3 == undefined ) ? totalxFichas_cred_3 + 0 : totalxFichas_cred_3 + parseFloat(current_cred_3.cantidad)*parseFloat(current_cred_3.ficha_name)
+                                                        totalxFichas_cred_cierre = ( current_cred_cierre == undefined ) ? totalxFichas_cred_cierre + 0 : totalxFichas_cred_cierre + parseFloat(current_cred_cierre.cantidad)*parseFloat(current_cred_cierre.ficha_name)
+                                                        total_cred_final = parseFloat(totalxFichas_cred_1) + parseFloat(totalxFichas_cred_2) + parseFloat(totalxFichas_cred_3) + parseFloat(totalxFichas_cred_cierre)
+
+                                                    html += `
+                                                    <tr>
+                                                        <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#CC99CC"> 
+                                                            <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${ficha.name}" >
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_cred_1}" value="${t_cantidad_cred_1}" id="${id}-${mesa.id}-${ficha.id}-cred_1" onchange="saveDropNew('cred_1',this)" onkeyup="credChange(this)"  data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_cred_2}" value="${t_cantidad_cred_2}" id="${id}-${mesa.id}-${ficha.id}-cred_2" onchange="saveDropNew('cred_2',this)" onkeyup="credChange(this)"  data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}"   type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_cred_3}" value="${t_cantidad_cred_3}" id="${id}-${mesa.id}-${ficha.id}-cred_3" onchange="saveDropNew('cred_3',this)" onkeyup="credChange(this)"  data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_cred_cierre}" value="${t_cantidad_cred_cierre}" id="${id}-${mesa.id}-${ficha.id}-cred_cierre" onchange="saveDropNew('cred_cierre',this)" onkeyup="credChange(this)"  data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${ficha.id}" data-ficha_name="${ficha.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold " style="background-color:#ccc" >
+                                                            <input disabled id="${id}-${mesa.id}-${ficha.id}-cred_total" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="${current_sum_credxficha}" > 
+                                                        </td>
+                                                    </tr>
+                                                    `
+                                                });
+                                                
+                                                html += `
+                                                    <tr>
+                                                        <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc"> 
+                                                            <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc" >
+                                                            <input disabled id="${id}-${mesa.id}-cred_1_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_cred_1}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc" >
+                                                            <input disabled id="${id}-${mesa.id}-cred_2_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_cred_2}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc" >
+                                                            <input disabled id="${id}-${mesa.id}-cred_3_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_cred_3}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc" >
+                                                            <input disabled id="${id}-${mesa.id}-cred_cierre_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_cred_cierre}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold"  style="background-color:#CC99CC" >
+                                                            <input disabled id="${id}-${mesa.id}-cred_cierre_total_final" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${total_cred_final}" > 
+                                                        </td>
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                                            <thead   >
+                                                <tr>
+                                                    <th COLSPAN="6" class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF;"   >CONTEO</th>
+                                                </tr>
+                                                <tr>
+                                                    <th class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF;" > Billete </th>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> PRE 1 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> PRE 2 </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> CONTEO </td>
+                                                    <td class="font-weight-bold text-left" style="background-color:#ccc;font-size:12px !important"> PIEZAS </td>
+                                                    <th class="text-center text-uppercase font-weight-bold" style="background-color:#ccc;" > TOTAL </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`
+                                                let totalxFichas_conteo_1 = 0
+                                                let totalxFichas_conteo_2 = 0
+                                                let totalxFichas_conteo_cierre = 0
+                                                let totalxFichas_conteo_pieza = 0
+                                                let total_conteo_final = 0
+                                                billetes_casinos.forEach(billete => {
+
+                                                    let current_conteo_1 = res.list.find( i => i.mesas_casino_id == mesa.id && i.billetes_casino_id == billete.id && i.tipo == "conteo_1" )
+                                                    let current_conteo_2 = res.list.find( i => i.mesas_casino_id == mesa.id && i.billetes_casino_id == billete.id && i.tipo == "conteo_2" )
+                                                    let current_conteo_cierre = res.list.find( i => i.mesas_casino_id == mesa.id && i.billetes_casino_id == billete.id && i.tipo == "conteo_cierre" )
+
+                                                    let id_conteo_1 = ( current_conteo_1 == undefined ) ? 0 : parseFloat(current_conteo_1.id)
+                                                    let id_conteo_2 = ( current_conteo_2 == undefined ) ? 0 : parseFloat(current_conteo_2.id)
+                                                    let id_conteo_cierre = ( current_conteo_cierre == undefined ) ? 0 : parseFloat(current_conteo_cierre.id)
+
+                                                    let cantidad_conteo_1 = ( current_conteo_1 == undefined ) ? 0 : parseFloat(current_conteo_1.cantidad)
+                                                    let cantidad_conteo_2 = ( current_conteo_2 == undefined ) ? 0 : parseFloat(current_conteo_2.cantidad)
+                                                    let cantidad_conteo_cierre = ( current_conteo_cierre == undefined ) ? 0 : parseFloat(current_conteo_cierre.cantidad)
+
+                                                    let t_cantidad_conteo_1 = ( cantidad_conteo_1 == 0 ) ? "" : cantidad_conteo_1
+                                                    let t_cantidad_conteo_2 = ( cantidad_conteo_2 == 0 ) ? "" : cantidad_conteo_2
+                                                    let t_cantidad_conteo_cierre = ( cantidad_conteo_cierre == 0 ) ? "" : cantidad_conteo_cierre
+
+                                                    let current_sum_conteoxficha = parseFloat(cantidad_conteo_1) + parseFloat(cantidad_conteo_2) +  parseFloat(cantidad_conteo_cierre)
+                                                    let current_sum_conteoxfichaXTotalBillete = parseFloat(current_sum_conteoxficha) * parseFloat(billete.name)
+
+                                                        totalxFichas_conteo_1 = ( current_conteo_1 == undefined ) ? totalxFichas_conteo_1 + 0 : totalxFichas_conteo_1 + parseFloat(current_conteo_1.cantidad)*parseFloat(current_conteo_1.billete_name)
+                                                        totalxFichas_conteo_2 = ( current_conteo_2 == undefined ) ? totalxFichas_conteo_2 + 0 : totalxFichas_conteo_2 + parseFloat(current_conteo_2.cantidad)*parseFloat(current_conteo_2.billete_name)
+                                                        totalxFichas_conteo_cierre = ( current_conteo_cierre == undefined ) ? totalxFichas_conteo_cierre + 0 : totalxFichas_conteo_cierre + parseFloat(current_conteo_cierre.cantidad)*parseFloat(current_conteo_cierre.billete_name)
+                                                        totalxFichas_conteo_pieza =  totalxFichas_conteo_pieza + parseFloat(current_sum_conteoxficha)
+                                                        total_conteo_final = parseFloat(totalxFichas_conteo_1) + parseFloat(totalxFichas_conteo_2) +  parseFloat(totalxFichas_conteo_cierre)
+
+                                                    html += `
+                                                    <tr>
+                                                        <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#CCFFFF;"> 
+                                                            <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${billete.name}" >
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_conteo_1}" value="${t_cantidad_conteo_1}" id="${id}-${mesa.id}-${billete.id}-conteo_1" onchange="saveDropNew('conteo_1',this)" onkeyup="conteoChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-billete_id="${billete.id}" data-billete_name="${billete.name}" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_conteo_2}" value="${t_cantidad_conteo_2}" id="${id}-${mesa.id}-${billete.id}-conteo_2" onchange="saveDropNew('conteo_2',this)" onkeyup="conteoChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-billete_id="${billete.id}" data-billete_name="${billete.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold bg-gris" >
+                                                            <input data-db="${id_conteo_cierre}" value="${t_cantidad_conteo_cierre}" id="${id}-${mesa.id}-${billete.id}-conteo_cierre" onchange="saveDropNew('conteo_cierre',this)" onkeyup="conteoChange(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-billete_id="${billete.id}" data-billete_name="${billete.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important"  > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-${billete.id}-conteo_pieza" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="${current_sum_conteoxficha}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold " style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-${billete.id}-conteo_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${current_sum_conteoxfichaXTotalBillete}" > 
+                                                        </td>
+                                                    </tr>
+                                                    `
+                                                });
+                                                
+                                                html += `
+                                                    <tr>
+                                                        <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                                            <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled  id="${id}-${mesa.id}-conteo_1_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_conteo_1}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-conteo_2_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_conteo_2}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-conteo_cierre_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ ${totalxFichas_conteo_cierre}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#ccc;" >
+                                                            <input disabled id="${id}-${mesa.id}-conteo_cierre_pieza" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="${totalxFichas_conteo_pieza}" > 
+                                                        </td>
+                                                        <td class="font-weight-bold" style="background-color:#CCFFFF;" >
+                                                            <input disabled id="${id}-${mesa.id}-conteo_cierre_total_final" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold"  style="min-width:50px !important" value="$ ${total_conteo_final}" > 
+                                                        </td>
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                
+
+                                </div>
+                                
                             </div>
-                            <div class="table-responsive">
-                                <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
-                                    <thead   >
-                                        <tr>
-                                            <th COLSPAN="6" class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF;"   >CONTEO</th>
-                                        </tr>
-                                        <tr>
-                                            <th class="text-center text-uppercase font-weight-bold" style="background-color:#CCFFFF;" > Billete </th>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> PRE 1 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> PRE 2 </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#CCFFFF;font-size:12px !important"> CONTEO </td>
-                                            <td class="font-weight-bold text-left" style="background-color:#ccc;font-size:12px !important"> PIEZAS </td>
-                                            <th class="text-center text-uppercase font-weight-bold" style="background-color:#ccc;" > TOTAL </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>`
-                                        billetes_casinos.forEach(billete => {
-                                            html += `
-                                            <tr>
-                                                <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#CCFFFF;"> 
-                                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${billete.name}" >
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${billete.id}-conteo_1" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${billete.id}" data-ficha_name="${billete.name}" onkeyup="conteoChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${billete.id}-conteo_2" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${billete.id}" data-ficha_name="${billete.name}" onkeyup="conteoChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold bg-gris" >
-                                                    <input id="${id}-${mesa.id}-${billete.id}-conteo_cierre" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}" data-ficha_id="${billete.id}" data-ficha_name="${billete.name}" onkeyup="conteoChange(this)" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-${billete.id}-conteo_pieza" type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="0" > 
-                                                </td>
-                                                <td class="font-weight-bold " style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-${billete.id}-conteo_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                            </tr>
-                                            `
-                                        });
-                                        
-                                        html += `
-                                            <tr>
-                                                <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
-                                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled  id="${id}-${mesa.id}-conteo_1_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-conteo_2_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-conteo_cierre_total" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#ccc;" >
-                                                    <input disabled id="${id}-${mesa.id}-conteo_cierre_pieza" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:50px !important" value="0" > 
-                                                </td>
-                                                <td class="font-weight-bold" style="background-color:#CCFFFF;" >
-                                                    <input disabled id="${id}-${mesa.id}-conteo_cierre_total_final" type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold"  style="min-width:50px !important" value="$ 0" > 
-                                                </td>
-                                            </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>`
-                });
+                            `
+                    });
+
+                
+
+                    html += `<div class="col-sm-12" style="margin-top:20px">
+                                    <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
+                                </div>`;
+                    html += `</form>`;
+
 
                 Swal.fire({
                     title: `Operaciones de Mesas <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
@@ -446,6 +562,39 @@
             }
         });
     }
+
+    function saveDropNew(fila,params){
+
+        let dataset = params.dataset
+        let cantidad = params.value
+
+        let payload = {
+            _token: $("meta[name='csrf-token']").attr("content"),
+            group_cierre_boveda_casino_id: dataset.group_cierre_boveda_casino_id, 
+            id: { id: !dataset.db ? 0 : dataset.db },
+            data: {
+                group_cierre_boveda_casino_id: dataset.group_cierre_boveda_casino_id, 
+                mesas_casino_id: dataset.mesa_id,
+                fichas_casino_id: dataset.ficha_id,
+                billetes_casino_id: dataset.billete_id,
+                tipo: fila,
+                cantidad: ( params.value == "" ) ? 0 : params.value
+            }
+        }
+        $.ajax({
+            url: "{{ route('operaciones_mesas_casinos.store') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+                if(res.type === 'success'){
+                    params.dataset.db = res.current_item.id
+                }
+
+            }
+        });
+            
+    }
+
 
     function fillChange(params){
 
@@ -479,7 +628,6 @@
         $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-fill_cierre_total_final`).val(`$ ${acc_fill.acc_fill_suma_1+acc_fill.acc_fill_suma_2+acc_fill.acc_fill_suma_3+acc_fill.acc_fill_suma_cierre}`)
         
     }
-
     function credChange(params){
 
         let dataset = params.dataset
@@ -517,23 +665,18 @@
         let dataset = params.dataset
         let cantidad = params.value
         
-        let conteo_suma_1 = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_1`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_1`).val()
-        let conteo_suma_2 = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_2`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_2`).val()
-        let conteo_suma_cierre = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_cierre`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_cierre`).val()
+        let conteo_suma_1 = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_1`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_1`).val()
+        let conteo_suma_2 = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_2`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_2`).val()
+        let conteo_suma_cierre = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_cierre`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_cierre`).val()
         let conteo_suma_total = parseFloat(conteo_suma_1)+parseFloat(conteo_suma_2)+parseFloat(conteo_suma_cierre)
-        console.log(conteo_suma_1)
-        console.log(conteo_suma_2)
-        console.log(conteo_suma_cierre)
-        console.log(conteo_suma_total)
-        console.log(dataset)
 
-        $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_pieza`).val(conteo_suma_total)
-        $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.ficha_id}-conteo_total`).val(`$ ${parseFloat(conteo_suma_total*dataset.ficha_name)}`)
+        $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_pieza`).val(conteo_suma_total)
+        $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${dataset.billete_id}-conteo_total`).val(`$ ${parseFloat(conteo_suma_total*dataset.billete_name)}`)
 
 
-        let fichas_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == dataset.sede_id )
+        let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == dataset.sede_id )
         let acc_conteo = { acc_conteo_suma_1: 0, acc_conteo_suma_2: 0, acc_conteo_suma_cierre: 0, acc_piezas: 0 }
-            fichas_casinos.forEach(element => {
+            billetes_casinos.forEach(element => {
                 let conteo_suma_1 = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${element.id}-conteo_1`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${element.id}-conteo_1`).val()
                 let conteo_suma_2 = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${element.id}-conteo_2`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${element.id}-conteo_2`).val()
                 let conteo_suma_cierre = $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${element.id}-conteo_cierre`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${dataset.mesa_id}-${element.id}-conteo_cierre`).val()
@@ -600,7 +743,7 @@
                                         html += `
                                         <td class="font-weight-bold" style="background-color:#EDEDED !important" >
                                             <input type="hidden" id="id_conteo_efectivo_${billete.id}" value="${id}"  > 
-                                            <input  value="${cantidad}" id="mesa_billete_conteo_efectivo_${billete.id}" onkeyup="sumMesaBilleteTotalEfectivo(${billete.id},${billete.name},${sede_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
+                                            <input  value="${cantidad}" id="mesa_billete_conteo_efectivo_${billete.id}"  onkeyup="sumMesaBilleteTotalEfectivo(${billete.id},${billete.name},${sede_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
                                         </td>`
                                     });
                                 html += `
@@ -720,7 +863,7 @@
             }
             
     }
-    function saveEfectivo(group_cierre_boveda_id,sede_id) {
+    function saveEfectivo(group_cierre_boveda_casino_id,sede_id) {
         let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
         let total_registros = billetes_casinos.length
         let countReset = 0
@@ -731,10 +874,10 @@
                     _token: $("meta[name='csrf-token']").attr("content"),
                     id: { id: $(`#id_conteo_efectivo_${element_billete.id}`).val() },
 
-                    group_cierre_boveda_id: group_cierre_boveda_id, 
+                    group_cierre_boveda_casino_id: group_cierre_boveda_casino_id, 
 
                     data: {
-                        group_cierre_boveda_id: group_cierre_boveda_id, 
+                        group_cierre_boveda_casino_id: group_cierre_boveda_casino_id, 
                         billetes_casino_id: element_billete.id,
                         cantidad: $(`#mesa_billete_conteo_efectivo_${element_billete.id}`).val() == "" ? 0 : parseFloat($(`#mesa_billete_conteo_efectivo_${element_billete.id}`).val())
                     }
@@ -756,6 +899,128 @@
                 });
 
        
+        });
+    }
+
+    function viewResultadosMesas(group_cierre_boveda_casino_id,sede_id) {
+        let currentGroup = {!! $group_cierre_boveda_casinos !!}.find( i => i.id == group_cierre_boveda_casino_id )
+        let sede = {!! $sedes !!}.find( i => i.id == sede_id )
+       
+        let timerInterval 
+        let payload = {
+            _token: $("meta[name='csrf-token']").attr("content"),
+            id: group_cierre_boveda_casino_id
+        }
+        setLoading(timerInterval)
+        $.ajax({
+            url: "{{ route('operaciones_mesas_casinos.list') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+
+
+                clearInterval(timerInterval)
+
+                let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
+                let html = ``;
+                html += `
+                <div class="table-responsive mt-3">
+                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                        <thead style="background-color:#ccc;"  >
+                            <tr>
+                                <th class="text-center text-uppercase font-weight-bold" > MESAS </th>
+                                <th class="text-center text-uppercase font-weight-bold" > DROP</th>
+                                <th class="text-center text-uppercase font-weight-bold" > REPOSICIONES </th>
+                                <th class="text-center text-uppercase font-weight-bold" > SOBRANTES </th>
+                                <th class="text-center text-uppercase font-weight-bold" > RESULTADOS </th>
+                            </tr>
+                        </thead>
+                        <tbody>`
+                            let sum_current_fill_total = 0
+                            let sum_current_cred_total = 0
+                            let sum_current_conteo_total = 0
+                            let sum_current_resultado_total = 0
+                            mesas_casinos.forEach(mesa => {
+                                
+                                let current_fill_1 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "fill_1" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_fill_2 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "fill_2" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_fill_3 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "fill_3" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_fill_cierre = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "fill_cierre" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_fill_total = parseFloat(current_fill_1)+parseFloat(current_fill_2)+parseFloat(current_fill_3)+parseFloat(current_fill_cierre)
+                                    sum_current_fill_total = parseFloat(sum_current_fill_total) + parseFloat(current_fill_total)
+
+                                let current_cred_1 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "cred_1" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_cred_2 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "cred_2" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_cred_3 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "cred_3" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_cred_cierre = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "cred_cierre" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let current_cred_total = parseFloat(current_cred_1)+parseFloat(current_cred_2)+parseFloat(current_cred_3)+parseFloat(current_cred_cierre)
+                                    sum_current_cred_total = parseFloat(sum_current_cred_total) + parseFloat(current_cred_total)
+                                
+                                let current_conteo_1 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "conteo_1" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.billete_name);}, 0)
+                                let current_conteo_2 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "conteo_2" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.billete_name);}, 0)
+                                let current_conteo_cierre = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "conteo_cierre" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.billete_name);}, 0)
+                                let current_conteo_total = parseFloat(current_conteo_1)+parseFloat(current_conteo_2)+parseFloat(current_conteo_cierre)
+                                    sum_current_conteo_total = parseFloat(sum_current_conteo_total) + parseFloat(current_conteo_total)
+
+                                let current_resultado_subtotal = parseFloat(current_conteo_total)+parseFloat(current_cred_total)-parseFloat(current_fill_total)
+                                    sum_current_resultado_total = parseFloat(sum_current_resultado_total) + parseFloat(current_resultado_subtotal)
+
+
+                                 
+
+                                html += `
+                                <tr>
+                                    <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${mesa.name}" >
+                                    </td>               
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${current_conteo_total}" > 
+                                    </td>
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${current_fill_total}" > 
+                                    </td>
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${current_cred_total}" > 
+                                    </td>
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold ${current_resultado_subtotal < 0 ? 'bg-rojo' : 'bg-verde'} " value="$ ${current_resultado_subtotal}" > 
+                                    </td>
+                                </tr>`
+                                });
+                    html +=`
+                            <tr>
+                                <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL GENERAL" >
+                                </td>               
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${sum_current_conteo_total}" > 
+                                </td>
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${sum_current_fill_total}" > 
+                                </td>
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold " value="$ ${sum_current_cred_total}" > 
+                                </td>
+                                <td class="font-weight-bold" style="background-color:#ccc;"  >
+                                    <input id="current_resultado_total" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold ${sum_current_resultado_total < 0 ? 'bg-rojo-oscuro' : 'bg-verde-oscuro'} " value="$ ${sum_current_resultado_total}" > 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12" style="margin-top:20px">
+                        <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
+                    </div>
+                </div>`
+                Swal.fire({
+                    title: `Resustados Mesas <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                    width: "95%",
+                    html: html
+                }) 
+                    
+            }
         });
     }
    
