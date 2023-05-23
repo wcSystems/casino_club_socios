@@ -165,6 +165,7 @@
                 let btns = ``;
                     btns +=`<a class="btn btn-blue m-5" onclick="viewOperacion(${row.id},${row.sede_id})"  > Operaciones </a>`
                     btns +=`<a class="btn btn-info m-5" onclick="viewEfectivo(${row.id},${row.sede_id})" > Efectivo </a>`
+                    btns +=`<a class="btn btn-blue m-5" onclick="viewPropina(${row.id},${row.sede_id})" > Propina </a>`
                     btns +=`</div>`
                 return btns;
             }
@@ -918,7 +919,6 @@
             data: payload,
             success: function (res) {
 
-
                 clearInterval(timerInterval)
 
                 let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
@@ -933,6 +933,7 @@
                                 <th class="text-center text-uppercase font-weight-bold" > REPOSICIONES </th>
                                 <th class="text-center text-uppercase font-weight-bold" > SOBRANTES </th>
                                 <th class="text-center text-uppercase font-weight-bold" > RESULTADOS </th>
+                                <th class="text-center text-uppercase font-weight-bold" > PROPINAS </th>
                             </tr>
                         </thead>
                         <tbody>`
@@ -940,6 +941,7 @@
                             let sum_current_cred_total = 0
                             let sum_current_conteo_total = 0
                             let sum_current_resultado_total = 0
+                            let sum_propina_total = 0
                             mesas_casinos.forEach(mesa => {
                                 
                                 let current_fill_1 = res.list.filter( i => i.mesas_casino_id == mesa.id && i.tipo == "fill_1" ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
@@ -966,7 +968,9 @@
                                     sum_current_resultado_total = parseFloat(sum_current_resultado_total) + parseFloat(current_resultado_subtotal)
 
 
-                                 
+                                let propina = res.list_propinas.find( i => i.mesas_casino_id == mesa.id )
+                                    propina = ( propina == undefined ) ? 0 : parseFloat(propina.cantidad)
+                                    sum_propina_total = parseFloat(sum_propina_total) + parseFloat(propina)
 
                                 html += `
                                 <tr>
@@ -984,6 +988,9 @@
                                     </td>
                                     <td class="font-weight-bold bg-gris"  >
                                         <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold ${current_resultado_subtotal < 0 ? 'bg-rojo' : 'bg-verde'} " value="$ ${current_resultado_subtotal}" > 
+                                    </td>
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${propina}" > 
                                     </td>
                                 </tr>`
                                 });
@@ -1004,6 +1011,9 @@
                                 <td class="font-weight-bold" style="background-color:#ccc;"  >
                                     <input id="current_resultado_total" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold ${sum_current_resultado_total < 0 ? 'bg-rojo-oscuro' : 'bg-verde-oscuro'} " value="$ ${sum_current_resultado_total}" > 
                                 </td>
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold " value="$ ${sum_propina_total}" > 
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -1022,6 +1032,121 @@
                     
             }
         });
+    }
+
+    function viewPropina(group_cierre_boveda_casino_id,sede_id) {
+        let currentGroup = {!! $group_cierre_boveda_casinos !!}.find( i => i.id == group_cierre_boveda_casino_id )
+        let sede = {!! $sedes !!}.find( i => i.id == sede_id )
+       
+        let timerInterval 
+        let payload = {
+            _token: $("meta[name='csrf-token']").attr("content"),
+            id: group_cierre_boveda_casino_id
+        }
+        setLoading(timerInterval)
+        $.ajax({
+            url: "{{ route('propina_mesa_casinos.list') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+
+                clearInterval(timerInterval)
+
+                let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
+                let html = ``;
+                html += `
+                <div class="table-responsive mt-3">
+                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                        <thead style="background-color:#ccc;"  >
+                            <tr>
+                                <th class="text-center text-uppercase font-weight-bold" > MESAS </th>
+                                <th class="text-center text-uppercase font-weight-bold" > MONTO</th>
+                            </tr>
+                        </thead>
+                        <tbody>`
+                            let sum_current_propina_total = 0
+                            mesas_casinos.forEach(mesa => {
+
+                                let current = res.list.find( i =>  i.mesas_casino_id == mesa.id )
+                                let id = ( current == undefined ) ? 0 : parseFloat(current.id)
+                                let cantidad = ( current == undefined ) ? "" : parseFloat(current.cantidad)
+                                    sum_current_propina_total = sum_current_propina_total + cantidad
+
+                                html += `
+                                <tr>
+                                    <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${mesa.name}" >
+                                    </td>               
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input data-db="${id}" value="${cantidad}" id="${group_cierre_boveda_casino_id}-${mesa.id}-propina" onchange="savePropina(this)" onkeyup="validChangePropina(this)" data-sede_id="${sede_id}" data-group_cierre_boveda_casino_id="${group_cierre_boveda_casino_id}" data-mesa_id="${mesa.id}" data-mesa_name="${mesa.name}"  type="number" class="form-control p-0 m-auto text-center border-0 font-weight-bold"  > 
+                                    </td>
+                                </tr>`
+                                });
+                    html +=`
+                            <tr>
+                                <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL GENERAL" >
+                                </td>               
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="sum_current_propina_total" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${sum_current_propina_total}" > 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12" style="margin-top:20px">
+                        <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
+                    </div>
+                </div>`
+                Swal.fire({
+                    title: `Propinas Mesas <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                    width: "95%",
+                    html: html
+                }) 
+                    
+            }
+        });
+    }
+    function validChangePropina(params){
+        let dataset = params.dataset
+        let cantidad = params.value
+        let sum_global = 0
+        let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == dataset.sede_id )
+        mesas_casinos.forEach(element => {
+            let monto_mesa = $(`#${dataset.group_cierre_boveda_casino_id}-${element.id}-propina`).val() == "" ? 0 : $(`#${dataset.group_cierre_boveda_casino_id}-${element.id}-propina`).val()
+                sum_global = parseFloat(sum_global) + parseFloat(monto_mesa)
+        });
+        $(`#sum_current_propina_total`).val(`$ ${sum_global}`)
+    }
+    function savePropina(params){
+
+        let dataset = params.dataset
+        let cantidad = params.value
+
+        let payload = {
+            _token: $("meta[name='csrf-token']").attr("content"),
+            group_cierre_boveda_casino_id: dataset.group_cierre_boveda_casino_id, 
+            id: { id: !dataset.db ? 0 : dataset.db },
+            data: {
+                group_cierre_boveda_casino_id: dataset.group_cierre_boveda_casino_id, 
+                mesas_casino_id: dataset.mesa_id,
+                cantidad: ( params.value == "" ) ? 0 : params.value
+            }
+        }
+        $.ajax({
+            url: "{{ route('propina_mesa_casinos.store') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+                if(res.type === 'success' && res.current_item ){
+                    params.dataset.db = res.current_item.id
+                }
+
+            }
+        });
+        
     }
    
 

@@ -396,6 +396,12 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'conteo_efectivo_boveda_casinos.update',
         'destroy' => 'conteo_efectivo_boveda_casinos.destroy'
     ]);
+    Route::resource('propina_mesa_casinos', 'Propina_mesa_casinosController')->names([
+        'index' => 'propina_mesa_casinos',
+        'create' => 'propina_mesa_casinos.create',
+        'update' => 'propina_mesa_casinos.update',
+        'destroy' => 'propina_mesa_casinos.destroy'
+    ]);
 
     Route::resource('device_hikvision_facial_casinos', 'Device_hikvision_facial_casinosController')->names([
         'index' => 'device_hikvision_facial_casinos',

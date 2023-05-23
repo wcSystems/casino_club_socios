@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Group_cierre_boveda;
+use App\Models\Propina_mesa_casino;
 use Illuminate\Support\Facades\DB;
-use App\Models\Operaciones_mesas_casino;
 
 use Illuminate\Http\Request;
 
-class Operaciones_mesas_casinosController extends Controller
+class Propina_mesa_casinosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,9 +37,9 @@ class Operaciones_mesas_casinosController extends Controller
      */
     public function store(Request $request)
     {
-        $current_item = Operaciones_mesas_casino::updateOrCreate($request->id,$request->data);
+        $current_item = Propina_mesa_casino::updateOrCreate($request->id,$request->data);
         if($current_item){
-            return response()->json([ 'type' => 'success', 'current_item' => $current_item ]);
+            return response()->json([ 'type' => 'success']);
         }else{
             return response()->json([ 'type' => 'error']);
         }
@@ -91,23 +92,12 @@ class Operaciones_mesas_casinosController extends Controller
 
     public function list(Request $request)
     {
-  
-
-    
-        $list = DB::table('operaciones_mesas_casinos')
-                        ->selectRaw('operaciones_mesas_casinos.*, billetes_casinos.name AS billete_name, fichas_casinos.name AS ficha_name')
-                        ->where("group_cierre_boveda_casino_id","=",$request["id"])
-                        ->leftjoin('billetes_casinos', 'operaciones_mesas_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
-                        ->leftjoin('fichas_casinos', 'operaciones_mesas_casinos.fichas_casino_id', '=', 'fichas_casinos.id')
-                        ->get();
-
-        $list_propinas = DB::table('propina_mesa_casinos')
+        $list = DB::table('propina_mesa_casinos')
         ->selectRaw('propina_mesa_casinos.*, mesas_casinos.name AS mesa_name')
         ->where("group_cierre_boveda_casino_id","=",$request["id"])
         ->join('mesas_casinos', 'propina_mesa_casinos.mesas_casino_id', '=', 'mesas_casinos.id')
         ->get();
-
-
-        return response()->json([ 'list' => $list, 'list_propinas' => $list_propinas, ]);
+    
+        return response()->json([ 'list' => $list ]);
     }
 }
