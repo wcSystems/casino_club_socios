@@ -156,4 +156,31 @@ class Cierre_mesasController extends Controller
             "aaData" => $query
         ));
     }
+
+    public function list(Request $request)
+    {
+  
+
+        $list_archings = DB::table('conteo_arching_boveda_casinos')
+            ->selectRaw('conteo_arching_boveda_casinos.*, fichas_casinos.name AS ficha_name')
+            ->where("group_cierre_boveda_id","=",$request["id"])
+            ->join('fichas_casinos', 'conteo_arching_boveda_casinos.fichas_casino_id', '=', 'fichas_casinos.id')
+            ->get();
+
+        $list_drops = DB::table('conteo_drop_boveda_casinos')
+            ->selectRaw('conteo_drop_boveda_casinos.*, billetes_casinos.name AS billete_name')
+            ->where("group_cierre_boveda_id","=",$request["id"])
+            ->join('billetes_casinos', 'conteo_drop_boveda_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+            ->get();
+
+        $list_stacks = DB::table('stack_casinos')
+            ->selectRaw('stack_casinos.*, fichas_casinos.name AS ficha_name')
+            ->join('fichas_casinos', 'stack_casinos.fichas_casino_id', '=', 'fichas_casinos.id')
+            ->get();
+
+       
+
+
+        return response()->json([ 'list_archings' => $list_archings,'list_drops' => $list_drops, 'list_stacks' => $list_stacks ]);
+    }
 }

@@ -52,10 +52,8 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Sede</th>
-                        <th>Ventanillas ( Cajas )</th>
-                        <th>Acciones ( Modulos )</th>
-                        <th>Cuadros ( Vistas )</th>
-                        <th>Reporte Final ( Cierre )</th>
+                        <th>DROP / ARQUEO</th>
+                        <th>Reporte Final ( Resultado Mesas )</th>
                     </tr>
                 </thead>
             </table>
@@ -154,21 +152,8 @@
             render: function ( data,type, row  ) {
                 let btns = ``;
                     btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-yellow m-5" > Caja </a>`
-                    btns +=`</div>`
-                return btns;
-            }
-        },
-        {
-            render: function ( data,type, row  ) {
-                let btns = ``;
-                    btns +=`<div class="text-center">`
                     btns +=`<a class="btn btn-blue m-5" onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" > Drop </a>`
                     btns +=`<a class="btn btn-info m-5" onclick="viewArch(${row.id},${row.sede_id})" > Arqueo </a>`
-                    btns +=`<a class="btn btn-blue m-5" > Fichas </a>`
-                    btns +=`<a class="btn btn-info m-5" onclick="viewEfectivo(${row.id},${row.sede_id})" > Efectivo </a>`
-                    btns +=`<a class="btn btn-blue m-5" > Operaciones </a>`
-                    btns +=`<a class="btn btn-info m-5" > Libro I & E </a>`
                     btns +=`</div>`
                 return btns;
             }
@@ -177,24 +162,13 @@
             render: function ( data,type, row  ) {
                 let btns = ``;
                     btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-gray m-5" > Comparativo </a>`
-                    btns +=`<a class="btn btn-gray m-5" > Mesas </a>`
-                    btns +=`<a class="btn btn-gray m-5" > Fichas </a>`
-                    btns +=`<a class="btn btn-gray m-5" > Sedes </a>`
-                    btns +=`</div>`
-                return btns;
-            }
-        },
-        {
-            render: function ( data,type, row  ) {
-                let btns = ``;
-                    btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-danger m-5" > Ver / Imprimir </a>`
+                    btns +=`<a class="btn btn-danger m-5" onclick="viewResultadosMesas(${row.id},${row.sede_id})" > Ver / Imprimir </a>`
                     btns +=`</div>`
                 return btns;
             }
         },
     ],"group_name")
+
 
     /* OPCION N2 - DROP */
     function viewDrop(id,sede_id,extra) {
@@ -572,55 +546,7 @@
                             html += `
 
 
-                            <div class="my-5 p-0 mx-0">
-                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle  d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
-                        <thead style="background-color:paleturquoise;"  >
-                            <tr>
-                                <th colspan="${fichas_casinos.length+2}" class="text-center text-uppercase font-weight-bold" > DIFERENCIA GLOBAL </th>
-                            </tr>
-                            <tr>
-                                <th class="text-center text-uppercase font-weight-bold" > ARQUEO </th>
-                                <th class="text-center text-uppercase font-weight-bold" > $ FICHAS </th>
-                                <th class="text-center text-uppercase font-weight-bold" > N° FICHAS </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="BANCADA" > 
-                                </td>
-                                <td class="font-weight-bold bg-gris"  >
-                                    <input id="sala_bancada_monto" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
-                                </td>
-                                <td class="font-weight-bold bg-gris"  >
-                                    <input id="sala_bancada_cantidad" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="0" > 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="CIERRE" > 
-                                </td>
-                                <td class="font-weight-bold bg-gris"  >
-                                    <input id="sala_cierre_monto" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
-                                </td>
-                                <td class="font-weight-bold bg-gris"  >
-                                    <input id="sala_cierre_cantidad" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="0" > 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="DIFERENCIA" > 
-                                </td>
-                                <td class="font-weight-bold bg-gris"  >
-                                    <input id="sala_diferencia_monto" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
-                                </td>
-                                <td class="font-weight-bold bg-gris"  >
-                                    <input id="sala_diferencia_cantidad" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="0" > 
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    </div>
+                         
 
                     <div class="col-sm-12" style="margin-top:20px">
                         <button onclick="saveArch(${id},${sede_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
@@ -825,211 +751,110 @@
         });
     }
 
-    /* OPCION N5 - EFECTIVO */
-    function viewEfectivo(id,sede_id) {
-        let currentGroup = {!! $group_cierre_bovedas !!}.find( i => i.id == id )
+    //vista
+    function viewResultadosMesas(group_cierre_boveda_id,sede_id) {
+        let currentGroup = {!! $group_cierre_bovedas !!}.find( i => i.id == group_cierre_boveda_id )
         let sede = {!! $sedes !!}.find( i => i.id == sede_id )
        
         let timerInterval 
         let payload = {
             _token: $("meta[name='csrf-token']").attr("content"),
-            id: id
+            id: group_cierre_boveda_id
         }
         setLoading(timerInterval)
         $.ajax({
-            url: "{{ route('conteo_efectivo_boveda_casinos.list') }}",
+            url: "{{ route('cierre_mesas.list') }}",
             type: "POST",
             data: payload,
             success: function (res) {
-
-
+                
                 clearInterval(timerInterval)
 
-                let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
+                let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
                 let html = ``;
                 html += `
                 <div class="table-responsive mt-3">
                     <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
-                        <thead style="background-color:paleturquoise;"  >
+                        <thead style="background-color:#ccc;"  >
                             <tr>
-                                <th class="text-center text-uppercase font-weight-bold" > Efectivo </th>`
-                                billetes_casinos.forEach(billete => {
-                                    html += `<td class="font-weight-bold text-left" style="background-color:paleturquoise;font-size:12px !important"> $ ${ billete.name } </td>`
-                                });
-                                html += `
-                                <th class="text-center text-uppercase font-weight-bold" > TOTAL </th>
+                                <th class="text-center text-uppercase font-weight-bold" > MESAS </th>
+                                <th class="text-center text-uppercase font-weight-bold" > DROP</th>
+                                <th class="text-center text-uppercase font-weight-bold" > ARQUEO ( REPOSICIONES / SOBRANTES ) </th>
+                                <th class="text-center text-uppercase font-weight-bold" > RESULTADOS </th>
                             </tr>
                         </thead>
-                        <tbody>
-                                <tr>
-                                    <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:paleturquoise;"> 
-                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$" >
-                                    </td>`
-                                    billetes_casinos.forEach(billete => {
-                                        let current = res.list.find( i =>  i.billetes_casino_id == billete.id )
-                                        let id = ( current == undefined ) ? 0 : parseFloat(current.id)
-                                        let cantidad = ( current == undefined ) ? "" : parseFloat(current.cantidad)
-                                        html += `
-                                        <td class="font-weight-bold" style="background-color:#EDEDED !important" >
-                                            <input type="hidden" id="id_conteo_efectivo_${billete.id}" value="${id}"  > 
-                                            <input  value="${cantidad}" id="mesa_billete_conteo_efectivo_${billete.id}" onkeyup="sumMesaBilleteTotalEfectivo(${billete.id},${billete.name},${sede_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
-                                        </td>`
-                                    });
-                                html += `
-                                        <td class="font-weight-bold bg-gris" >
-                                            <input id="total_mesa_conteo_efectivo" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:100px !important" value="$ 0 ( 0 )" > 
-                                        </td>
-                                </tr>
-                           
-                            <tr>
-                                <td colspan="${billetes_casinos.length}" class="font-weight-bold text-left d-flex align-items-center" style="background-color:paleturquoise;"> 
-                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
-                                </td>`
-                                
-                                billetes_casinos.forEach(billete => {
-                                    html += `
-                                    <td class="font-weight-bold bg-gris"  >
-                                        <input id="total_billete_conteo_efectivo_${billete.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0 ( 0 )" > 
-                                    </td>`
-                                });
-                                    html += `
-                                    <td class="font-weight-bold" style="background-color:paleturquoise;"  >
-                                        <input id="total_final_conteo_efectivo" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0 ( 0 )" > 
-                                    </td>
+                        <tbody>`
 
-                            
+                            let sum_drop_mesa_total = 0
+                            let sum_arqueo_mesa_total = 0
+                            let sum_stack_arching_mesa_total = 0
+                            mesas_casinos.forEach(mesa => {
+                                
+                                let drop_mesa = res.list_drops.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.billete_name);}, 0)
+                                    sum_drop_mesa_total = parseFloat(sum_drop_mesa_total) + parseFloat(drop_mesa)
+                               
+                                let stack_mesa = res.list_stacks.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let arching_mesa = res.list_archings.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let arqueo_mesa = parseFloat(stack_mesa) + parseFloat(arching_mesa)
+                                    sum_arqueo_mesa_total = parseFloat(sum_arqueo_mesa_total) + parseFloat(arqueo_mesa)
+                                
+                                let stack_arching_mesas = parseFloat(drop_mesa) + parseFloat(arqueo_mesa)
+                                    sum_stack_arching_mesa_total = parseFloat(sum_stack_arching_mesa_total) + parseFloat(stack_arching_mesas)
+
+                                html += `
+                                <tr>
+                                    <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${mesa.name}" >
+                                    </td>               
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${drop_mesa}" > 
+                                    </td>
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${arqueo_mesa}" > 
+                                    </td>
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold ${stack_arching_mesas < 0 ? 'bg-rojo' : 'bg-verde'}" value="$ ${stack_arching_mesas}" > 
+                                    </td>
+                                  
+                                </tr>`
+                                });
+                    html +=`
+                            <tr>
+                                <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL GENERAL" >
+                                </td>               
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold " value="$ ${sum_drop_mesa_total}" > 
+                                </td>
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${sum_arqueo_mesa_total}" > 
+                                </td>
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold ${sum_stack_arching_mesa_total < 0 ? 'bg-rojo-oscuro' : 'bg-verde-oscuro'}" value="$ ${sum_stack_arching_mesa_total}" > 
+                                </td>
+                              
+                              
                             </tr>
-                           
                         </tbody>
                     </table>
                     <div class="col-sm-12" style="margin-top:20px">
-                        <button onclick="saveEfectivo(${id},${sede_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `Conteo Efectivo <br />  Boveda ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `Resustados Mesas <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,
                     width: "95%",
                     html: html
                 }) 
-                    billetes_casinos.forEach(billete => {
-                        sumMesaBilleteTotalEfectivo(billete.id,billete.name,sede_id)
-                    })
-                //sumMesaALL(sede_id)
+                    
             }
         });
     }
-    function sumMesaBilleteTotalEfectivo(billete_id,billete_name,sede_id) {
+
     
-        let sumTotalMesas = 0
-        let sumTotalBilletes = 0
-        let sumTotalFinal = 0
-
-        let cantidad_mesaFinal = 0
-        let cantidad_billeteFinal = 0
-        let cantidadFinal = 0
-
-        let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
-
-                let cantidad_billete = $(`#mesa_billete_conteo_efectivo_${billete_id}`).val() == "" ? 0 : parseFloat($(`#mesa_billete_conteo_efectivo_${billete_id}`).val())
-                let precio_billete = parseFloat(billete_name)
-                let subtotal_billete = precio_billete*cantidad_billete
-                sumTotalMesas = sumTotalMesas+subtotal_billete
-                cantidad_mesaFinal = cantidad_mesaFinal+cantidad_billete
-      
-
-                    sumTotalBilletes = sumTotalBilletes+subtotal_billete
-                cantidad_billeteFinal = cantidad_billeteFinal+cantidad_billete
-           
-
-             
-
-
-
-
-
-
-            
-            $(`#total_billete_conteo_efectivo_${billete_id}`).val(`$ ${sumTotalBilletes} ( ${cantidad_billeteFinal} )`)
-
-
-
-
-
-            if( $(`#total_billete_conteo_efectivo_${billete_id}`).val() == "$ 0 ( 0 )" ){
-                $(`#total_billete_conteo_efectivo_${billete_id}`).removeClass("bg-verde-oscuro").addClass("bg-rojo-oscuro")
-            }else{
-                $(`#total_billete_conteo_efectivo_${billete_id}`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
-            }
-            
-          
-
-            if( $(`#mesa_billete_conteo_efectivo_${billete_id}`).val() == "" || $(`#mesa_billete_conteo_efectivo_${billete_id}`).val() == 0 ){
-                $(`#mesa_billete_conteo_efectivo_${billete_id}`).removeClass("bg-verde").addClass("bg-rojo")
-            }else{
-                $(`#mesa_billete_conteo_efectivo_${billete_id}`).removeClass("bg-rojo").addClass("bg-verde")
-            }
-
-                
-
-            billetes_casinos.forEach(element => {
-                let dividir = $(`#total_billete_conteo_efectivo_${element.id}`).val() == "" ? 0 : $(`#total_billete_conteo_efectivo_${element.id}`).val().slice(1).split("(")
-                    sumTotalFinal = sumTotalFinal+parseFloat(dividir[0])
-                    cantidadFinal = cantidadFinal+parseFloat(dividir[1])
-            });
-
-            global_sumTotalFinal = sumTotalFinal
-            $(`#total_mesa_conteo_efectivo`).val(`$ ${sumTotalFinal} ( ${cantidadFinal} )`)
-            $(`#total_final_conteo_efectivo`).val(`$ ${sumTotalFinal} ( ${cantidadFinal} )`)
-
-            if( $(`#total_mesa_conteo_efectivo`).val() == "$ 0 ( 0 )" ){
-                $(`#total_mesa_conteo_efectivo`).removeClass("bg-verde-oscuro").addClass("bg-rojo-oscuro")
-            }else{
-                $(`#total_mesa_conteo_efectivo`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
-            }
-            
-    }
-    function saveEfectivo(group_cierre_boveda_id,sede_id) {
-        let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
-        let total_registros = billetes_casinos.length
-        let countReset = 0
-
-        billetes_casinos.forEach(element_billete => {
-           
-                let payload = {
-                    _token: $("meta[name='csrf-token']").attr("content"),
-                    id: { id: $(`#id_conteo_efectivo_${element_billete.id}`).val() },
-
-                    group_cierre_boveda_id: group_cierre_boveda_id, 
-
-                    data: {
-                        group_cierre_boveda_id: group_cierre_boveda_id, 
-                        billetes_casino_id: element_billete.id,
-                        cantidad: $(`#mesa_billete_conteo_efectivo_${element_billete.id}`).val() == "" ? 0 : parseFloat($(`#mesa_billete_conteo_efectivo_${element_billete.id}`).val())
-                    }
-                }
-                $.ajax({
-                    url: "{{ route('conteo_efectivo_boveda_casinos.store') }}",
-                    type: "POST",
-                    data: payload,
-                    success: function (res) {
-                        if(res.type === 'success'){
-                            countReset = countReset+1
-                            $(`#mesa_billete_conteo_efectivo_${element_billete.id}`).replaceWith(`<div id="mesa_billete_conteo_efectivo_${element_billete.id}"><i class="fas fa-check-circle text-success fa-lg"></i></div>`)
-                            if( countReset == total_registros ){
-                                location.reload();
-                            }
-                        }
-
-                    }
-                });
-
-       
-        });
-    }
    
 
 </script>

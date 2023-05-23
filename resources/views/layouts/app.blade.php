@@ -293,21 +293,21 @@
                                 <span class="text-white">ARQUEO</span>
                             </a>
                         </li>
+                        <li id="cierre_mesas_nav" class="has-sub closed">
+                            <a href="{{ route('cierre_mesas') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DROP / ARQUEO ( NEW )</span>
+                            </a>
+                        </li>
                     @endif
 
                     <!-- DESARROLLADOR / ADMINISTRADOR / BOVEDA -->
                     @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 15 )
                         <li class="nav-header" style="color: #fff !important">MODULO BOVEDA</li>
-                        <li id="cierre_mesas_nav" class="has-sub closed">
-                            <a href="{{ route('cierre_mesas') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">CIERRE MESAS</span>
-                            </a>
-                        </li>
                         <li id="group_cierre_boveda_casinos_nav" class="has-sub closed">
                             <a href="{{ route('group_cierre_boveda_casinos') }}">
                                 <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">CIERRE BOVEDA</span>
+                                <span class="text-white">CIERRE MESAS</span>
                             </a>
                         </li>
                         <li class="nav-header" style="color: #fff !important">CONFIGURACION BOVEDA</li>
