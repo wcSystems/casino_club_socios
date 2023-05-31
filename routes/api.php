@@ -83,6 +83,7 @@ Route::post('/isapi/getMatches', 'isapiController@getMatches')->name('isapi.getM
 
 Route::post('/isapi/addOrUpdateEmployee', 'isapiController@addOrUpdateEmployee')->name('isapi.addOrUpdateEmployee');
 Route::post('/isapi/elimEmployee', 'isapiController@elimEmployee')->name('isapi.elimEmployee');
+Route::post('/isapi/getpicurl', 'isapiController@getpicurl')->name('isapi.getpicurl');
 
 
 Route::post('/isapi/uploadEmployees', 'isapiController@uploadEmployees')->name('isapi.uploadEmployees');

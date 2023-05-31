@@ -92,8 +92,7 @@
                         <th>Cedula</th>
                         <th>Nombre y Apellido</th>
                         <th>Fecha</th>
-                        <th>Hora de Marcaje ( INTERNO ) </th>
-                        <th>Hora de Marcaje ( EXTERNO ) </th>
+                        <th>Hora de Marcaje </th>
                     </tr>
                 </thead>
             </table>
@@ -115,18 +114,10 @@
             render: function ( data,type, row,all  ) { 
 
                     return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
-                            <a href='http://admin:${row.password}@${row.local}${row.pictureURL.slice(27)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
+                            <a onclick="viewPicI(this)" data-picurl="${row.pictureURL}" data-sede_id="${row.sede_id}" data-positions_name="${row.positions_name}" data-sedes_name="${row.sedes_name}" data-departments_name="${row.departments_name}" data-name="${row.name}" data-time="${row.time}" style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a></span>`
                     
             }
-        },
-        {
-            render: function ( data,type, row,all  ) { 
-
-                    return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
-                            <a href='http://admin:${row.password}@${row.pictureURL.slice(7)}' target='_blank' style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a>`
-                    
-            }
-        },
+        }
     ],"group_name_all")
     
     function getDataBiometrico(params) {
@@ -287,6 +278,48 @@
                 timerInterval = setInterval(() => { }, 100)
             },
         })
+    }
+
+
+
+    function viewPicI(params) {
+
+        let dataset = params.dataset
+        let urlPic = `/LOCALS${(dataset.picurl).split('LOCALS')[1]}`
+
+
+
+        let timerInterval 
+        setLoading(timerInterval)
+        $.ajax({
+            url: "{{ route('isapi.getpicurl') }}",
+            type: "POST",
+            data: { urlPic: urlPic, sede_id: dataset.sede_id },
+            success: function (res) {
+
+               
+                clearInterval(timerInterval)
+                if(res.type == "success" ){
+
+                  
+                    
+                    Swal.fire({
+                        title: ``,
+                        showConfirmButton: true,
+                        showCloseButton: true,
+                        width: '80em',
+                        confirmButtonText: 'CERRAR',
+                        html:  `
+                        <h5 class="font-weight-bold text-left">
+                        ${dataset.departments_name}, ${dataset.positions_name} | ${dataset.name} | ${dataset.sedes_name} | ${moment(dataset.time).format('YYYY-MM-DD, h:mm:ss a.')}
+                        </h5>
+                        <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;" width="100%" src="${res.img}">`
+                    }) 
+                }
+
+                
+            }
+        });
     }
 
 </script>

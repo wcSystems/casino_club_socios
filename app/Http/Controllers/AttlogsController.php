@@ -130,6 +130,10 @@ class AttlogsController extends Controller
                 attlogs.pictureURL, 
                 attlogs.time, 
                
+                device_hikvision_facial_casinos.local AS device_local,
+                device_hikvision_facial_casinos.public AS device_public,
+                device_hikvision_facial_casinos.password AS device_password,
+
                 STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date
             ')
             ->orWhere(function($query) use ($search){
@@ -158,6 +162,7 @@ class AttlogsController extends Controller
             ->join('departments', 'employees.department_id', '=', 'departments.id')
             ->join('positions', 'employees.position_id', '=', 'positions.id')
             ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
+            ->join('device_hikvision_facial_casinos', 'sedes.id', '=', 'device_hikvision_facial_casinos.sede_id')
             ->get();
 
             

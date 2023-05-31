@@ -142,7 +142,7 @@ class isapiController extends Controller
                 "position_id" => $request["position_id"],
             );
 
-            $current_item = Employee::updateOrCreate([ 'id' => $request["id"] ],$current_data);
+            $current_item = Employee::updateOrCreate([ 'employeeNo' => $request["employeeNo"] ],$current_data);
 
             
             if($current_item){
@@ -184,12 +184,11 @@ class isapiController extends Controller
                 $imgSendIMG = json_decode($imgSend->post($credentials->public."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
                     'auth' =>  ['admin', $credentials->password,'digest'],
                     'body' => json_encode([
-                        "faceURL"=> $request["originIMG"],
+                        "faceURL"=> "http://192.168.7.253:8000/public/employees/V25047058.jpg",
                         "faceLibType"=>"blackFD",
                         "FDID"=> "1",
                         "FPID"=> $request["employeeNo"]
                     ])])->getBody()->getContents(), TRUE);
-                    return response()->json([ 'imgSendIMG' => $imgSendIMG]);
 
     
 
@@ -291,6 +290,22 @@ class isapiController extends Controller
         
 
         return "0";
+    }
+
+    public function getpicurl(Request $request)
+    {
+
+        $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
+        $resC = new Client();
+        $current = $resC->get($credentials->public.$request->urlPic ,[
+            'headers' => ['Accept-Encoding' => 'gzip, deflate, br'],
+            'auth' =>  ['admin', $credentials->password,'digest']
+        ]);
+
+        $data = $current->getBody()->getContents();
+        $base64 = 'data:image/png;base64,' . base64_encode($data);
+       
+        return response()->json([ 'type' => 'success', 'img' => $base64 ]);
     }
 
 

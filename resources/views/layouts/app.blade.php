@@ -535,12 +535,15 @@
     <script src="{{ asset('js/filepond/filepond.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.2/axios.min.js" integrity="sha512-bHeT+z+n8rh9CKrSrbyfbINxu7gsBmSHlDCb3gUF1BjmjDzKhoKspyB71k0CIRBSjE5IVQiMMVBgCWjF60qsvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
-
+    <script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
 
 
 
     {{-- pasar estos script aparte para que sean globales --}}
     <script>
+
+const clientFilestack = filestack.init("AVqqom3AKTyQqKiPidHE3z");
+
 
 
 

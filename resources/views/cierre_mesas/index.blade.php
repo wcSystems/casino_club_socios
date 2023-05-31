@@ -795,7 +795,7 @@
                                
                                 let stack_mesa = res.list_stacks.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
                                 let arching_mesa = res.list_archings.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
-                                let arqueo_mesa = parseFloat(stack_mesa) + parseFloat(arching_mesa)
+                                let arqueo_mesa =  parseFloat(arching_mesa) - parseFloat(stack_mesa)
                                     sum_arqueo_mesa_total = parseFloat(sum_arqueo_mesa_total) + parseFloat(arqueo_mesa)
                                 
                                 let stack_arching_mesas = parseFloat(drop_mesa) + parseFloat(arqueo_mesa)
