@@ -97,13 +97,290 @@
                 }
 
                 html += `<a onclick="viewEmployees(${row.id})" style="color: var(--global-2)" class="btn btn-gray btn-icon btn-circle my-2 mx-3"><i class="fas fa-camera"></i></a>`;
-                
+                html += `<a onclick="ViewYearMonthGroupDepartment(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>`
+                    
                 return html;
             }
         },
     ])
 
+    function ViewYearMonthGroupDepartment(department_id) {
+            let timerInterval 
+            setLoading(timerInterval)
+            $.ajax({
+                url: "{{ route('schedule_templates.viewYearMonthGroupDepartment') }}",
+                type: "POST",
+                data: { department_id: department_id },
+                success: function (res) {
+                    clearInterval(timerInterval)
+                    if(res.schedules.length > 0){
+                        let html = ``;
+                            html += `<div class="col-sm-12" style="margin-top:20px">`;
 
+                            res.schedules.forEach(element => {
+                                html += `<button onclick="viewScheduleDepartment(${department_id},${element.year_month_group_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> ${ moment(element.month).format('MMMM')} ${element.year} </button>` 
+                            });
+
+                            html += `</div>`;
+                        Swal.fire({
+                            title: 'Horario',
+                            showConfirmButton: false,
+                            showCloseButton: false,
+                            html: html
+                        })
+                    }else{
+                        Swal.fire({
+                            showConfirmButton: true,
+                            showCloseButton: true,
+                            confirmButtonText: 'CERRAR',
+                            title: 'ERROR',
+                            text: 'Este empleado no tiene registros de horarios creados',
+                        })
+                    }
+                }
+            });
+        }
+
+
+        function viewScheduleDepartment(department_id,year_month_group_id) {
+            
+            
+            let dataUser = {!! $dataUser !!}
+            $.ajax({
+                url: "{{ route('schedule_templates.viewScheduleDepartment') }}",
+                type: "POST",
+                data: { department_id: department_id, year_month_group_id: year_month_group_id, sede_id: dataUser.sede_id },
+                success: function (resOne) {
+                   
+                    resOne.schedules.forEach(elementOne => {
+                        let appendHtml = ``
+                        $.ajax({
+                            url: "{{ route('schedule_templates.viewScheduleDepartamento') }}",
+                            type: "POST",
+                            data: { employeeNo: elementOne.employeeNo, schedule_template_id: elementOne.schedule_templates_id, year_month: `${elementOne.year}-${elementOne.month}` },
+                            success: function (res) {
+                                
+                                if(res.type == "success" ){
+                                    
+                                    let horarios = {!! $horario !!}
+                                    let horarioUniqueCurrent = res.employee_schedule.horario.split(',')
+                                        horarioUniqueCurrent = new Set(horarioUniqueCurrent);
+                                        horarioUniqueCurrent = [...horarioUniqueCurrent];
+                                    let days_in_month = (res.employee_schedule.marcajes).length;
+                                    let htmlTitle = ``;
+                                    let html = ``;
+                                        htmlTitle += `
+                                            <div id="horarioTitle" class="table-responsive">
+                                                <div class="col-12 mx-auto">
+                                                    <img id="imgUser" class="rounded-circle"  src='public/employees/${employeeNo}.jpg' onerror="this.onerror=null;this.src='public/users/null.jpg';" width="200" height="200" />
+                                                </div>
+                                                <div class="col-12 my-3"> Horario ${moment(res.employee_schedule.month).format('MMMM')} ${res.employee_schedule.year}
+                                                    ${ res.employee_schedule.name }
+                                                    ${ res.employee_schedule.departments_name }
+                                                </div>
+                                                <table  class="data-table-default-schedule table table-bordered table-td-valign-middle  d-inline mx-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
+                                                    <thead style="background-color:paleturquoise;">
+                                                        <tr>
+                                                            <th class="text-center text-uppercase " > Leyenda </th>
+                                                            <th class="text-center text-uppercase " > H. Entrada </th>
+                                                            <th class="text-center text-uppercase " > H. Salida </th>
+                                                            <th class="text-center text-uppercase " > H. Trabajo </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>`
+                                                        horarios.forEach(horarioItem => {
+                                                            if( horarioUniqueCurrent.find( i => i == horarioItem.id ) ){
+                                                                if( horarioItem.leyenda != "L" ){
+                                                                    htmlTitle += `
+                                                                    <tr>
+                                                                        <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                            ${ horarioItem.name }
+                                                                        </td>
+                                                                        <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                            ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).format('LT') }
+                                                                        </td>
+                                                                        <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                        ${ moment(year+"-"+month+"-"+'1'+" "+horarioItem.hora_entrada).add(horarioItem.hora_trabajo, 'h').format('LT') }
+                                                                        </td>
+                                                                        <td class="text-center" style="${horarioItem.leyenda == 'T1' ? 'background-color:#A9DFBF !important;font-size:12px !important' : horarioItem.leyenda == 'T2' ? 'background-color:#A9CCE3 !important;font-size:12px !important' : horarioItem.leyenda == 'L' ? 'background-color:#454545 !important;font-size:12px !important' : 'background-color:#EDEDED !important;font-size:12px !important' }" >
+                                                                            ${ horarioItem.hora_trabajo }
+                                                                        </td>`
+                                                                        htmlTitle += `
+                                                                    </tr>`
+                                                                }
+                                                            }
+                                                            
+                                                        });
+                                                        htmlTitle +=`
+                                                    </tbody>
+                                                </table>
+                                            </div>`;
+
+                                        html += `
+                                        <div class="table-responsive d-flex flex-column">
+                                            <table id="data-table-default-schedule-${res.employee_schedule.year}-${res.employee_schedule.month}" class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline mx-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
+                                                
+                                                <thead style="background-color:paleturquoise;" >
+                                                    <tr>
+                                                        <th class="text-center text-uppercase font-weight-bold">Dia</th>`;
+                                                        (res.employee_schedule.marcajes).forEach(elementMarcaje => {
+                                                            html += `<th class="text-center text-uppercase font-weight-bold"> ${ moment(res.employee_schedule.year+"-"+res.employee_schedule.month+"-"+elementMarcaje.dia).format('dd') }(${moment(res.employee_schedule.year+"-"+res.employee_schedule.month+"-"+elementMarcaje.dia).format('DD')}) </th>`;
+                                                        });
+                                                        html += `
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="idtbody">
+
+                                                </tbody>
+                                            </table>
+                                            </div>`
+
+
+
+                                            appendHtml += `
+                                            <tr>
+                                                <td class="font-weight-bold" style="background-color:paleturquoise;">Horario</td>`;
+                                                (res.employee_schedule.marcajes).forEach(elementMarcaje => {
+                                                    html += `<td style="color:#6C7FC7 !important" class="font-weight-bold" > ${elementMarcaje.turno} </td>`;
+                                                });
+                                                html += `
+                                            </tr>
+                                            <tr>
+                                                <td class="font-weight-bold" style="background-color:paleturquoise;">Entrada</td>`;
+                                                (res.employee_schedule.marcajes).forEach(elementMarcaje => {
+
+                                                    if( elementMarcaje.leyenda == "T1" ){
+                                                        let validMarcajeFirstT1 = ( elementMarcaje.status == "NO MARCO" ) ? "- - -" : moment(elementMarcaje.first).format('h:mm:ss a')
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT1 }</td>`;
+                                                    }
+                                                    if( elementMarcaje.leyenda == "T2" ){
+                                                        let validMarcajeFirstT2 = ( elementMarcaje.status == "NO MARCO" ) ? "- - -" : moment(elementMarcaje.last).format('h:mm:ss a')
+                                                        
+                                                        let validMarcajeFirstT2E = (res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ) ? moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first).format('h:mm:ss a') : "- - -"
+                                                            validMarcajeFirstT2E = ( validMarcajeFirstT2E == "Invalid date" ) ? "- - -" : validMarcajeFirstT2
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT2E }</td>`;
+                                                        
+                                                    }
+                                                    if( elementMarcaje.leyenda == "L" ){
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ elementMarcaje.turno }</td>`;
+                                                    }
+
+                                                });
+                                                html += `
+                                            </tr>
+                                            <tr>
+                                                <td class="font-weight-bold" style="background-color:paleturquoise;">Salida</td>`;
+                                                (res.employee_schedule.marcajes).forEach( (elementMarcaje, index) => {
+                                                
+
+                                                    if( elementMarcaje.leyenda == "T1" ){
+                                                        let validMarcajeFirstT1 = ( elementMarcaje.first == elementMarcaje.last ) ? "- - -" : moment(elementMarcaje.last).format('h:mm:ss a')
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT1 }</td>`;
+                                                    }
+                                                    if( elementMarcaje.leyenda == "T2" ){
+
+                                                        let validMarcajeFirstT2 = (res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ) ? moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first).format('h:mm:ss a') : "- - -"
+                                                            validMarcajeFirstT2 = ( validMarcajeFirstT2 == "Invalid date" ) ? "- - -" : validMarcajeFirstT2
+                                                        
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ validMarcajeFirstT2 }</td>`;
+                                                        
+                                                    }
+                                                    if( elementMarcaje.leyenda == "L" ){
+                                                        html += `<td class="text-uppercase font-weight-bold"> ${ elementMarcaje.turno }</td>`;
+                                                    }
+
+
+                                                });
+                                                html += `
+                                            </tr>
+                                            <tr>
+                                                <td class="font-weight-bold" style="background-color:paleturquoise"> Diferencia </td>`;
+                                    
+                                                (res.employee_schedule.marcajes).forEach( (elementMarcaje, index) => {
+                                                    if( elementMarcaje.leyenda == "T1" ){
+                                                        if( elementMarcaje.status == "NO MARCO" || elementMarcaje.first == elementMarcaje.last ){
+                                                            appendHtml += `<td class="text-uppercase font-weight-bold"> - - - </td>`;
+                                                        }else{
+
+                                                            let hora_marcada_entrada = moment(elementMarcaje.first)
+                                                            let hora_marcada_salida = moment(elementMarcaje.last)
+                                                            let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
+                                                            let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
+                                                            let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
+                                                            let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
+                                                            let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
+                                                            let total_plantilla = elementMarcaje.hora_trabajo*3600
+
+                                                            if( total_segundo_marcada > total_plantilla ){
+                                                                appendHtml += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> +${ Math.floor((total_segundo_marcada-total_plantilla) / 3600)+":"+Math.floor(((total_segundo_marcada-total_plantilla) / 60) % 60)+":"+(total_segundo_marcada-total_plantilla) % 60 }H</td>`;
+                                                            }
+                                                            if( total_segundo_marcada < total_plantilla ){
+                                                                appendHtml += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> -${ Math.floor((total_plantilla-total_segundo_marcada) / 3600)+":"+Math.floor(((total_plantilla-total_segundo_marcada) / 60) % 60)+":"+(total_plantilla-total_segundo_marcada) % 60 }H</td>`;
+                                                            }
+
+                                                        }
+                                                    }
+
+                                                    if( elementMarcaje.leyenda == "T2" ){
+                                                        let validMarcajeFirstT2 = (res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ) ? moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first).format('h:mm:ss a') : "- - -"
+                                                        
+                                                        if( elementMarcaje.status == "NO MARCO" || validMarcajeFirstT2 == "Invalid date" ){
+                                                            appendHtml += `<td class="text-uppercase font-weight-bold"> - - - </td>`;
+                                                        }else{
+
+                                                            let hora_marcada_entrada = moment(elementMarcaje.last)
+                                                            let hora_marcada_salida =   moment((res.employee_schedule.marcajes).find( i => i.date == moment(elementMarcaje.date).add('days', 1).format('YYYY-MM-DD') ).first)
+                                                            let duration_marcada = moment.duration(hora_marcada_entrada.diff(hora_marcada_salida))
+                                                            let horas_marcada = ( duration_marcada._data.hours < 0 )  ? (duration_marcada._data.hours*-1) * 3600 : (duration_marcada._data.hours) * 3600
+                                                            let minutos_marcada = ( duration_marcada._data.minutes < 0 )  ? (duration_marcada._data.minutes*-1) * 60 : (duration_marcada._data.minutes) * 60
+                                                            let segundos_marcada = ( duration_marcada._data.seconds < 0 )  ? (duration_marcada._data.seconds*-1) : (duration_marcada._data.seconds)
+                                                            let total_segundo_marcada = horas_marcada+minutos_marcada+segundos_marcada
+                                                            let total_plantilla = elementMarcaje.hora_trabajo*3600
+
+                                                            if( total_segundo_marcada > total_plantilla ){
+                                                                appendHtml += `<td style="color:#6CC773 !important" class="text-uppercase font-weight-bold"> +${ Math.floor((total_segundo_marcada-total_plantilla) / 3600)+":"+Math.floor(((total_segundo_marcada-total_plantilla) / 60) % 60)+":"+(total_segundo_marcada-total_plantilla) % 60 }H</td>`;
+                                                            }
+                                                            if( total_segundo_marcada < total_plantilla ){
+                                                                appendHtml += `<td style="color:#ff4040 !important" class="text-uppercase font-weight-bold"> -${ Math.floor((total_plantilla-total_segundo_marcada) / 3600)+":"+Math.floor(((total_plantilla-total_segundo_marcada) / 60) % 60)+":"+(total_plantilla-total_segundo_marcada) % 60 }H</td>`;
+                                                            }
+
+                                                        }
+                                                    }
+                                                    
+                                                    if( elementMarcaje.leyenda == "L" ){
+                                                        if( elementMarcaje.status == "MARCO" ){
+                                                            appendHtml += `<td class="text-uppercase font-weight-bold"> M </td>`;
+                                                        }else{
+                                                            appendHtml += `<td class="text-uppercase font-weight-bold"> ${ elementMarcaje.turno }</td>`;
+                                                        }
+                                                        
+                                                    }        
+                                                });
+                                            appendHtml += `
+                                            </tr>`;
+                                    
+                                    Swal.fire({
+                                        title: htmlTitle.trim(),
+                                        showConfirmButton: true,
+                                        showCloseButton: true,
+                                        width: "95%",
+                                        confirmButtonText: 'Ok',
+                                        html: html
+                                    }) 
+                                }
+
+                            }
+                        });
+                        $('#idtbody').append(appendHtml)
+                    });
+                }
+            });
+
+
+            
+
+
+        }
 
     function viewHorario(department_id) {
         $.ajax({

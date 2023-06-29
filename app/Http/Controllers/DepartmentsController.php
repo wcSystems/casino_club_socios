@@ -8,6 +8,7 @@ use App\Models\Position;
 use App\Models\Sex;
 use App\Models\Sede;
 use App\Models\Schedule_template;
+use App\Models\Horario;
 use Illuminate\Support\Facades\Auth;
 
 class DepartmentsController extends Controller
@@ -24,8 +25,9 @@ class DepartmentsController extends Controller
         $positions = Position::all();
         $sexs = Sex::all();
         $sedes = Sede::all();
+        $horario = Horario::all();
         $schedule_templates = Schedule_template::all();
-        return view('departments.index')->with('dataUser',$dataUser)->with('sedes',$sedes)->with('sexs',$sexs)->with('departments',$departments)->with('schedule_templates',$schedule_templates)->with('positions',$positions);
+        return view('departments.index')->with('horario',$horario)->with('dataUser',$dataUser)->with('sedes',$sedes)->with('sexs',$sexs)->with('departments',$departments)->with('schedule_templates',$schedule_templates)->with('positions',$positions);
     }
 
     /**
