@@ -14,17 +14,7 @@
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
     <div class="panel-heading ui-sortable-handle">
         <h4 class="panel-title"></h4>
-        <div class="panel-heading-btn">
-            <label  class="d-flex btn btn-1 btn-info m-0">
-                <input id="file_upload" type="file"/>
-                <i class="m-auto fa fa-lg fa-file"></i>
-            </label>
-        </div>
-        <div class="panel-heading-btn mx-2">
-            <label onclick="uploadFile()" class="d-flex btn btn-1 btn-info m-0">
-                <i class="m-auto fa fa-lg fa-arrow-up"></i>
-            </label>
-        </div>
+
         <div class="panel-heading-btn">
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
@@ -33,18 +23,34 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
-                <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <select id="search_sede_employees" class="form-control w-100">
-                            <option value="" selected >Todos las sedes</option>
-                            @foreach( $sedes as $item )
-                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                            @endforeach
-                        </select>
+            @if( Auth::user()->level_id == 1 )
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                    <div class="form-group w-100">
+                        <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                            <select id="search_sede_employees" class="form-control w-100">
+                                <option value="" selected >Todos las sedes</option>
+                                @foreach( $sedes as $item )
+                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                    <div class="form-group w-100">
+                        <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                            <select id="search_sede_employees" class="form-control w-100">
+                                @foreach( $sedes as $item )
+                                    @if( Auth::user()->sede_id ==  $item->id )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @endif
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
@@ -170,9 +176,9 @@
                     </div>
                     <div class="col-md-12 col-sm-12">
                         <div class="form-group row m-b-0">
-                            <label class=" text-lg-right col-form-label"> Fecha de Nacimiento <span class="text-danger"> *</span> </label>
+                            <label class=" text-lg-right col-form-label"> Fecha de Ingreso <span class="text-danger"> *</span> </label>
                             <div class="col-lg-12">
-                                <input required type="date" id="nacimiento" name="nacimiento" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Su fecha de nacimiento" >
+                                <input required type="date" id="nacimiento" name="nacimiento" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Su fecha de Ingreso" >
                                 <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                             </div>
                         </div>
@@ -191,20 +197,36 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12 col-sm-6">
-                        <div class="form-group row m-b-0">
-                            <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
-                            <div class="col-lg-12">
-                                <select required id="sede_id" class="form-control w-100">
-                                    <option value="" selected >Todos las Sedes</option>
-                                    @foreach( $sedes as $item )
-                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                    @if( Auth::user()->level_id == 1 )
+                        <div class="col-md-12 col-sm-6">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select id="sede_id" class="form-control w-100">
+                                        <option value="" selected >Todos las sedes</option>
+                                        @foreach( $sedes as $item )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="col-md-12 col-sm-6">
+                            <div class="form-group row m-b-0">
+                                <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select id="sede_id" class="form-control w-100">
+                                        @foreach( $sedes as $item )
+                                            @if( Auth::user()->sede_id ==  $item->id )
+                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="col-md-12 col-sm-6">
                         <div class="form-group row m-b-0">
                             <label class=" text-lg-right col-form-label"> Departamentos <span class="text-danger"> *</span> </label>
@@ -245,7 +267,7 @@
                 showConfirmButton: false,
                 html: html
             })
-
+            $("#nacimiento").val(moment().format('YYYY-MM-DD'))
             if(id){
                 let current={!! $employees !!}.find(i=>i.id===id)
                 $("#employeeNo").attr("disabled", true)
@@ -258,8 +280,9 @@
                 $("#position_id").val(current.position_id)
                 $("#imgUser").attr("src",`public/employees/${current.employeeNo}.jpg`)
             }
-
+            
             validateForm()
+            
         }
 
 
@@ -812,25 +835,43 @@
             { data: 'employeeNo' },
             {
                 render: function ( data,type, row  ) {
-                    return `
-                        <a onclick="elim(${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
-                        <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>
-                        <a onclick="ViewYearMonthGroup(${row.id},'${row.employeeNo}')" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
-                    `;
+                    let dataUser = {!! $dataUser !!}
+                    let html = ``
+
+                    if( dataUser.level_id <= 2 ){
+                        html += `<a onclick="elim(${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
+                                 <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>`
+                    }
+
+                    html += `<a onclick="ViewYearMonthGroup(${row.id},'${row.employeeNo}')" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>`
+                    
+                    return html;
+                        
                 }
             },
-        ])
+        ],"group_name")
 
         function previewIMG(employee_id) {
             let current={!! $employees !!}.find(i=>i.id===employee_id)
+            let position={!! $positions !!}.find(i=>i.id==current.position_id)
+            let department={!! $departments !!}.find(i=>i.id==current.department_id)
+            let sex={!! $sexs !!}.find(i=>i.id==current.sex_id)
+            let sede={!! $sedes !!}.find(i=>i.id==current.sede_id)
+
             Swal.fire({
                         showConfirmButton: true,
                         showCloseButton: true,
                         confirmButtonText: 'CERRAR',
-                        html: `<div>
-                            <div class="py-3 font-weight-bold">${current.name}</div>
-                            <img  src='public/employees/${current.employeeNo}.jpg' width="100%" onerror="this.onerror=null;this.src='public/users/null.jpg';" />
+                      
+                        html: `<div class="col-xs-12" >
+                            <img class="rounded-circle" src='public/employees/${current.employeeNo}.jpg' width="300" height="300" onerror="this.onerror=null;this.src='public/users/null.jpg';" />
+                            <div class="font-weight-bold">${ current.employeeNo }</div>
+                            <div class="font-weight-bold">${current.name}</div>
+                            
+                            <div>Ingreso: ${ current.nacimiento }, Departamento: ${ department.name }, Cargo: ${ position.name }, Sexo: ${ sex.name }</div>
+                            <div class="font-weight-bold">Sede: ${sede.name}</div>
                         </div>`
+
                     })
         }
 

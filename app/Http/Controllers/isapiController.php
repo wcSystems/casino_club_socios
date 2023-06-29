@@ -11,6 +11,7 @@ use App\Models\Employee;
 use App\Models\Ayb_command;
 use App\Models\Device_hikvision_facial_casino;
 use File;
+use Illuminate\Support\Facades\Storage;
 
 use GuzzleHttp\Exception\RequestException;
 
@@ -39,10 +40,21 @@ class isapiController extends Controller
                     "startTime"=> $request->init,
                     "endTime"=> $request->year."-".$request->month."-".$request->end."T23:59:00+0:00"
                 ]])])->getBody()->getContents(), TRUE)["AcsEvent"]["InfoList"];
+
         foreach ($records as $key => $value) { 
+
+            $resIMGBASE64 = new Client();
+            $current = $resIMGBASE64->get( $value["pictureURL"] ,[
+                'headers' => ['Accept-Encoding' => 'gzip, deflate, br'],
+                'auth' =>  ['admin', $credentials->password,'digest']
+            ]);
+            $imgString = $current->getBody()->getContents();
+            $base64 = 'data:image/png;base64,'.base64_encode($imgString);
+            $value["pictureURL"] = $base64;
             Attlog::where( "serialNo","=",$value["serialNo"] )->delete(); 
             Attlog::create($value); 
         }
+
         return response()->json([ 'type' => 'success']);
       
         
@@ -50,7 +62,12 @@ class isapiController extends Controller
     public function getMatches(Request $request)
     {
         $credentials = Device_hikvision_facial_casino::where("sede_id","=",$request->sede_id)->first();
-        $attlogs = Attlog::where('time','LIKE','%'.$request->year."-".$request->month.'%')->orderBy('time', 'desc')->first();
+
+        $attlogs = Attlog::where([
+            ['time','LIKE','%'.$request->year."-".$request->month.'%'],
+            ["employees.sede_id","=",$request->sede_id]
+        ])->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')->orderBy('time', 'desc')->first();
+
         if( !is_null($attlogs) ){
             try {
                 $resC = new Client();
@@ -125,6 +142,8 @@ class isapiController extends Controller
                         "beginTime"=>"2023-01-01T00:00:00",
                         "endTime"=>"2023-12-31T23:59:59"
                     ],
+                    "userVerifyMode" => "face",
+                    "gender" =>  $request['sex_id'] == 1 ? "male" : "female",
                     "PersonInfoExtends"=>[[
                         "value"=> "{sexo:".$request['sex_id'].",departamento:".$request['department_id'].",cargo:".$request['position_id'].",sede:".$request['sede_id'].",nacimiento:".$request['nacimiento']."}"
                     ]],
@@ -184,7 +203,7 @@ class isapiController extends Controller
                 $imgSendIMG = json_decode($imgSend->post($credentials->public."/ISAPI/Intelligent/FDLib/FaceDataRecord?format=json" ,[
                     'auth' =>  ['admin', $credentials->password,'digest'],
                     'body' => json_encode([
-                        "faceURL"=> "http://192.168.7.253:8000/public/employees/V25047058.jpg",
+                        "faceURL"=> $request["originIMG"],
                         "faceLibType"=>"blackFD",
                         "FDID"=> "1",
                         "FPID"=> $request["employeeNo"]

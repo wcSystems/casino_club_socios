@@ -128,8 +128,10 @@ class AttlogsController extends Controller
                 sexs.name AS sexs_name, 
                 attlogs.serialNo, 
                 attlogs.pictureURL, 
-                attlogs.time, 
-               
+                attlogs.time,
+
+                sedes.name AS group_name, 
+
                 device_hikvision_facial_casinos.local AS device_local,
                 device_hikvision_facial_casinos.public AS device_public,
                 device_hikvision_facial_casinos.password AS device_password,
@@ -155,7 +157,7 @@ class AttlogsController extends Controller
                     $query->where('employees.sex_id', '=', $search_sex_attlogs);
                 }else{};
             })
-            /* ->groupBy('date','employeeNoString','employees.name') */
+            ->groupBy('employeeNoString','employees.name')
             ->whereBetween('attlogs.time', [$start, $end])
             ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
             ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
@@ -183,6 +185,46 @@ class AttlogsController extends Controller
             "iTotalDisplayRecords" => $totalRecordswithFilter,
             "aaData" => $query
         ));
+    }
+
+    public function marcajesEmployee(Request $request){
+      
+        $query = DB::table('attlogs')
+            ->selectRaw('
+                attlogs.employeeNoString, 
+                employees.name, 
+                employees.sede_id, 
+                sedes.name AS sedes_name, 
+                employees.department_id, 
+                departments.name AS departments_name ,  
+                employees.position_id, 
+                positions.name AS positions_name, 
+                employees.sex_id, 
+                sexs.name AS sexs_name, 
+                attlogs.serialNo, 
+                attlogs.pictureURL, 
+                attlogs.time,
+                sedes.name AS group_name, 
+                device_hikvision_facial_casinos.local AS device_local,
+                device_hikvision_facial_casinos.public AS device_public,
+                device_hikvision_facial_casinos.password AS device_password,
+                STR_TO_DATE(attlogs.time, "%Y-%m-%D") AS date
+            ')
+            ->join('employees', 'attlogs.employeeNoString', '=', 'employees.employeeNo')
+            ->join('sedes', 'employees.sede_id', '=', 'sedes.id')
+            ->join('departments', 'employees.department_id', '=', 'departments.id')
+            ->join('positions', 'employees.position_id', '=', 'positions.id')
+            ->join('sexs', 'employees.sex_id', '=', 'sexs.id')
+            ->join('device_hikvision_facial_casinos', 'sedes.id', '=', 'device_hikvision_facial_casinos.sede_id')   
+            ->where('attlogs.employeeNoString','=',$request['employeeNoString'])     
+            ->orderBy('attlogs.serialNo','desc')    
+            ->get();
+
+            if($query){
+                return response()->json([ 'type' => 'success', 'query' => $query]);
+            }else{
+                return response()->json([ 'type' => 'error']);
+            }
     }
 
 }

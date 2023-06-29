@@ -16,7 +16,7 @@
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
-                        <th>Leyenda</th>
+                        <th>Jornada</th>
                         <th>Hora de entrada</th>
                         <th>Horas de trabajo</th>
                         <th>Acciones</th>
@@ -47,11 +47,16 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-6 col-sm-12">
                             <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Leyenda <span class="text-danger"> *</span> </label>
+                                <label class=" text-lg-right col-form-label"> Jornada <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="text" id="leyenda" name="leyenda" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la leyenda" >
+                                    <select required id="leyenda" class="form-control w-100">
+                                        <option value="" selected >Todas las Jornadas</option>
+                                        <option value="T1" > Diurno </option>
+                                        <option value="T2" > Nocturno </option>
+                                    </select>
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
@@ -121,7 +126,12 @@
             }
         },
         { data: 'name' },
-        { data: 'leyenda' },
+        {
+            render: function ( data,type, row,all  ) {
+                let leyenda = row.leyenda == "T1" ? "Diurno" : row.leyenda == "T2" ? "Nocturno" : "Indefinido"
+                return leyenda;
+            }
+        },
         { data: 'hora_entrada' },
         { data: 'hora_trabajo' },
         {

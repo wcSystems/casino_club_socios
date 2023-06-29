@@ -91,6 +91,62 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Sexos <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="sex_id" class="form-control w-100">
+                                    <option value="" selected >Todos los Sexos</option>
+                                    @foreach( $sexs as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="sede_id" class="form-control w-100">
+                                    <option value="" selected >Todos las Sedes</option>
+                                    @foreach( $sedes as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Departamentos <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="department_id" class="form-control w-100">
+                                    <option value="" selected >Todos los Departamentos</option>
+                                    @foreach( $departments as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6">
+                        <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Cargos <span class="text-danger"> *</span> </label>
+                            <div class="col-lg-12">
+                                <select required id="position_id" class="form-control w-100">
+                                    <option value="" selected >Todos los Cargos</option>
+                                    @foreach( $positions as $item )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                            </div>
+                        </div>
+                    </div>
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="guardar(${id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         </div>
@@ -103,6 +159,11 @@
             $("#name").val(current.name)
             $("#password").removeAttr('required');
             $("#level").val(current.level_id)
+
+            $("#sede_id").val(current.sede_id)
+            $("#department_id").val(current.department_id)
+            $("#position_id").val(current.position_id)
+            $("#sex_id").val(current.sex_id)
         }
         validateForm()
     }
@@ -118,6 +179,13 @@
                 payload.append('email',$('#email').val())
                 
                 payload.append('level_id',$('#level').val())
+                
+                payload.append('sede_id',$('#sede_id').val())
+                payload.append('department_id',$('#department_id').val())
+                payload.append('position_id',$('#position_id').val())
+                payload.append('sex_id',$('#sex_id').val())
+
+
                 payload.append('image',$('#image').prop('files')[0])
 
                 

@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use App\User;
+use App\Models\Sex;
+use App\Models\Department;
+use App\Models\Position;
+use App\Models\Sede;
 use App\Models\Level;
 
 class UsersController extends Controller
@@ -17,7 +21,16 @@ class UsersController extends Controller
     {
         $users = User::all();
         $levels = Level::all();
-        return view('users.index')->with('users',$users)->with('id',Auth::id())->with('levels',$levels);;
+        $sexs = Sex::all();
+        $departments = Department::all();
+        $positions = Position::all();
+        $sedes = Sede::all();
+
+        return view('users.index')->with('users',$users)->with('id',Auth::id())->with('levels',$levels)
+                    ->with('sexs',$sexs)
+                    ->with('departments',$departments)
+                    ->with('positions',$positions)
+                    ->with('sedes',$sedes);
     }
 
     /**
@@ -47,6 +60,10 @@ class UsersController extends Controller
                     "email" => $request["email"],
                     "name" => $request["name"],
                     "level_id" => $request["level_id"],
+                    "sede_id" => $request["sede_id"],
+                    "department_id" => $request["department_id"],
+                    "position_id" => $request["position_id"],
+                    "sex_id" => $request["sex_id"],
                     "password" => bcrypt($request["password"]),
                 );
             }
@@ -55,6 +72,10 @@ class UsersController extends Controller
                     "email" => $request["email"],
                     "name" => $request["name"],
                     "level_id" => $request["level_id"],
+                    "sede_id" => $request["sede_id"],
+                    "department_id" => $request["department_id"],
+                    "position_id" => $request["position_id"],
+                    "sex_id" => $request["sex_id"],
                 );
             }
 

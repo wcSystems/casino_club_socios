@@ -18,7 +18,7 @@
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
                     <label for="start" class="text-left d-block"> Desde </label>
                         <div class="form-check" style="justify-content: left !important">
-                            <input required class="form-control w-100" type="date" name="start" value="2022-01-01" id="start" >
+                            <input required class="form-control w-100" type="date" name="start" value="" id="start" >
                         </div>
                     </div>
                 </div>
@@ -28,25 +28,42 @@
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
                     <label for="end" class="text-left d-block"> Hasta </label>
                         <div class="form-check" style="justify-content: left !important">
-                            <input required class="form-control w-100" type="date" name="end"  value="2023-12-31"id="end" >
+                            <input required class="form-control w-100" type="date" name="end"  value="" id="end" >
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
-                <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <select id="search_sede_attlogs" class="form-control w-100">
-                            <option value="" selected >Todos las sedes</option>
-                            @foreach( $sedes as $item )
-                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                            @endforeach
-                        </select>
+        @if( Auth::user()->level_id == 1 )
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                    <div class="form-group w-100">
+                        <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                            <select id="search_sede_attlogs" class="form-control w-100">
+                                <option value="" selected >Todos las sedes</option>
+                                @foreach( $sedes as $item )
+                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                    <div class="form-group w-100">
+                        <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                            <select id="search_sede_attlogs" class="form-control w-100">
+                                @foreach( $sedes as $item )
+                                    @if( Auth::user()->sede_id ==  $item->id )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
                 <div class="form-group w-100">
                     <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
@@ -88,11 +105,9 @@
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Cedula</th>
                         <th>Nombre y Apellido</th>
-                        <th>Fecha</th>
-                        <th>Hora de Marcaje </th>
+                        <th>Marcajes </th>
                     </tr>
                 </thead>
             </table>
@@ -104,21 +119,22 @@
 @section('js')
 <script>
     $('#attlogs_nav').removeClass("closed").addClass("active").addClass("expand")
-
+    
+    $("#start").val(moment().format('YYYY-MM-DD'))
+    $("#end").val( moment().add(1, 'days').format('YYYY-MM-DD'))
+    
     dataTableAttlog("{{route('attlogs.service')}}",[
-        { data: 'serialNo' },
         { data: 'employeeNoString' },
         { data: 'name' },
-        { data: 'date' },
         {
             render: function ( data,type, row,all  ) { 
 
-                    return `<span class='font-weight-bold'>Marcaje: </span>` +moment(row.time).format('h:mm:ss a')+`
-                            <a onclick="viewPicI(this)" data-picurl="${row.pictureURL}" data-sede_id="${row.sede_id}" data-positions_name="${row.positions_name}" data-sedes_name="${row.sedes_name}" data-departments_name="${row.departments_name}" data-name="${row.name}" data-time="${row.time}" style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a></span>`
+                    return `<span class='font-weight-bold'>Marcajes: </span>`+`
+                            <a onclick="viewPicI(this)" data-employeeNoString="${row.employeeNoString}"  style='color: var(--global-2)' class='btn btn-yellow btn-icon btn-circle'><i class='fas fa-camera'></i></a></span>`
                     
             }
         }
-    ],"group_name_all")
+    ],"group_name")
     
     function getDataBiometrico(params) {
         Swal.fire({
@@ -139,20 +155,36 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-12">
-                            <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
-                                <div class="col-lg-12">
-                                    <select required id="sede_id" class="form-control w-100" >
-                                        <option value="" selected disabled >Selecione una Sede</option>
-                                        @foreach( $sedes as $item )
-                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                        @if( Auth::user()->level_id == 1 )
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12">
+                                        <select id="sede_id" class="form-control w-100">
+                                            <option value="" selected >Todos las sedes</option>
+                                            @foreach( $sedes as $item )
+                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12">
+                                        <select id="sede_id" class="form-control w-100">
+                                            @foreach( $sedes as $item )
+                                                @if( Auth::user()->sede_id ==  $item->id )
+                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="col-sm-12" style="margin-top:20px">
                             <button onclick="getSyncBiometric()" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Sincronizar </button>
                         </div>
@@ -283,43 +315,64 @@
 
 
     function viewPicI(params) {
-
         let dataset = params.dataset
-        let urlPic = `/LOCALS${(dataset.picurl).split('LOCALS')[1]}`
-
-
-
-        let timerInterval 
+        let timerInterval
         setLoading(timerInterval)
-        $.ajax({
-            url: "{{ route('isapi.getpicurl') }}",
+        
+        $.ajax({ 
+            url: "{{route('attlogs.marcajesEmployee')}}",
             type: "POST",
-            data: { urlPic: urlPic, sede_id: dataset.sede_id },
+            data: { employeeNoString: dataset.employeenostring },
             success: function (res) {
+                if( res.type == "success" ){
+                    clearInterval(timerInterval)
+                            let html = ``
+                            html += `
+                            <div id="carrousel" class="carousel slide" data-ride="carousel">
+                                
+                                <div class="carousel-inner">`;
+                                (res.query).forEach( (element2, index2 ) => {
+                                    html += `
+                                        <div class="carousel-item ${ ( index2 == 0 ) ? 'active' : '' }">
+                                            <h5 class="font-weight-bold text-left">
+                                                ${element2.departments_name}, ${element2.positions_name} | ${element2.name} | ${element2.sedes_name} | ${moment(element2.time).format('YYYY-MM-DD, h:mm:ss a.')}
+                                            </h5>
+                                            <img class="d-block w-100 main-img" src="${element2.pictureURL}" alt="slide" >
+                                            <h6 class="font-weight-bold text-left">
+                                                ( ${index2+1} DE ${(res.query).length} ) 
+                                            </h6>
+                                        </div>`
+                                })
+                                html += `
+                                </div>
+                                <a class="carousel-control-prev" href="#carrousel" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carrousel" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                            `;
 
-               
-                clearInterval(timerInterval)
-                if(res.type == "success" ){
 
-                  
-                    
                     Swal.fire({
                         title: ``,
                         showConfirmButton: true,
                         showCloseButton: true,
                         width: '80em',
                         confirmButtonText: 'CERRAR',
-                        html:  `
-                        <h5 class="font-weight-bold text-left">
-                        ${dataset.departments_name}, ${dataset.positions_name} | ${dataset.name} | ${dataset.sedes_name} | ${moment(dataset.time).format('YYYY-MM-DD, h:mm:ss a.')}
-                        </h5>
-                        <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;" width="100%" src="${res.img}">`
+                        html: html
+                    
                     }) 
                 }
-
-                
             }
         });
+      
+                    
+        
+              
     }
 
 </script>

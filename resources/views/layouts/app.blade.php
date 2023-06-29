@@ -197,66 +197,8 @@
                         </a>
                     </li>
 
-                    <!-- DESARROLLADOR / ADMINISTRADOR -->
+                    <!-- MODULO RRHH -->  
                     @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 )
-                        <li class="nav-header" style="color: #fff !important">MODULO CUMPLIMIENTO</li>
-                        <li id="clients_nav" class="has-sub closed">
-                            <a href="{{ route('clients') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">CLIENTES</span>
-                            </a>
-                        </li>
-                        <li class="nav-header" style="color: #fff !important">MODULO ESTADISTICA</li>
-                        <li id="counting_table_stadistics_nav" class="has-sub closed">
-                            <a href="{{ route('counting_table_stadistics') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">CONTEO DE MESAS</span>
-                            </a>
-                        </li>
-                    @endif
-
-                    <!-- DESARROLLADOR / ADMINISTRADOR / MAQUINAS -->
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 11 )
-                        <li class="nav-header" style="color: #fff !important">MODULO MAQUINAS</li>
-                        <li id="global_warehouses_nav" class="has-sub closed">
-                            <a href="{{ route('global_warehouses') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">ALMACEN GLOBAL</span>
-                            </a>
-                        </li>
-                        <li id="all_machines_nav" class="has-sub closed">
-                            <a href="{{ route('all_machines') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">NOVEDADES</span>
-                            </a>
-                        </li>
-                    @endif
-
-                    <!-- DESARROLLADOR / ADMINISTRADOR -->
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 )
-                        <li class="nav-header" style="color: #fff !important">MODULO A&B</li>
-                        <li id="ayb_commands_nav" class="has-sub closed">
-                            <a href="{{ route('ayb_commands') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">COMANDAS</span>
-                            </a>
-                        </li>
-                        <li id="ayb_items_nav" class="has-sub closed">
-                            <a href="{{ route('ayb_items') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">MENÚS</span>
-                            </a>
-                        </li>
-                        <li id="ayb_records_nav" class="has-sub closed">
-                            <a href="{{ route('ayb_records') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">HISTORICO</span>
-                            </a>
-                        </li>
-                    @endif
-
-                    <!-- DESARROLLADOR / ADMINISTRADOR / RRHH -->
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 12 )
                         <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
                         <li id="attlogs_nav" class="has-sub closed">
                             <a href="{{ route('attlogs') }}">
@@ -276,33 +218,111 @@
                                 <span class="text-white">HORARIOS</span>
                             </a>
                         </li>
+                        <li class="nav-header" style="color: #fff !important">CONFIGURACIONES RRHH</li>
+                        <li id="departments_nav" class="has-sub closed">
+                            <a href="{{ route('departments') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DEPARTAMENTOS</span>
+                            </a>
+                        </li>
+                        <li id="positions_nav" class="has-sub closed">
+                            <a href="{{ route('positions') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CARGOS</span>
+                            </a>
+                        </li>
+                        <li id="horarios_nav" class="has-sub closed">
+                            <a href="{{ route('horarios') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HORAS DE ENTRADA</span>
+                            </a>
+                        </li>
                     @endif
 
-                    <!-- DESARROLLADOR / ADMINISTRADOR / CECOM -->
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 6 )
+                    <!-- MODULO CECOM -->
+                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 3 )
                         <li class="nav-header" style="color: #fff !important">MODULO CECOM</li>
-                        <li id="group_drops_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('group_drops_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">DROP</span>
-                            </a>
-                        </li>
-                        <li id="group_archings_casinos_nav" class="has-sub closed">
-                            <a href="{{ route('group_archings_casinos') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">ARQUEO</span>
-                            </a>
-                        </li>
                         <li id="cierre_mesas_nav" class="has-sub closed">
                             <a href="{{ route('cierre_mesas') }}">
                                 <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">DROP / ARQUEO ( NEW )</span>
+                                <span class="text-white">DROP / ARQUEO</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
+                        <li id="attlogs_nav" class="has-sub closed">
+                            <a href="{{ route('attlogs') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">MARCAJES</span>
+                            </a>
+                        </li>
+                        <li id="employees_nav" class="has-sub closed">
+                            <a href="{{ route('employees') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">EMPLEADOS</span>
+                            </a>
+                        </li>
+                        <li id="year_month_groups_nav" class="has-sub closed">
+                            <a href="{{ route('year_month_groups') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HORARIOS</span>
+                            </a>
+                        </li>
+                        <li id="departments_nav" class="has-sub closed">
+                            <a href="{{ route('departments') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">DEPARTAMENTOS</span>
                             </a>
                         </li>
                     @endif
 
-                    <!-- DESARROLLADOR / ADMINISTRADOR / BOVEDA -->
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 15 )
+                    <!-- DESARROLLADOR -->
+                    @if( Auth::user()->level_id == 1  )
+                        <li class="nav-header" style="color: #fff !important">MODULO CUMPLIMIENTO</li>
+                        <li id="clients_nav" class="has-sub closed">
+                            <a href="{{ route('clients') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CLIENTES</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO ESTADISTICA</li>
+                        <li id="counting_table_stadistics_nav" class="has-sub closed">
+                            <a href="{{ route('counting_table_stadistics') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CONTEO DE MESAS</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO MAQUINAS</li>
+                        <li id="global_warehouses_nav" class="has-sub closed">
+                            <a href="{{ route('global_warehouses') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">ALMACEN GLOBAL</span>
+                            </a>
+                        </li>
+                        <li id="all_machines_nav" class="has-sub closed">
+                            <a href="{{ route('all_machines') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">NOVEDADES</span>
+                            </a>
+                        </li>
+                        <li class="nav-header" style="color: #fff !important">MODULO A&B</li>
+                        <li id="ayb_commands_nav" class="has-sub closed">
+                            <a href="{{ route('ayb_commands') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">COMANDAS</span>
+                            </a>
+                        </li>
+                        <li id="ayb_items_nav" class="has-sub closed">
+                            <a href="{{ route('ayb_items') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">MENÚS</span>
+                            </a>
+                        </li>
+                        <li id="ayb_records_nav" class="has-sub closed">
+                            <a href="{{ route('ayb_records') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">HISTORICO</span>
+                            </a>
+                        </li>
                         <li class="nav-header" style="color: #fff !important">MODULO BOVEDA</li>
                         <li id="group_cierre_boveda_casinos_nav" class="has-sub closed">
                             <a href="{{ route('group_cierre_boveda_casinos') }}">
@@ -317,7 +337,6 @@
                                 <span class="text-white">VENTANILLA INICIAL</span>
                             </a>
                         </li>
-                        
                         <li id="metodo_pago_nav" class="has-sub closed">
                             <a href="{{ route('metodo_pagos') }}">
                                 <i class="fas fa-circle text-white"></i>
@@ -348,10 +367,6 @@
                                 <span class="text-white">BILLETES</span>
                             </a>
                         </li>
-                    @endif
-
-                    <!-- DESARROLLADOR -->                    
-                    @if( Auth::user()->level_id == 1 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES A&B</li>
                         <li id="group_menus_nav" class="has-sub closed">
                             <a href="{{ route('group_menus') }}">
@@ -371,10 +386,6 @@
                                 <span class="text-white">DESTINOS</span>
                             </a>
                         </li>
-                    @endif
-
-                    <!-- DESARROLLADOR / MAQUINAS -->  
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 11 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACION MAQUINAS</li>
                         <li id="rooms_nav" class="has-sub closed">
                             <a href="{{ route('rooms') }}">
@@ -430,32 +441,6 @@
                                 <span class="text-white">JUEGOS</span>
                             </a>
                         </li>
-                    @endif
-
-                    <!-- DESARROLLADOR / RRHH -->  
-                    @if( Auth::user()->level_id == 1 || Auth::user()->level_id == 12 )
-                        <li class="nav-header" style="color: #fff !important">CONFIGURACIONES RRHH</li>
-                        <li id="departments_nav" class="has-sub closed">
-                            <a href="{{ route('departments') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">DEPARTAMENTOS</span>
-                            </a>
-                        </li>
-                        <li id="positions_nav" class="has-sub closed">
-                            <a href="{{ route('positions') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">CARGOS</span>
-                            </a>
-                        </li>
-                        <li id="horarios_nav" class="has-sub closed">
-                            <a href="{{ route('horarios') }}">
-                                <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">HORAS DE ENTRADA</span>
-                            </a>
-                        </li>
-                    @endif
-
-                    @if( Auth::user()->level_id == 1 )
                         <li class="nav-header" style="color: #fff !important">CONFIGURACIONES CASINO</li>
                         
                         <li id="horas_casinos_nav" class="has-sub closed">
@@ -972,7 +957,6 @@ const clientFilestack = filestack.init("AVqqom3AKTyQqKiPidHE3z");
                     responsive: true,
                     processing: true,
                     lengthChange: true,
-                    order: [[0, 'desc']],
                     columns: columns,
                     drawCallback: function (settings) {
                         if(group_name_all){
@@ -980,9 +964,10 @@ const clientFilestack = filestack.init("AVqqom3AKTyQqKiPidHE3z");
                             var rows = api.rows({ page: 'current' }).nodes();
                             var last = null;
                             api.rows({ page: 'current' }).data().each(function (data, i) {
-                                if (last !== data.date) {
-                                    $(rows).eq(i).before(`<tr class="authDate"><td colspan="${columns.length}">FECHA: ` + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dd') +" ) </span>"+ '</td></tr>');
-                                    last = data.date;
+                                if (last !== data.group_name) {
+                                    $(rows).eq(i).before(`<tr class="group_name font-weight-bold"><td colspan="${columns.length}">` + data.group_name + `</td></tr>`);
+                                    /* $(rows).eq(i).before(`<tr class="authDate"><td colspan="${columns.length}">FECHA: ` + data.date + "<span class='font-weight-bold'> ( "+ moment(data.date).format('dd') +" ) </span>"+ '</td></tr>'); */
+                                    last = data.group_name;
                                 }
                             });
                         }

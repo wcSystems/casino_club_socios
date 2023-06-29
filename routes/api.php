@@ -36,6 +36,7 @@ Route::get('/ayb_items/service', 'Ayb_itemsController@service')->name('ayb_items
 Route::get('/ayb_commands/service', 'Ayb_commandsController@service')->name('ayb_commands.service');
 Route::get('/ayb_records/service', 'Ayb_recordsController@service')->name('ayb_records.service');
 Route::get('/attlogs/service', 'AttlogsController@service')->name('attlogs.service');
+Route::post('/attlogs/marcajesEmployee', 'AttlogsController@marcajesEmployee')->name('attlogs.marcajesEmployee');
 Route::get('/all_machines/service', 'All_machinesController@service')->name('all_machines.service');
 Route::get('/brand_machines/service', 'Brand_machinesController@service')->name('brand_machines.service');
 Route::get('/model_machines/service', 'Model_machinesController@service')->name('model_machines.service');

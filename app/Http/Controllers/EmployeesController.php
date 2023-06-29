@@ -13,6 +13,7 @@ use App\Models\Schedule_template;
 use App\Models\Ayb_command;
 use App\Models\Horario;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeesController extends Controller
 {
@@ -23,6 +24,7 @@ class EmployeesController extends Controller
      */
     public function index()
     {
+        $dataUser = Auth::user();
         $employees = Employee::all();
         $sexs = Sex::all();
         $departments = Department::all();
@@ -37,6 +39,7 @@ class EmployeesController extends Controller
             ->with('departments',$departments)
             ->with('positions',$positions)
             ->with('horario',$horario)
+            ->with('dataUser',$dataUser)
             ->with('sedes',$sedes);
     }
 
@@ -133,7 +136,7 @@ class EmployeesController extends Controller
 
 
         /* QUERY FILTER */
-        $query = Employee::select(DB::raw('employees.*, sedes.name AS sedes_name, departments.name AS departments_name, positions.name AS positions_name, sexs.name AS sexs_name'))
+        $query = Employee::select(DB::raw('employees.*, sedes.name AS sedes_name, departments.name AS departments_name, sedes.name AS group_name, positions.name AS positions_name, sexs.name AS sexs_name'))
                     ->orWhere(function($query) use ($search){
                         $query->orWhere('employees.name','LIKE','%'.$search.'%');
                     })

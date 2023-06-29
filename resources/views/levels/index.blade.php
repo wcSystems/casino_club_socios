@@ -81,7 +81,7 @@
     dataTable("{{route('levels.service')}}",[
         {
             render: function ( data,type, row,all  ) {
-                return all.row+1;
+                return row.id;
             }
         },
         { data: 'name' },

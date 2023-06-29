@@ -1,16 +1,13 @@
 @extends('layouts.app')
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
-    <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
-        
-            <button onclick="createSchedule()" class="d-flex btn btn-1 btn-danger">
-                <i class="m-auto fa fa-lg fa-plus"></i>
-            </button>
+<div class="panel-heading ui-sortable-handle">
+        <h4 class="panel-title"></h4>
+        <div class="panel-heading-btn">
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
-        
-
+        </div>
     </div>
     <div class="panel-body">
         <div class="table-responsive">
@@ -90,21 +87,18 @@
         { data: 'name' },
         {
             render: function ( data,type, row  ) {
-                return `
-                    <a onclick="elim('departments',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
-                    <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>
-                    <a onclick="viewSchedule(${row.id})" style="color: var(--global-2)" class="btn btn-dark btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
 
-                    
-                    <a onclick="viewEmployees(${row.id})" style="color: var(--global-2)" class="btn btn-gray btn-icon btn-circle my-2 mx-3"><i class="fas fa-camera"></i></a>
+                let dataUser = {!! $dataUser !!}
+                let html = ``
 
+                if( dataUser.level_id <= 2 ){
+                     html += `<a onclick="elim('departments',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
+                              <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>`
+                }
 
-
-
-                    <a onclick="addHorario(${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
-                    <a onclick="viewHorario(${row.id})" style="color: var(--global-2)" class="btn btn-red btn-icon btn-circle m-2"><i class="fas fa-calendar"></i></a>
-                    
-                `;
+                html += `<a onclick="viewEmployees(${row.id})" style="color: var(--global-2)" class="btn btn-gray btn-icon btn-circle my-2 mx-3"><i class="fas fa-camera"></i></a>`;
+                
+                return html;
             }
         },
     ])
@@ -311,13 +305,23 @@
     function viewEmployees(id) {
         let current={!! $departments !!}.find(i=>i.id===id)
         let html = `<div class="row d-flex justify-content-center">`;
+
+        let dataUser = {!! $dataUser !!}
+            current.employees = ( dataUser.level_id > 1 ) ? current.employees.filter( i => i.sede_id == dataUser.sede_id ) : current.employees
+
             current.employees.forEach(element => {
                 let position={!! $positions !!}.find(i=>i.id==element.position_id)
+                let department={!! $departments !!}.find(i=>i.id==element.department_id)
+                let sex={!! $sexs !!}.find(i=>i.id==element.sex_id)
+                let sede={!! $sedes !!}.find(i=>i.id==element.sede_id)
                 html += `
                 <div class=" col-md-4 col-sm-6 col-xs-12" >
                     <img class="rounded-circle" src='public/employees/${element.employeeNo}.jpg' width="150" height="150" onerror="this.onerror=null;this.src='public/users/null.jpg';" />
+                    <div class="font-weight-bold">${ element.employeeNo }</div>
                     <div class="font-weight-bold">${element.name}</div>
-                    <span>Cargo: ${ position.name }</span>
+                    
+                    <div>Ingreso: ${ element.nacimiento }, Departamento: ${ department.name }, Cargo: ${ position.name }, Sexo: ${ sex.name }</div>
+                    <div class="font-weight-bold">Sede: ${sede.name}</div>
                 </div>
                 `
             });

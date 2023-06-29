@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Models\Position;
+use App\Models\Sex;
+use App\Models\Sede;
 use App\Models\Schedule_template;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentsController extends Controller
 {
@@ -16,10 +19,13 @@ class DepartmentsController extends Controller
      */
     public function index()
     {
+        $dataUser = Auth::user();
         $departments = Department::with("employees")->get();
         $positions = Position::all();
+        $sexs = Sex::all();
+        $sedes = Sede::all();
         $schedule_templates = Schedule_template::all();
-        return view('departments.index')->with('departments',$departments)->with('schedule_templates',$schedule_templates)->with('positions',$positions);
+        return view('departments.index')->with('dataUser',$dataUser)->with('sedes',$sedes)->with('sexs',$sexs)->with('departments',$departments)->with('schedule_templates',$schedule_templates)->with('positions',$positions);
     }
 
     /**

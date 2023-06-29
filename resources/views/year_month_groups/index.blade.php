@@ -14,31 +14,32 @@
 @section('content')
 <div class="panel panel-inverse" data-sortable-id="table-basic-1">
     <div class="panel-heading ui-sortable-handle d-flex justify-content-between">
-        @if(  strncasecmp(Auth::user()->name, "horario", 7) !== 0 )
-            <a class="d-flex btn btn-danger" onclick="viewGroup()"  >
+        @if( $dataUser->level_id == 1 )
+        <a class="d-flex btn btn-danger" onclick="viewGroup()"  >
                 BORRAR
             </a>
+        @else
+            <a class="d-flex btn btn-secondary"  >
+                BORRAR
+            </a>
+        @endif
+           
             <button onclick="modal('Crear')" class="d-flex btn btn-1 btn-success">
                 <i class="m-auto fa fa-lg fa-plus"></i>
             </button>
-        @endif
-        @if(  strncasecmp(Auth::user()->name, "horario", 7) === 0 )
-            <a class="d-flex btn "   >
-                CREACION DE HORARIOS
-            </a>
-        @endif
+       
     </div>
     <div class="panel-body">
+    <div class="row">
+           
+        </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Departamento</th>
-                        <th>Año y Mes</th>
-                        <th>Vista Semanal</th>
-                        <th>Vista Quincenal</th>
-                        <th>Vista Mensual</th>
+                        <th>Horarios</th>
                     </tr>
                 </thead>
             </table>
@@ -140,45 +141,79 @@
                 return all.row+1;
             }
         },
-        { data: 'department_name' },
+        { data: 'name' },
         {
             render: function ( data,type, row  ) {
-                return row.year+" "+moment(row.month).format('MMMM')
+                let btns = ``;
+                    btns +=`<a class="btn btn-blue m-5" onclick="viewYearMonth(${row.id})" > VER </a>`
+                return btns;
             }
         },
-        {
-            render: function ( data,type, row  ) {
-                let month = row.month = ( row.month <= 9 ? "0"+row.month : row.month )
-                let day_end=moment(month).daysInMonth();
-                return `
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},1,7)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">1</a>
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},8,14)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">2</a>
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},15,21)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">3</a>
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},22,${day_end})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">4</a>
-                `;
-            }
-        },
-        {
-            render: function ( data,type, row  ) {
-                let month = row.month = ( row.month <= 9 ? "0"+row.month : row.month )
-                let day_end=moment(month).daysInMonth();
-                return `
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},1,15)" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">1</a>
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},16,${day_end})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">2</a>
-                `;
-            }
-        },
-        {
-            render: function ( data,type, row  ) {
-                let month = row.month = ( row.month <= 9 ? "0"+row.month : row.month )
-                let day_end=moment(month).daysInMonth();
-                return `
-                    <a onclick="addHorario(${row.id},${row.department_id},${row.year},${month},1,${day_end})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2">1</a>
-                `;
-            }
-        },
-    ],"group_all",1,"asc")
+    ])
 
+    function viewSQM(id,department_id,year,month,day_end) {
+        let html = ``
+            html +=`<a class="btn btn-blue m-5" onclick="viewModeHorario(${id},${department_id},${year},${month},${day_end},'Semanal')"  > Semanal </a>`
+            html +=`<a class="btn btn-info m-5" onclick="viewModeHorario(${id},${department_id},${year},${month},${day_end},'Quincenal')" > Quincenal </a>`
+            html +=`<a class="btn btn-blue m-5" onclick="viewModeHorario(${id},${department_id},${year},${month},${day_end},'Mensual')" > Mensual </a>`
+    
+        
+        Swal.fire({
+            title: `Seleccione el tipo de Horario`,
+            showConfirmButton: false,
+            showCloseButton: true,
+            allowOutsideClick: false,
+            width: "95%",
+            html: html
+        })  
+    }
+    function viewYearMonth(department_id) {
+        let html = ``
+        let year_month_groups = {!! $year_month_groups !!}
+
+        year_month_groups.forEach(element => {
+            let month = element.month = ( element.month <= 9 ? "0"+element.month : element.month )
+            let day_end=moment(month).daysInMonth();
+            html +=`<a class="btn btn-info m-5" onclick="viewSQM(${element.id},${department_id},${element.year},${month},${day_end})" > ${element.year} ${ moment(element.month).format('MMMM')} </a>`
+        });
+        
+        Swal.fire({
+            title: `Seleccione Año y Mes`,
+            showConfirmButton: false,
+            showCloseButton: true,
+            allowOutsideClick: false,
+            width: "95%",
+            html: html
+        })  
+    }
+
+
+    function viewModeHorario(year_month_group_id,department_id,year,month,day_end,mode) {
+        
+        let html = ``
+        if( mode == "Semanal" ){
+            html +=`<a class="btn btn-blue m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'1','7')"  > Primera Semana ( del dia 1 al dia 7 ) </a>`
+            html +=`<a class="btn btn-info m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'8','14')"  > Segunda Semana ( del dia 8 al dia 14 ) </a>`
+            html +=`<a class="btn btn-blue m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'15','21')"  > Tercera Semana ( del dia 15 al dia 21 ) </a>`
+            html +=`<a class="btn btn-info m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'22',${day_end})"  > Cuarta Semana ( del dia 22 al dia ${day_end} ) </a>`
+        }
+        if( mode == "Quincenal" ){
+            html +=`<a class="btn btn-blue m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'1','15')"  > Primera Quincena ( del dia 1 al dia 15 ) </a>`
+            html +=`<a class="btn btn-info m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'16',${day_end})"  > Segunda Quincena ( del dia 16 al dia ${day_end} ) </a>`
+        }
+        if( mode == "Mensual" ){
+            html +=`<a class="btn btn-info m-5" onclick="addHorario(${year_month_group_id},${department_id},${year},${month},'1',${day_end})"  > Mes Completo ( del dia 1 al dia ${day_end} ) </a>`
+        }
+
+        Swal.fire({
+            title: `Horario ${mode}`,
+            showConfirmButton: false,
+            showCloseButton: true,
+            allowOutsideClick: false,
+            width: "95%",
+            html: html
+        })  
+    }
     function addHorario(year_month_group_id,department_id,year,month,day_init,day_end) {
             month = ( month <= 9 ) ? "0"+month : month
         let timerInterval 
@@ -197,7 +232,9 @@
                 let schedules = res.schedules
                 let department_name = res.employees.name
                 let horarios = {!! $horarios !!}
-                res.employees = res.employees.employees
+                let dataUser = {!! $dataUser !!}
+                res.employees = ( dataUser.level_id > 1 ) ? res.employees.employees.filter( i => i.sede_id == dataUser.sede_id ) : res.employees.employees
+                console.log("ddd", res.employees )
 
                 let html = ``;
                     html += `
