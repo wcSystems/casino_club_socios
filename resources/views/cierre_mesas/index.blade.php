@@ -462,7 +462,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `MAQUINAS <br /> DROP CECOM <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `MAQUINAS <br /> DROP CECOM <br /> ${room.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,
