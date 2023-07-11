@@ -245,7 +245,7 @@
                         <li id="cierre_mesas_nav" class="has-sub closed">
                             <a href="{{ route('cierre_mesas') }}">
                                 <i class="fas fa-circle text-white"></i>
-                                <span class="text-white">DROP / ARQUEO</span>
+                                <span class="text-white">DROP</span>
                             </a>
                         </li>
                         <li id="clientes_casinos_nav" class="has-sub closed">
@@ -571,6 +571,162 @@ const clientFilestack = filestack.init("AVqqom3AKTyQqKiPidHE3z");
                             api.rows({ page: 'current' }).data().each(function (data, i) {
                                 if (last !== data.group_name) {
                                     $(rows).eq(i).before(`<tr class="group_name font-weight-bold"><td colspan="${columns.length}">` + data.group_name + `</td></tr>`);
+                                    last = data.group_name;
+                                }
+                            });
+                        }
+                    },
+
+
+
+
+
+
+
+                    ajax: {
+                        "url": url,
+                        "data": function (d) {[
+                            d.search = $('#search').val(),
+
+                            d.user_data = {!! Auth::user() !!},
+
+                            d.search_transportation = $('#search_transportation').val(),
+                            d.search_brands = $('#search_brands').val(),
+                            d.search_sede_all = $('#search_sede_all').val(),
+                            d.search_department_all = $('#search_department_all').val(),
+                            d.search_sex_all = $('#search_sex_all').val(),
+                            d.search_sede_machines = $('#search_sede_machines').val(),
+                            d.search_brand_machines = $('#search_brand_machines').val(),
+                            d.search_model_machines = $('#search_model_machines').val(),
+                            d.search_range_machines = $('#search_range_machines').val(),
+                            d.search_associated_machines = $('#search_associated_machines').val(),
+                            d.search_value_machines = $('#search_value_machines').val(),
+                            d.search_play_machines = $('#search_play_machines').val(),
+
+                            d.search_sede_employees = $('#search_sede_employees').val(),
+                            d.search_department_employees = $('#search_department_employees').val(),
+                            d.search_position_employees = $('#search_position_employees').val(),
+                            d.search_sex_employees = $('#search_sex_employees').val(),
+                            d.search_rooms = $('#search_rooms').val(),
+                            d.search_rooms_selects = $('#search_rooms_selects').val(),
+                            d.search_asocciates_selects = $('#search_asocciates_selects').val(),
+                            d.search_room_select = $('#search_room_select').val(),
+                            d.search_condicion_select = $('#search_condicion_select').val(),
+
+                            d.search_type_group_associated = $('#search_type_group_associated').val(),
+                            d.search_type_group_room = $('#search_type_group_room').val(),
+                            d.search_associated_select = $('#search_associated_select').val(),
+                            d.search_brand_machines_select = $('#search_brand_machines_select').val(),
+                            d.search_model_machines_select = $('#search_model_machines_select').val(),
+                            d.search_novedad_select = $('#search_novedad_select').val(),
+
+                            d.search_club_vip = $("#search_club_vip:checked").val() ? "1" : undefined,
+                            d.search_referido = $("#search_referido:checked").val() ? "1" : undefined,
+                            d.search_vive_cerca = $("#search_vive_cerca:checked").val() ? "1" : undefined,
+                            d.search_trabaja_cerca = $("#search_trabaja_cerca:checked").val() ? "1" : undefined,
+                            d.search_solo_de_paso = $("#search_solo_de_paso:checked").val() ? "1" : undefined,
+                            d.search_descuento = $("#search_descuento:checked").val() ? "1" : undefined,
+                            d.search_puntos_por_canje = $("#search_puntos_por_canje:checked").val() ? "1" : undefined,
+                            d.search_ticket_souvenirs = $("#search_ticket_souvenirs:checked").val() ? "1" : undefined,
+                            d.search_machine = $("#search_machine:checked").val() ? "1" : undefined,
+                            d.search_table = $("#search_table:checked").val() ? "1" : undefined,
+                        ]},
+                        /* success: function (res) {
+                            console.log(res)
+                        } */
+                    },
+                    language: {
+                        "lengthMenu": "Mostrar _MENU_ registros por página",
+                        "emptyTable":  "Sin datos disponibles",
+                        "zeroRecords": "Ningun resultado encontrado",
+                        "info": "Mostrando de _START_ a _END_ de un total de _TOTAL_ registros",
+                        "infoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "infoEmpty": "Ningun valor disponible",
+                        "loadingRecords": "Cargando...",
+                        "processing":     "Procesando...",
+                        "search":     "Buscar",
+                        "paginate": {
+                            "first":      "Primero",
+                            "last":       "Ultimo",
+                            "next":       "Siguiente",
+                            "previous":   "Anterior"
+                        },
+                    }
+                }).on( 'processing.dt', function ( e, settings, processing ) {
+                    
+                    if(processing){ console.log() }else{ }
+                });
+
+                $("#search").keyup( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_transportation").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                $("#search_sede_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_department_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_sex_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_sede_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_brand_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_model_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_range_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_associated_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_value_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_play_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                
+
+
+                $("#search_sede_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_department_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_position_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_sex_employees").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_rooms").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_rooms_selects").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_asocciates_selects").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_condicion_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                $("#search_type_group_associated").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_type_group_room").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_associated_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_room_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_brand_machines_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_model_machines_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_novedad_select").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+                
+
+
+
+                $("#search_brands").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_club_vip").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_referido").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_vive_cerca").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_trabaja_cerca").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_solo_de_paso").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_descuento").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_puntos_por_canje").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_ticket_souvenirs").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_ticket_machine").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_ticket_table").click( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+
+            });
+            
+        }
+        function dataTableCECOMDROP(url,columns,group_name_all, order_by) {
+            $(document).ready(function() {
+                let table = $('#data-table-default').DataTable({
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+                    responsive: true,
+                    processing: true,
+                    lengthChange: true,
+                    columns: columns,
+                    order: (order_by) ? order_by : [],
+                    drawCallback: function (settings) {
+                        ajaxReloadDatatablesFN(settings.aoData.map( i => i._aData ))
+                        if(group_name_all){
+                            var api = this.api();
+                            var rows = api.rows({ page: 'current' }).nodes();
+                            var last = null;
+                            api.rows({ page: 'current' }).data().each(function (data, i) {
+                                if (last !== data.group_name) {
+                                    $(rows).eq(i).before(`<tr class="group_name font-weight-bold"><td colspan="${columns.length}">` + data.group_name + ` <a href="https://api.whatsapp.com/send?text=${window.location.origin}/drop-cecom-sedes/${moment(data.created_at).format("YYYY-MM-DD")}" class="btn btn-yellow m-5"> Mesas </a> </td></tr>`);
                                     last = data.group_name;
                                 }
                             });

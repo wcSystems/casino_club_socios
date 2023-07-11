@@ -10,5 +10,6 @@ class Group_cierre_boveda extends Model
         'created_at',
         'extra',
         'sede_id',
+        'room_id',
     ];
 }

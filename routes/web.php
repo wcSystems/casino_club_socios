@@ -12,6 +12,7 @@
 */
 
 use App\Models\Ayb_item;
+use App\Models\Room;
 use App\Models\Sede;
 use App\Models\Group_menu;
 use App\Models\Schedule_template;
@@ -31,6 +32,8 @@ use App\Models\Billetes_casino;
 use App\Models\Fichas_casino;
 
 use App\Models\Group_cierre_boveda;
+use App\Models\Global_warehouse;
+use App\Models\Range_machine;
 
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
@@ -386,6 +389,12 @@ Route::middleware(['auth'])->group(function () {
         'update' => 'conteo_drop_boveda_casinos.update',
         'destroy' => 'conteo_drop_boveda_casinos.destroy'
     ]);
+    Route::resource('conteo_drop_boveda_mesa_casinos', 'Conteo_drop_boveda_mesa_casinosController')->names([
+        'index' => 'conteo_drop_boveda_mesa_casinos',
+        'create' => 'conteo_drop_boveda_mesa_casinos.create',
+        'update' => 'conteo_drop_boveda_mesa_casinos.update',
+        'destroy' => 'conteo_drop_boveda_mesa_casinos.destroy'
+    ]);
     Route::resource('conteo_arching_boveda_casinos', 'Conteo_arching_boveda_casinosController')->names([
         'index' => 'conteo_arching_boveda_casinos',
         'create' => 'conteo_arching_boveda_casinos.create',
@@ -503,6 +512,8 @@ Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_d
         ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
 });
 
+
+
 // VIEW - DROP CECOM + ARQUEO
 Route::get("/drop/cecom/{group_drops_casino_id}/{fecha}", function($group_drops_casino_id,$fecha){
 
@@ -536,6 +547,67 @@ Route::get("/drop/cecom/{group_drops_casino_id}/{fecha}", function($group_drops_
         ->with('total_drop_sede',$total_drop_sede )
         ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
 });
+
+
+// VIEW - DROP MAQUINAS CECOM
+Route::get("/drop/cecom_maquinas/{group_drops_casino_id}/{room_id}/{fecha}", function($group_drops_casino_id,$room_id,$fecha){
+
+    $range_machines = Range_machine::all();
+    $group_drops_casino = Group_cierre_boveda::where("id","=",$group_drops_casino_id)->first();
+    $global_warehouses = Global_warehouse::where("room_id","=",$room_id)->get();
+    $billetes_casinos = Billetes_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
+    $sede = Sede::where("id","=",$group_drops_casino->sede_id)->first();
+    $room = Room::where("id","=",$room_id)->first();
+
+
+    $conteo_drop_cecom_casinos = DB::table('conteo_drop_boveda_mesa_casinos')
+    ->selectRaw('conteo_drop_boveda_mesa_casinos.id, conteo_drop_boveda_mesa_casinos.cantidad, conteo_drop_boveda_mesa_casinos.group_cierre_boveda_id, conteo_drop_boveda_mesa_casinos.global_warehouse_id, conteo_drop_boveda_mesa_casinos.billetes_casino_id, range_machines.name AS range_machine_name, global_warehouses.range_machine_id ,billetes_casinos.name AS billete_name')
+    ->where("group_cierre_boveda_id","=",$group_drops_casino_id)
+    ->join('billetes_casinos', 'conteo_drop_boveda_mesa_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+
+    ->join('global_warehouses', 'conteo_drop_boveda_mesa_casinos.global_warehouse_id', '=', 'global_warehouses.id')
+    ->join('range_machines', 'global_warehouses.range_machine_id', '=', 'range_machines.id')
+    ->get();
+
+    $total_drop_ranges_array = [];
+    foreach ($range_machines as $key => $value_range) {
+        $total_drop_x_range = 0;
+        foreach ($conteo_drop_cecom_casinos as $key => $value_conteo) {
+            if( $value_range->id == $value_conteo->range_machine_id ){
+                $total_drop_x_range = $total_drop_x_range + ( $value_conteo->cantidad * $value_conteo->billete_name );
+            }
+        }
+        array_push($total_drop_ranges_array, (object)[
+            'rango' => $value_range->name,
+            'total' => $total_drop_x_range
+        ]);
+    }
+
+
+
+
+    $total_drop_sede = 0;
+    foreach ($conteo_drop_cecom_casinos as $key => $value) {
+     $total_drop_sede = $total_drop_sede + ( $value->cantidad * $value->billete_name );
+    }
+       
+
+        return view("view_drop_maquina_cecom.index")
+        ->with('sede_id',$group_drops_casino->sede_id )
+        ->with('room_id',$room_id )
+        ->with('group_drops_casino',$group_drops_casino )
+        ->with('global_warehouses',$global_warehouses )
+        ->with('billetes_casinos',$billetes_casinos )
+        ->with('fecha',$fecha )
+        ->with('sede',$sede )
+        ->with('room',$room )
+        ->with('total_drop_sede',$total_drop_sede )
+        ->with('total_drop_ranges_array', json_encode($total_drop_ranges_array) )
+        ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
+});
+
+
+
 
 
 // VIEW - DROP CECOM + SEDES

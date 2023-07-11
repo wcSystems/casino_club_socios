@@ -127,6 +127,7 @@ Route::post('/conteo_archings_cecom_casinos/list', 'Conteo_archings_cecom_casino
 
 // LIST
 Route::post('/conteo_drop_boveda_casinos/list', 'Conteo_drop_boveda_casinosController@list')->name('conteo_drop_boveda_casinos.list');
+Route::post('/conteo_drop_boveda_mesa_casinos/list', 'Conteo_drop_boveda_mesa_casinosController@list')->name('conteo_drop_boveda_mesa_casinos.list');
 Route::post('/conteo_arching_cecom_casinos/list', 'Conteo_arching_boveda_casinosController@list')->name('conteo_arching_boveda_casinos.list');
 Route::post('/conteo_efectivo_cecom_casinos/list', 'Conteo_efectivo_boveda_casinosController@list')->name('conteo_efectivo_boveda_casinos.list');
 

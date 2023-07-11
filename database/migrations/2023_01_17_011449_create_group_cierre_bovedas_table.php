@@ -18,6 +18,8 @@ class CreateGroupCierreBovedasTable extends Migration
             $table->string('extra',100)->nullable();
             $table->bigInteger('sede_id')->nullable()->unsigned();
             $table->foreign('sede_id')->references('id')->on('sedes')->onUpdate('cascade');
+            $table->bigInteger('room_id')->nullable()->unsigned();
+            $table->foreign('room_id')->references('id')->on('rooms')->onUpdate('cascade');
             $table->timestamps();
         });
     }

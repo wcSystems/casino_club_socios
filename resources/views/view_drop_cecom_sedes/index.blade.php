@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title> DROP CECOM SEDES {!! $fecha !!}  </title>
+        <title> DROP MESAS CECOM SEDES {!! $fecha !!}  </title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <link href="{{ asset('css/filepond/filepond.css') }}" rel="stylesheet" />
@@ -173,7 +173,7 @@
         <div class="panel panel-inverse" data-sortable-id="table-basic-1">
             <div class="panel-heading ui-sortable-handle">
                 <h4 class="panel-title text-center" id="title-schedule">
-                DROP CECOM SEDES <br /> {!! $fecha !!}
+                DROP MESAS CECOM SEDES <br /> {!! $fecha !!}
                 </h4>
             </div>
             <div class="panel-body" id="render-schedule"></div>
@@ -192,7 +192,6 @@
         let fecha = {!! $fecha !!}
         let total_drop_sedes_array = {!! $total_drop_sedes_array !!}
         let total_drop_sedes = {!! $total_drop_sedes !!}
-        console.log(total_drop_sedes_array)
 
         let html = ``;
         html += `

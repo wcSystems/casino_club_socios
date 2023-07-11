@@ -61,7 +61,24 @@
                     </div>
                 </div>
             @endif
-           
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                <div class="form-group w-100">
+                    <div class="px-0 col-xs-12">
+                        <select id="search_room_select" class="form-control w-100">
+                            <option value="" selected > Sala / Galpon</option>
+                            @foreach( $room_groups as $itemGroup )
+                                <optgroup label="{{ $itemGroup->name }}">
+                                    @foreach( $rooms as $item )
+                                        @if( $item->room_group_id == $itemGroup->id )
+                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                        @endif
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
@@ -69,8 +86,8 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Sede</th>
-                        <th>DROP / ARQUEO</th>
-                        <th>Reporte Final ( Resultado Mesas )</th>
+                        <th>DROP</th>
+                        <th>Resultados ( Whatsapp )</th>
                     </tr>
                 </thead>
             </table>
@@ -124,6 +141,25 @@
                         @endif
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
+                            <label class=" text-lg-right col-form-label"> Salas <span class="text-danger"> *</span> </label>
+                                <div class="col-lg-12">
+                                    <select id="room_id" class="form-control w-100">
+                                        <option value="" selected > Sala / Galpon</option>
+                                        @foreach( $room_groups as $itemGroup )
+                                            <optgroup label="{{ $itemGroup->name }}">
+                                                @foreach( $rooms as $item )
+                                                    @if( $item->room_group_id == $itemGroup->id )
+                                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                    @endif
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Fecha <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
                                     <input required type="date" id="created_at" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
@@ -140,6 +176,7 @@
         if(id){
             let current={!! $group_cierre_bovedas !!}.find(i=>i.id===id)
             $("#sede_id").val(current.sede_id)
+            $("#room_id").val(current.room_id)
             $("#created_at").val(current.created_at)
         }
         validateForm()
@@ -153,6 +190,7 @@
                 id: { id: id ? id : "" },
                 data: {
                     sede_id: $('#sede_id').val(),
+                    room_id: $('#room_id').val(),
                     created_at: $('#created_at').val()
                 }
             }
@@ -173,7 +211,7 @@
     function salir() {
         $(".swal2-close").click()
     }
-    dataTable("{{route('cierre_mesas.service')}}",[
+    dataTableCECOMDROP("{{route('cierre_mesas.service')}}",[
         {
             render: function ( data,type, row  ) {
                 
@@ -183,10 +221,11 @@
         { data: 'sede_name' },
         {
             render: function ( data,type, row  ) {
+                let btns_respaldo =`<a class="btn btn-info m-5" onclick="viewArch(${row.id},${row.sede_id})" > Arqueo </a>`
                 let btns = ``;
                     btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-blue m-5" onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" > Drop </a>`
-                    btns +=`<a class="btn btn-info m-5" onclick="viewArch(${row.id},${row.sede_id})" > Arqueo </a>`
+                    btns +=`<a class="btn btn-blue m-5" onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" > Mesas </a>`
+                    btns +=`<a class="btn btn-info m-5" onclick="viewDropMaquinas(${row.id},${row.sede_id},${row.extra},${row.room_id})" > Maquinas </a>`
                     btns +=`</div>`
                 return btns;
             }
@@ -195,12 +234,11 @@
             render: function ( data,type, row  ) {
                 let btns = ``;
                     btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-danger m-5" onclick="viewResultadosMesas(${row.id},${row.sede_id})" > Ver / Imprimir </a>`
                     btns +=`<a href="https://api.whatsapp.com/send?text=${window.location.origin}/drop/cecom/${row.id}/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn btn-green m-5">
-                        Whatsapp DROP
+                        Mesas
                     </a>`
-                    btns +=`<a href="https://api.whatsapp.com/send?text=${window.location.origin}/drop-cecom-sedes/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn btn-yellow m-5">
-                        Whatsapp DROP SEDES
+                    btns +=`<a href="https://api.whatsapp.com/send?text=${window.location.origin}/drop/cecom_maquinas/${row.id}/${row.room_id}/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn btn-green m-5">
+                        Maquinas
                     </a>`
                     btns +=`</div>`
                 return btns;
@@ -225,7 +263,22 @@
             type: "POST",
             data: payload,
             success: function (res) {
-
+        /* 
+            <tr>
+                <td class="font-weight-bold " style="background-color:paleturquoise;" >
+                    <input  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="GAÑOTA" > 
+                </td>
+                <td colspan="${billetes_casinos.length}" class="font-weight-bold"style="background-color:#EDEDED !important"  >
+                    <div class="d-flex align-items-center">
+                        <label for="extra" class="col-6 px-0 text-right pr-1 mb-0"> $ </label>
+                        <input id="extra"  type="number" onkeyup=totalExtra()  class="pl-1 text-left col-6 form-control p-0 m-auto text-center border-0 font-weight-bold" value="${extra}" > 
+                    </div>
+                </td>
+                <td class="font-weight-bold " style="background-color:paleturquoise;" >
+                    <input id="total_extra"  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
+                </td>
+            </tr>
+        */
 
                 clearInterval(timerInterval)
 
@@ -289,20 +342,7 @@
 
                             
                             </tr>
-                            <tr>
-                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                    <input  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="GAÑOTA" > 
-                                </td>
-                                <td colspan="${billetes_casinos.length}" class="font-weight-bold"style="background-color:#EDEDED !important"  >
-                                    <div class="d-flex align-items-center">
-                                        <label for="extra" class="col-6 px-0 text-right pr-1 mb-0"> $ </label>
-                                        <input id="extra"  type="number" onkeyup=totalExtra()  class="pl-1 text-left col-6 form-control p-0 m-auto text-center border-0 font-weight-bold" value="${extra}" > 
-                                    </div>
-                                </td>
-                                <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                    <input id="total_extra"  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                     <div class="col-sm-12" style="margin-top:20px">
@@ -311,7 +351,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `DROP CECOM <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `MESAS <br /> DROP CECOM <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,
@@ -326,6 +366,180 @@
                 //sumMesaALL(sede_id)
             }
         });
+    }
+
+    function viewDropMaquinas(id,sede_id,extra,room_id) {
+        let currentGroup = {!! $group_cierre_bovedas !!}.find( i => i.id == id )
+        let sede = {!! $sedes !!}.find( i => i.id == sede_id )
+        let room = {!! $rooms !!}.find( i => i.id == room_id )
+       
+        let timerInterval 
+        let payload = {
+            _token: $("meta[name='csrf-token']").attr("content"),
+            id: id
+        }
+        setLoading(timerInterval)
+        $.ajax({
+            url: "{{ route('conteo_drop_boveda_mesa_casinos.list') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+                clearInterval(timerInterval)
+
+                let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
+                let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
+                let html = ``;
+                html += `
+                <div class="table-responsive mt-3">
+                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                        <thead style="background-color:paleturquoise;"  >
+                            <tr>
+                                <th class="text-center text-uppercase font-weight-bold" > Maquinas / Billetes </th>`
+                                billetes_casinos.forEach(billete => {
+                                    html += `<td class="font-weight-bold text-left" style="background-color:paleturquoise;font-size:12px !important"> $ ${ billete.name } </td>`
+                                });
+                                html += `
+                                <th class="text-center text-uppercase font-weight-bold" > TOTAL </th>
+                            </tr>
+                        </thead>
+                        <tbody>`
+                        global_warehouses.forEach(maquina => {
+                                html += `
+                                <tr>
+                                    <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:paleturquoise;"> 
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${maquina.name_machine_room_active}" >
+                                    </td>`
+                                    billetes_casinos.forEach(billete => {
+                                        let current = res.list.find( i => i.global_warehouse_id == maquina.id && i.billetes_casino_id == billete.id )
+                                        let id = ( current == undefined ) ? 0 : parseFloat(current.id)
+                                        let cantidad = ( current == undefined ) ? "" : parseFloat(current.cantidad)
+                                        html += `
+                                        <td class="font-weight-bold" style="background-color:#EDEDED !important" >
+                                            <input type="hidden" id="id_${maquina.id}_${billete.id}" value="${id}"  > 
+                                            <input  value="${cantidad}" id="mesa_billete_${maquina.id}_${billete.id}" onkeyup="sumMesaBilleteTotalMaquina(${maquina.id},${billete.id},${billete.name},${sede_id},${room_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
+                                        </td>`
+                                    });
+                                html += `
+                                        <td class="font-weight-bold bg-gris" >
+                                            <input id="total_mesa_${maquina.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:100px !important" value="$ 0 ( 0 )" > 
+                                        </td>
+                                </tr>
+                                `
+                            });
+                            
+                            html += `
+                            <tr>
+                                <td colspan="${billetes_casinos.length}" class="font-weight-bold text-left d-flex align-items-center" style="background-color:paleturquoise;"> 
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL" >
+                                </td>`
+                                
+                                billetes_casinos.forEach(billete => {
+                                    html += `
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="total_billete_${billete.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0 ( 0 )" > 
+                                    </td>`
+                                });
+                                    html += `
+                                    <td class="font-weight-bold" style="background-color:paleturquoise;"  >
+                                        <input id="total_final" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0 ( 0 )" > 
+                                    </td>
+
+                            
+                            </tr>
+                            
+                        </tbody>
+                    </table>`
+
+
+
+
+
+
+                    html += `
+                    <div class="col-sm-12" style="margin-top:20px">
+                        <button onclick="saveDropMaquina(${id},${sede_id},${room_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                        <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
+                    </div>
+                </div>`
+                Swal.fire({
+                    title: `MAQUINAS <br /> DROP CECOM <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                    width: "95%",
+                    html: html
+                }) 
+                global_warehouses.forEach(maquina => {
+                    billetes_casinos.forEach(billete => {
+                        sumMesaBilleteTotalMaquina(maquina.id,billete.id,billete.name,sede_id,room_id)
+                    })
+                })
+                //sumMesaALL(sede_id)
+            }
+        });
+    }
+    function sumMesaBilleteTotalMaquina(maquina_id,billete_id,billete_name,sede_id,room_id) {
+        let extra = $(`#extra`).val() == "" ? 0 : parseFloat($(`#extra`).val())
+        let sumTotalMesas = 0
+        let sumTotalBilletes = 0
+        let sumTotalFinal = 0
+
+        let cantidad_mesaFinal = 0
+        let cantidad_billeteFinal = 0
+        let cantidadFinal = 0
+
+        let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
+        let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
+            
+            billetes_casinos.forEach(element => {
+                let cantidad_billete = $(`#mesa_billete_${maquina_id}_${element.id}`).val() == "" ? 0 : parseFloat($(`#mesa_billete_${maquina_id}_${element.id}`).val())
+                let precio_billete = parseFloat(element.name)
+                let subtotal_billete = precio_billete*cantidad_billete
+                sumTotalMesas = sumTotalMesas+subtotal_billete
+                cantidad_mesaFinal = cantidad_mesaFinal+cantidad_billete
+            });
+
+            global_warehouses.forEach(element => {
+                let cantidad_mesa = $(`#mesa_billete_${element.id}_${billete_id}`).val() == "" ? 0 : parseFloat($(`#mesa_billete_${element.id}_${billete_id}`).val())
+                let precio_mesa = parseFloat(billete_name)
+                let subtotal_mesa = precio_mesa*cantidad_mesa
+                sumTotalBilletes = sumTotalBilletes+subtotal_mesa
+                cantidad_billeteFinal = cantidad_billeteFinal+cantidad_mesa
+            });
+
+
+            $(`#total_mesa_${maquina_id}`).val(`$ ${sumTotalMesas} ( ${cantidad_mesaFinal} )`)
+            $(`#total_billete_${billete_id}`).val(`$ ${sumTotalBilletes} ( ${cantidad_billeteFinal} )`)
+
+            if( $(`#total_billete_${billete_id}`).val() == "$ 0 ( 0 )" ){
+                $(`#total_billete_${billete_id}`).removeClass("bg-verde-oscuro").addClass("bg-rojo-oscuro")
+            }else{
+                $(`#total_billete_${billete_id}`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
+            }
+            
+            if( $(`#total_mesa_${maquina_id}`).val() == "$ 0 ( 0 )" ){
+                $(`#total_mesa_${maquina_id}`).removeClass("bg-verde-oscuro").addClass("bg-rojo-oscuro")
+            }else{
+                $(`#total_mesa_${maquina_id}`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
+            }
+
+            if( $(`#mesa_billete_${maquina_id}_${billete_id}`).val() == "" || $(`#mesa_billete_${maquina_id}_${billete_id}`).val() == 0 ){
+                $(`#mesa_billete_${maquina_id}_${billete_id}`).removeClass("bg-verde").addClass("bg-rojo")
+            }else{
+                $(`#mesa_billete_${maquina_id}_${billete_id}`).removeClass("bg-rojo").addClass("bg-verde")
+            }
+
+            global_warehouses.forEach(element => {
+                let dividir = $(`#total_mesa_${element.id}`).val() == "" ? 0 : $(`#total_mesa_${element.id}`).val().slice(1).split("(")
+                    sumTotalFinal = sumTotalFinal+parseFloat(dividir[0])
+                    cantidadFinal = cantidadFinal+parseFloat(dividir[1])
+            });
+
+            global_sumTotalFinal = sumTotalFinal
+            $(`#total_final`).val(`$ ${sumTotalFinal} ( ${cantidadFinal} )`)
+            $(`#total_extra`).val(`$ ${sumTotalFinal+extra}`)
+
+            
     }
     function sumMesaBilleteTotal(mesa_id,billete_id,billete_name,sede_id) {
         let extra = $(`#extra`).val() == "" ? 0 : parseFloat($(`#extra`).val())
@@ -393,6 +607,47 @@
     function totalExtra() {
         let extra = $(`#extra`).val() == "" ? 0 : parseFloat($(`#extra`).val())
         $(`#total_extra`).val(`$ ${global_sumTotalFinal+extra}`)
+    }
+    function saveDropMaquina(group_cierre_boveda_id,sede_id,room_id) {
+        let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
+        let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
+        let total_registros = global_warehouses.length*billetes_casinos.length
+        let countReset = 0
+
+        billetes_casinos.forEach(element_billete => {
+            global_warehouses.forEach(element_maquina => {
+                let payload = {
+                    _token: $("meta[name='csrf-token']").attr("content"),
+                    id: { id: $(`#id_${element_maquina.id}_${element_billete.id}`).val() },
+
+                    extra: $(`#extra`).val() == "" ? 0 : parseFloat($(`#extra`).val()),
+                    group_cierre_boveda_id: group_cierre_boveda_id, 
+
+                    data: {
+                        group_cierre_boveda_id: group_cierre_boveda_id, 
+                        global_warehouse_id: element_maquina.id,
+                        billetes_casino_id: element_billete.id,
+                        cantidad: $(`#mesa_billete_${element_maquina.id}_${element_billete.id}`).val() == "" ? 0 : parseFloat($(`#mesa_billete_${element_maquina.id}_${element_billete.id}`).val())
+                    }
+                }
+                $.ajax({
+                    url: "{{ route('conteo_drop_boveda_mesa_casinos.store') }}",
+                    type: "POST",
+                    data: payload,
+                    success: function (res) {
+                        if(res.type === 'success'){
+                            countReset = countReset+1
+                            $(`#mesa_billete_${element_maquina.id}_${element_billete.id}`).replaceWith(`<div id="mesa_billete_${element_maquina.id}_${element_billete.id}"><i class="fas fa-check-circle text-success fa-lg"></i></div>`)
+                            if( countReset == total_registros ){
+                                location.reload();
+                            }
+                        }
+
+                    }
+                });
+
+            });
+        });
     }
     function saveDrop(group_cierre_boveda_id,sede_id) {
         let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
@@ -791,7 +1046,7 @@
     }
 
     //vista
-    function viewResultadosMesas(group_cierre_boveda_id,sede_id) {
+    /* function viewResultadosMesas(group_cierre_boveda_id,sede_id) {
         let currentGroup = {!! $group_cierre_bovedas !!}.find( i => i.id == group_cierre_boveda_id )
         let sede = {!! $sedes !!}.find( i => i.id == sede_id )
        
@@ -891,10 +1146,91 @@
                     
             }
         });
-    }
+    } */
+    function viewResultadosMesas(group_cierre_boveda_id,sede_id) {
+        let currentGroup = {!! $group_cierre_bovedas !!}.find( i => i.id == group_cierre_boveda_id )
+        let sede = {!! $sedes !!}.find( i => i.id == sede_id )
+       
+        let timerInterval 
+        let payload = {
+            _token: $("meta[name='csrf-token']").attr("content"),
+            id: group_cierre_boveda_id
+        }
+        setLoading(timerInterval)
+        $.ajax({
+            url: "{{ route('cierre_mesas.list') }}",
+            type: "POST",
+            data: payload,
+            success: function (res) {
+                
+                clearInterval(timerInterval)
 
-    
-   
+                let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
+                let html = ``;
+                html += `
+                <div class="table-responsive mt-3">
+                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline justify-content-center" style="overflow-x: auto;display: block;white-space: nowrap;width:100% !important">
+                        <thead style="background-color:#ccc;"  >
+                            <tr>
+                                <th class="text-center text-uppercase font-weight-bold" > MESAS </th>
+                                <th class="text-center text-uppercase font-weight-bold" > DROP</th>
+                            </tr>
+                        </thead>
+                        <tbody>`
+
+                            let sum_drop_mesa_total = 0
+                            let sum_arqueo_mesa_total = 0
+                            let sum_stack_arching_mesa_total = 0
+                            mesas_casinos.forEach(mesa => {
+                                
+                                let drop_mesa = res.list_drops.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.billete_name);}, 0)
+                                    sum_drop_mesa_total = parseFloat(sum_drop_mesa_total) + parseFloat(drop_mesa)
+                               
+                                let stack_mesa = res.list_stacks.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let arching_mesa = res.list_archings.filter( i => i.mesas_casino_id == mesa.id ).reduce((next, item) => { return next + parseFloat(item.cantidad)*parseFloat(item.ficha_name);}, 0)
+                                let arqueo_mesa =  parseFloat(arching_mesa) - parseFloat(stack_mesa)
+                                    sum_arqueo_mesa_total = parseFloat(sum_arqueo_mesa_total) + parseFloat(arqueo_mesa)
+                                
+                                let stack_arching_mesas = parseFloat(drop_mesa) + parseFloat(arqueo_mesa)
+                                    sum_stack_arching_mesa_total = parseFloat(sum_stack_arching_mesa_total) + parseFloat(stack_arching_mesas)
+
+                                html += `
+                                <tr>
+                                    <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${mesa.name}" >
+                                    </td>               
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${drop_mesa}" > 
+                                    </td>
+                                </tr>`
+                                });
+                    html +=`
+                            <tr>
+                                <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL GENERAL" >
+                                </td>               
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold " value="$ ${sum_drop_mesa_total}" > 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12" style="margin-top:20px">
+                        <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
+                    </div>
+                </div>`
+                Swal.fire({
+                    title: `Resustados Mesas <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    allowOutsideClick: false,
+                    width: "95%",
+                    html: html
+                }) 
+                    
+            }
+        });
+    }
 
 </script>
 @endsection

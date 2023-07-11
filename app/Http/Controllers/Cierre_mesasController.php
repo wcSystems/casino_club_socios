@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sede;
+use App\Models\Room;
+use App\Models\Room_group;
 
 use App\Models\Group_cierre_boveda;
 
@@ -11,6 +13,7 @@ use App\Models\Mesas_casino;
 use App\Models\Billetes_casino;
 use App\Models\Fichas_casino;
 use App\Models\Stack_casino;
+use App\Models\Global_warehouse;
 use App\Models\Group_archings_casino;
 
 
@@ -29,6 +32,9 @@ class Cierre_mesasController extends Controller
     public function index()
     {
         $sedes = Sede::all();
+        $rooms = Room::all();
+        $global_warehouses = Global_warehouse::all();
+        $room_groups = Room_group::all();
         $group_cierre_bovedas = Group_cierre_boveda::all();
         $mesas_casinos = Mesas_casino::all();
         $billetes_casinos = Billetes_casino::all();
@@ -43,6 +49,9 @@ class Cierre_mesasController extends Controller
 
         return view('cierre_mesas.index')
                     ->with('sedes',$sedes)
+                    ->with('rooms',$rooms)
+                    ->with('room_groups',$room_groups)
+                    ->with('global_warehouses',$global_warehouses)
                     ->with('group_cierre_bovedas',$group_cierre_bovedas)
                     ->with('group_archings_casinos',$group_archings_casinos)
                     ->with('mesas_casinos',$mesas_casinos)

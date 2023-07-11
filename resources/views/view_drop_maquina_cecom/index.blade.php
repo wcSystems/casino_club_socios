@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title> DROP MESAS CECOM {!! $fecha !!}  </title>
+        <title> DROP MAQUINA CECOM {!! $fecha !!}  </title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js" integrity="sha512-42PE0rd+wZ2hNXftlM78BSehIGzezNeQuzihiBCvUEB3CVxHvsShF86wBWwQORNxNINlBPuq7rG4WWhNiTVHFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <link href="{{ asset('css/filepond/filepond.css') }}" rel="stylesheet" />
@@ -173,7 +173,7 @@
         <div class="panel panel-inverse" data-sortable-id="table-basic-1">
             <div class="panel-heading ui-sortable-handle">
                 <h4 class="panel-title text-center" id="title-schedule">
-                DROP MESAS CECOM <br /> {!! $sede->name !!} <br /> {!! $fecha !!}
+                DROP MAQUINAS CECOM <br /> {!! $room->name !!} <br /> {!! $fecha !!}
                 </h4>
             </div>
             <div class="panel-body" id="render-schedule"></div>
@@ -192,27 +192,15 @@
         let global_sumTotalFinal = 0
         let group_drops_casino = {!! $group_drops_casino !!}
         let conteo_drop_cecom_casinos = {!! $conteo_drop_cecom_casinos !!}
-        let mesas_casinos = {!! $mesas_casinos !!}
+        let global_warehouses = {!! $global_warehouses !!}
         let billetes_casinos = {!! $billetes_casinos !!}
         let sede_id = {!! $sede_id !!}
+        let room_id = {!! $room_id !!}
         let fecha = {!! $fecha !!}
-
-        /* 
-        <tr>
-                            <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                <input  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="GAÑOTA" > 
-                            </td>
-                            <td colspan="${billetes_casinos.length}" class="font-weight-bold"style="background-color:#EDEDED !important"  >
-                                <div class="d-flex align-items-center">
-                                    <label for="extra" class="col-6 px-0 text-right pr-1 mb-0"> $ </label>
-                                    <input id="extra"  type="number" disabled  class="pl-1 text-left col-6 form-control p-0 m-auto text-center border-0 font-weight-bold" value="${group_drops_casino.extra}" > 
-                                </div>
-                            </td>
-                            <td class="font-weight-bold " style="background-color:paleturquoise;" >
-                                <input  id="total_extra"  disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ 0" > 
-                            </td>
-                        </tr>
-                         */
+        let total_drop_ranges_array = {!! $total_drop_ranges_array !!}
+            total_drop_ranges_array = total_drop_ranges_array.filter( i => i.total != 0 )
+        let total_drop_sede = {!! $total_drop_sede !!}
+    
 
 
         let html = ``;
@@ -221,7 +209,7 @@
                 <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-3 d-inline m-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
                     <thead style="background-color:paleturquoise;"  >
                         <tr>
-                            <th class="text-center text-uppercase font-weight-bold" > Mesas / Billetes </th>`
+                            <th class="text-center text-uppercase font-weight-bold" > Maquinas / Billetes </th>`
                             billetes_casinos.forEach(billete => {
                                 html += `<td class="font-weight-bold text-left" style="background-color:paleturquoise;font-size:12px !important"> $ ${ billete.name } </td>`
                             });
@@ -230,25 +218,25 @@
                         </tr>
                     </thead>
                     <tbody>`
-                        mesas_casinos.forEach(mesa => {
+                    global_warehouses.forEach(maquina => {
                             html += `
                             <tr>
                                 <td class="font-weight-bold text-left d-flex align-items-center" style="background-color:paleturquoise;"> 
-                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${mesa.name}" >
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${maquina.name_machine_room_active}" >
                                 </td>`
                                 billetes_casinos.forEach(billete => {
-                                    let current = conteo_drop_cecom_casinos.find( i => i.mesas_casino_id == mesa.id && i.billetes_casino_id == billete.id )
+                                    let current = conteo_drop_cecom_casinos.find( i => i.global_warehouse_id == maquina.id && i.billetes_casino_id == billete.id )
                                     let id = ( current == undefined ) ? 0 : parseInt(current.id)
                                     let cantidad = ( current == undefined ) ? "" : parseInt(current.cantidad)
                                     html += `
                                     <td class="font-weight-bold" style="background-color:#EDEDED !important" >
-                                        <input type="hidden" id="id_${mesa.id}_${billete.id}" value="${id}"  > 
-                                        <input disabled value="${cantidad}" id="mesa_billete_${mesa.id}_${billete.id}" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
+                                        <input type="hidden" id="id_${maquina.id}_${billete.id}" value="${id}"  > 
+                                        <input disabled value="${cantidad}" id="mesa_billete_${maquina.id}_${billete.id}" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
                                     </td>`
                                 });
                             html += `
                                     <td class="font-weight-bold bg-gris" >
-                                        <input id="total_mesa_${mesa.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:100px !important" value="$ 0 ( 0 )" > 
+                                        <input id="total_mesa_${maquina.id}" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" style="min-width:100px !important" value="$ 0 ( 0 )" > 
                                     </td>
                             </tr>
                             `
@@ -275,7 +263,48 @@
                         </tr>
                         
                     </tbody>
-                </table>
+                </table>`
+
+
+
+                html += `
+                    <table  class="data-table-default-schedule table table-bordered table-td-valign-middle mt-4 d-inline mx-auto" style="overflow-x: auto;display: block;white-space: nowrap;width:fit-content !important">
+                        <thead style="background-color:#ccc;"  >
+                            <tr>
+                                <th class="text-center text-uppercase font-weight-bold" > RANGOS </th>
+                                <th class="text-center text-uppercase font-weight-bold" > TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>`
+
+                        total_drop_ranges_array.forEach(item => {
+                                html += `
+                                <tr>
+                                    <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                        <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="${item.rango}" >
+                                    </td>               
+                                    <td class="font-weight-bold bg-gris"  >
+                                        <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="$ ${item.total}" > 
+                                    </td>
+                                </tr>`
+                                });
+                    html +=`
+                            <tr>
+                                <td  class="font-weight-bold text-left d-flex align-items-center" style="background-color:#ccc;"> 
+                                    <input type="text" disabled class="form-control p-0 m-auto text-center border-0 font-weight-bold" value="TOTAL GENERAL" >
+                                </td>               
+                                <td class="font-weight-bold bg-gris"  >
+                                    <input id="" disabled type="text" class="form-control p-0 m-auto text-center border-0 font-weight-bold " value="$ ${total_drop_sede}" > 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>`
+
+
+
+
+
+                html += `
                 <div class="col-sm-12 text-center mt-3" style="">
                     <button onclick="window.print()" type="submit" class="swal2-confirm swal2-styled bg-primary" aria-label="" style="display: inline-block;"> Imprimir </button>
                 </div>
@@ -285,13 +314,13 @@
             $("#render-schedule").append(html)
             
 
-            mesas_casinos.forEach(mesa => {
+            global_warehouses.forEach(maquina => {
                 billetes_casinos.forEach(billete => {
-                    sumMesaBilleteTotal(mesa.id,billete.id,billete.name,sede_id)
+                    sumMesaBilleteTotal(maquina.id,billete.id,billete.name,sede_id,room_id)
                 })
             })
 
-            function sumMesaBilleteTotal(mesa_id,billete_id,billete_name,sede_id) {
+            function sumMesaBilleteTotal(maquina_id,billete_id,billete_name,sede_id,room_id) {
 
                 let extra = $(`#extra`).val() == "" ? 0 : parseInt($(`#extra`).val())
                 let sumTotalMesas = 0
@@ -302,18 +331,18 @@
                 let cantidad_billeteFinal = 0
                 let cantidadFinal = 0
 
-                let mesas_casinos = {!! $mesas_casinos !!}.filter( i => i.sede_id == sede_id )
+                let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
                 let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
                     
                 billetes_casinos.forEach(element => {
-                    let cantidad_billete = $(`#mesa_billete_${mesa_id}_${element.id}`).val() == "" ? 0 : parseInt($(`#mesa_billete_${mesa_id}_${element.id}`).val())
+                    let cantidad_billete = $(`#mesa_billete_${maquina_id}_${element.id}`).val() == "" ? 0 : parseInt($(`#mesa_billete_${maquina_id}_${element.id}`).val())
                     let precio_billete = parseInt(element.name)
                     let subtotal_billete = precio_billete*cantidad_billete
                     sumTotalMesas = sumTotalMesas+subtotal_billete
                     cantidad_mesaFinal = cantidad_mesaFinal+cantidad_billete
                 });
 
-                mesas_casinos.forEach(element => {
+                global_warehouses.forEach(element => {
                     let cantidad_mesa = $(`#mesa_billete_${element.id}_${billete_id}`).val() == "" ? 0 : parseInt($(`#mesa_billete_${element.id}_${billete_id}`).val())
                     let precio_mesa = parseInt(billete_name)
                     let subtotal_mesa = precio_mesa*cantidad_mesa
@@ -322,7 +351,7 @@
                 });
 
 
-                $(`#total_mesa_${mesa_id}`).val(`$ ${sumTotalMesas} ( ${cantidad_mesaFinal} )`)
+                $(`#total_mesa_${maquina_id}`).val(`$ ${sumTotalMesas} ( ${cantidad_mesaFinal} )`)
                 $(`#total_billete_${billete_id}`).val(`$ ${sumTotalBilletes} ( ${cantidad_billeteFinal} )`)
 
                 if( $(`#total_billete_${billete_id}`).val() == "$ 0 ( 0 )" ){
@@ -331,19 +360,19 @@
                     $(`#total_billete_${billete_id}`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
                 }
                 
-                if( $(`#total_mesa_${mesa_id}`).val() == "$ 0 ( 0 )" ){
-                    $(`#total_mesa_${mesa_id}`).removeClass("bg-verde-oscuro").addClass("bg-rojo-oscuro")
+                if( $(`#total_mesa_${maquina_id}`).val() == "$ 0 ( 0 )" ){
+                    $(`#total_mesa_${maquina_id}`).removeClass("bg-verde-oscuro").addClass("bg-rojo-oscuro")
                 }else{
-                    $(`#total_mesa_${mesa_id}`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
+                    $(`#total_mesa_${maquina_id}`).removeClass("bg-rojo-oscuro").addClass("bg-verde-oscuro")
                 }
 
-                if( $(`#mesa_billete_${mesa_id}_${billete_id}`).val() == "" || $(`#mesa_billete_${mesa_id}_${billete_id}`).val() == 0 ){
-                    $(`#mesa_billete_${mesa_id}_${billete_id}`).removeClass("bg-verde").addClass("bg-rojo")
+                if( $(`#mesa_billete_${maquina_id}_${billete_id}`).val() == "" || $(`#mesa_billete_${maquina_id}_${billete_id}`).val() == 0 ){
+                    $(`#mesa_billete_${maquina_id}_${billete_id}`).removeClass("bg-verde").addClass("bg-rojo")
                 }else{
-                    $(`#mesa_billete_${mesa_id}_${billete_id}`).removeClass("bg-rojo").addClass("bg-verde")
+                    $(`#mesa_billete_${maquina_id}_${billete_id}`).removeClass("bg-rojo").addClass("bg-verde")
                 }
 
-                mesas_casinos.forEach(element => {
+                global_warehouses.forEach(element => {
                     let dividir = $(`#total_mesa_${element.id}`).val() == "" ? 0 : $(`#total_mesa_${element.id}`).val().slice(1).split("(")
                         sumTotalFinal = sumTotalFinal+parseInt(dividir[0])
                         cantidadFinal = cantidadFinal+parseInt(dividir[1])
