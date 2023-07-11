@@ -20,6 +20,24 @@
     <script src="{{ asset('js/autotable/jspdf.js') }}"></script>
     <script src="{{ asset('js/autotable/autotable.js') }}"></script>
 
+
+    <meta name="description" content="{!! $fecha !!}, Drop: $ {!! $total_drop_sede !!}">
+    <!-- Google / Search Engine Tags -->
+    <meta itemprop="name" content="DROP - {!! $sede->name !!}">
+    <meta itemprop="description" content="{!! $fecha !!}, Drop: $ {!! $total_drop_sede !!}">
+    <meta itemprop="image" content="{{asset('img/logo_wisi.png')}}">
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="www.casinosroraima.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="DROP - {!! $sede->name !!}">
+    <meta property="og:description" content="{!! $fecha !!}, Drop: $ {!! $total_drop_sede !!}">
+    <meta property="og:image" content="{{asset('img/logo_wisi.png')}}">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DROP - {!! $sede->name !!}">
+    <meta name="twitter:description" content="{!! $fecha !!}, Drop: $ {!! $total_drop_sede !!}">
+    <meta name="twitter:image" content="{{asset('img/logo_wisi.png')}}">
+
     <style>
         :root {
 
@@ -155,7 +173,7 @@
         <div class="panel panel-inverse" data-sortable-id="table-basic-1">
             <div class="panel-heading ui-sortable-handle">
                 <h4 class="panel-title text-center" id="title-schedule">
-                DROP CECOM {!! $fecha !!}
+                DROP CECOM <br /> {!! $sede->name !!} <br /> {!! $fecha !!}
                 </h4>
             </div>
             <div class="panel-body" id="render-schedule"></div>

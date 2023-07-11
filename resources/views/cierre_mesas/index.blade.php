@@ -196,6 +196,12 @@
                 let btns = ``;
                     btns +=`<div class="text-center">`
                     btns +=`<a class="btn btn-danger m-5" onclick="viewResultadosMesas(${row.id},${row.sede_id})" > Ver / Imprimir </a>`
+                    btns +=`<a href="https://api.whatsapp.com/send?text=${window.location.origin}/drop/cecom/${row.id}/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn btn-green m-5">
+                        Whatsapp DROP
+                    </a>`
+                    btns +=`<a href="https://api.whatsapp.com/send?text=${window.location.origin}/drop-cecom-sedes/${moment(row.created_at).format("YYYY-MM-DD")}" class="btn btn-yellow m-5">
+                        Whatsapp DROP SEDES
+                    </a>`
                     btns +=`</div>`
                 return btns;
             }
@@ -305,7 +311,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `DROP <br />  Boveda ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `DROP CECOM <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,
@@ -587,7 +593,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `ARQUEO <br />  Boveda ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `ARQUEO CECOM <br /> ${sede.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,

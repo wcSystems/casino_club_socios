@@ -62,13 +62,20 @@ Route::get('/group_drops_casinos/service', 'Group_drops_casinosController@servic
 Route::get('/group_archings_casinos/service', 'Group_archings_casinosController@service')->name('group_archings_casinos.service');
 Route::get('/condicion_groups/service', 'Condicion_groupsController@service')->name('condicion_groups.service');
 Route::get('/novedades_types/service', 'Novedades_typesController@service')->name('novedades_types.service');
+
 Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
 
-Route::get('/bancada_casinos/service', 'BancadaCasinosController@service')->name('bancada_casinos.service');
-Route::get('/group_cierre_boveda_casinos/service', 'Group_cierre_boveda_casinosController@service')->name('group_cierre_boveda_casinos.service');
+Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
+Route::get('/cierre_mesas/service', 'Cierre_mesasController@service')->name('cierre_mesas.service');
+
+Route::get('/clientes_casinos/service', 'Clientes_casinosController@service')->name('clientes_casinos.service');
+Route::get('/clasificacion_cliente_casinos/service', 'Clasificacion_cliente_casinosController@service')->name('clasificacion_cliente_casinos.service');
 
 Route::get('/metodo_pagos/service', 'Metodo_pago_boveda_casinosController@service')->name('metodo_pagos.service');
 Route::get('/device_hikvision_facial_casinos/service', 'Device_hikvision_facial_casinosController@service')->name('device_hikvision_facial_casinos.service');
+
+
+Route::get('/group_cierre_boveda_casinos/service', 'Group_cierre_boveda_casinosController@service')->name('group_cierre_boveda_casinos.service');
 
 
 

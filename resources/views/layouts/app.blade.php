@@ -248,6 +248,18 @@
                                 <span class="text-white">DROP / ARQUEO</span>
                             </a>
                         </li>
+                        <li id="clientes_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('clientes_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CLIENTES</span>
+                            </a>
+                        </li>
+                        <li id="clasificacion_cliente_casinos_nav" class="has-sub closed">
+                            <a href="{{ route('clasificacion_cliente_casinos') }}">
+                                <i class="fas fa-circle text-white"></i>
+                                <span class="text-white">CARPETA CLIENTES</span>
+                            </a>
+                        </li>
                         <li class="nav-header" style="color: #fff !important">MODULO RRHH</li>
                         <li id="attlogs_nav" class="has-sub closed">
                             <a href="{{ route('attlogs') }}">
@@ -581,6 +593,8 @@ const clientFilestack = filestack.init("AVqqom3AKTyQqKiPidHE3z");
                             d.search_transportation = $('#search_transportation').val(),
                             d.search_brands = $('#search_brands').val(),
                             d.search_sede_all = $('#search_sede_all').val(),
+                            d.search_department_all = $('#search_department_all').val(),
+                            d.search_sex_all = $('#search_sex_all').val(),
                             d.search_sede_machines = $('#search_sede_machines').val(),
                             d.search_brand_machines = $('#search_brand_machines').val(),
                             d.search_model_machines = $('#search_model_machines').val(),
@@ -647,6 +661,8 @@ const clientFilestack = filestack.init("AVqqom3AKTyQqKiPidHE3z");
                 $("#search_transportation").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
 
                 $("#search_sede_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_department_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
+                $("#search_sex_all").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_sede_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_brand_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });
                 $("#search_model_machines").change( () =>{ $('#data-table-default').DataTable().ajax.reload() });

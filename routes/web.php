@@ -30,6 +30,8 @@ use App\Models\Mesas_casino;
 use App\Models\Billetes_casino;
 use App\Models\Fichas_casino;
 
+use App\Models\Group_cierre_boveda;
+
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
 
@@ -410,6 +412,20 @@ Route::middleware(['auth'])->group(function () {
         'destroy' => 'device_hikvision_facial_casinos.destroy'
     ]);
 
+    Route::resource('clientes_casinos', 'Clientes_casinosController')->names([
+        'index' => 'clientes_casinos',
+        'create' => 'clientes_casinos.create',
+        'update' => 'clientes_casinos.update',
+        'destroy' => 'clientes_casinos.destroy'
+    ]);
+
+    Route::resource('clasificacion_cliente_casinos', 'Clasificacion_cliente_casinosController')->names([
+        'index' => 'clasificacion_cliente_casinos',
+        'create' => 'clasificacion_cliente_casinos.create',
+        'update' => 'clasificacion_cliente_casinos.update',
+        'destroy' => 'clasificacion_cliente_casinos.destroy'
+    ]);
+
 
 
 
@@ -485,9 +501,89 @@ Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_d
         ->with('billetes_casinos',$billetes_casinos )
         ->with('fecha',$fecha )
         ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
+});
 
+// VIEW - DROP CECOM + ARQUEO
+Route::get("/drop/cecom/{group_drops_casino_id}/{fecha}", function($group_drops_casino_id,$fecha){
+
+    $group_drops_casino = Group_cierre_boveda::where("id","=",$group_drops_casino_id)->first();
+
+
+    $mesas_casinos = Mesas_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
+    $billetes_casinos = Billetes_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
+    $sede = Sede::where("id","=",$group_drops_casino->sede_id)->first();
+
+
+    $conteo_drop_cecom_casinos = DB::table('conteo_drop_boveda_casinos')
+    ->selectRaw('conteo_drop_boveda_casinos.*, billetes_casinos.name AS billete_name')
+    ->where("group_cierre_boveda_id","=",$group_drops_casino_id)
+    ->join('billetes_casinos', 'conteo_drop_boveda_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+    ->get();
+
+    $total_drop_sede = 0;
+    foreach ($conteo_drop_cecom_casinos as $key => $value) {
+     $total_drop_sede = $total_drop_sede + ( $value->cantidad * $value->billete_name );
+    }
+       
+
+        return view("view_drop_cecom.index")
+        ->with('sede_id',$group_drops_casino->sede_id )
+        ->with('group_drops_casino',$group_drops_casino )
+        ->with('mesas_casinos',$mesas_casinos )
+        ->with('billetes_casinos',$billetes_casinos )
+        ->with('fecha',$fecha )
+        ->with('sede',$sede )
+        ->with('total_drop_sede',$total_drop_sede )
+        ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
+});
+
+
+// VIEW - DROP CECOM + SEDES
+Route::get("/drop-cecom-sedes/{fecha}", function($fecha){
+
+    $sedes = Sede::all();
+    $conteo_drop_cecom_casinos = DB::table('conteo_drop_boveda_casinos')
+    ->selectRaw('conteo_drop_boveda_casinos.*, billetes_casinos.name AS billete_name, sedes.name AS sede_name')
+    ->where(DB::raw("DATE_FORMAT(group_cierre_bovedas.created_at, '%Y-%m-%d')") ,"=",$fecha)
+    ->join('billetes_casinos', 'conteo_drop_boveda_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
+    ->join('group_cierre_bovedas', 'conteo_drop_boveda_casinos.group_cierre_boveda_id', '=', 'group_cierre_bovedas.id')
+    ->join('sedes', 'group_cierre_bovedas.sede_id', '=', 'sedes.id')
+    ->get();
+
+
+    
+    $total_drop_sedes_array = [];
+    foreach ($sedes as $key => $value_sede) {
+        $total_drop_x_sede = 0;
+        foreach ($conteo_drop_cecom_casinos as $key => $value_conteo) {
+            if( $value_sede->name == $value_conteo->sede_name ){
+                $total_drop_x_sede = $total_drop_x_sede + ( $value_conteo->cantidad * $value_conteo->billete_name );
+            }
+        }
+        array_push($total_drop_sedes_array, (object)[
+            'sede' => $value_sede->name,
+            'total' => $total_drop_x_sede
+        ]);
+    }
+
+    $total_drop_sedes = 0;
+    foreach ($total_drop_sedes_array as $key => $value_conteo_sedes) {
+        $total_drop_sedes = $total_drop_sedes + ( $value_conteo_sedes->total );
+    }
+       
+
+        return view("view_drop_cecom_sedes.index")
+        ->with('fecha',$fecha )
+        ->with('total_drop_sedes_array', json_encode($total_drop_sedes_array) )
+        ->with('total_drop_sedes',$total_drop_sedes );
 
 });
+
+
+
+
+
+
 // VIEW - ARCHINGS CECOM
 Route::get("/view/archings/{group_archings_casino_id}/cecom/{fecha}", function($group_archings_casino_id,$fecha){
 
