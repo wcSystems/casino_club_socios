@@ -61,24 +61,6 @@
                     </div>
                 </div>
             @endif
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
-                <div class="form-group w-100">
-                    <div class="px-0 col-xs-12">
-                        <select id="search_room_select" class="form-control w-100">
-                            <option value="" selected > Sala / Galpon</option>
-                            @foreach( $room_groups as $itemGroup )
-                                <optgroup label="{{ $itemGroup->name }}">
-                                    @foreach( $rooms as $item )
-                                        @if( $item->room_group_id == $itemGroup->id )
-                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                        @endif
-                                    @endforeach
-                                </optgroup>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
@@ -100,8 +82,19 @@
     let global_sumTotalFinal = 0
     let all = [];
     let chart_drop_diario_mes_data;
+    let dataUser = {!! $dataUser !!}
     $('#cierre_mesas_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
+        let fecha_min = "";
+        if(!id){
+            let user = {!! Auth::user() !!}
+            let data = {!! $group_cierre_bovedas !!}
+                data = data.filter( i => i.sede_id == user.sede_id )
+                fecha_min = data.reduce(function (p, v) {
+                    return ( moment(p.created_at).format('YYYYMMDD') > moment(v.created_at).format('YYYYMMDD') ? moment(p.created_at).format('YYYY-MM-DD') : moment(v.created_at).add(1, 'days').format('YYYY-MM-DD') );
+                })
+        }
+
         Swal.fire({
             title: `${type} Registro`,
             showConfirmButton: false,
@@ -123,6 +116,25 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label"> Salas <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12">
+                                        <select id="room_id" class="form-control w-100">
+                                            <option value="" selected > Sala / Galpon</option>
+                                            @foreach( $room_groups as $itemGroup )
+                                                <optgroup label="{{ $itemGroup->name }}">
+                                                    @foreach( $rooms as $item )
+                                                        @if( $item->room_group_id == $itemGroup->id )
+                                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                        @endif
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         @else
                             <div class="col-md-12 col-sm-12">
                                 <div class="form-group row m-b-0">
@@ -138,31 +150,31 @@
                                     </div>
                                 </div>
                             </div>
-                        @endif
-                        <div class="col-md-12 col-sm-12">
-                            <div class="form-group row m-b-0">
-                            <label class=" text-lg-right col-form-label"> Salas <span class="text-danger"> *</span> </label>
-                                <div class="col-lg-12">
-                                    <select id="room_id" class="form-control w-100">
-                                        <option value="" selected > Sala / Galpon</option>
-                                        @foreach( $room_groups as $itemGroup )
-                                            <optgroup label="{{ $itemGroup->name }}">
-                                                @foreach( $rooms as $item )
-                                                    @if( $item->room_group_id == $itemGroup->id )
-                                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                                    @endif
-                                                @endforeach
-                                            </optgroup>
-                                        @endforeach
-                                    </select>
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label"> Salas <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12">
+                                        <select id="room_id" class="form-control w-100">
+                                            @foreach( $sedes as $itemGroup )
+                                                @if( Auth::user()->sede_id == $itemGroup->id )
+                                                    @foreach( $rooms as $item )
+                                                        @if( $item->name == $itemGroup->name )
+                                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
+                        
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Fecha <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="date" id="created_at" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
+                                    <input required type="date" id="created_at" min="${ fecha_min }" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
@@ -179,6 +191,7 @@
             $("#room_id").val(current.room_id)
             $("#created_at").val(current.created_at)
         }
+        
         validateForm()
     }
     function guardar(id) {
@@ -224,8 +237,15 @@
                 let btns_respaldo =`<a class="btn btn-info m-5" onclick="viewArch(${row.id},${row.sede_id})" > Arqueo </a>`
                 let btns = ``;
                     btns +=`<div class="text-center">`
-                    btns +=`<a class="btn btn-blue m-5" onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" > Mesas </a>`
-                    btns +=`<a class="btn btn-info m-5" onclick="viewDropMaquinas(${row.id},${row.sede_id},${row.extra},${row.room_id})" > Maquinas </a>`
+                    if( dataUser.level_id == 1 || dataUser.level_id == 3  ){
+                        btns +=`<a class="btn btn-blue m-5" onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" > Mesas </a>`
+                    }
+                    if( dataUser.level_id == 1 || dataUser.level_id == 4 ){
+                        btns +=`<a class="btn btn-info m-5" onclick="viewDropMaquinas(${row.id},${row.sede_id},${row.extra},${row.room_id})" > Maquinas </a>`
+                    }
+
+                    
+
                     btns +=`</div>`
                 return btns;
             }
@@ -462,7 +482,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `MAQUINAS <br /> DROP CECOM <br /> ${room.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `MAQUINAS <br /> BILLETERA BOVEDA <br /> ${room.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,

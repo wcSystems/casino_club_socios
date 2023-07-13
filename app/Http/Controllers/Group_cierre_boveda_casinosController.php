@@ -12,6 +12,7 @@ use App\Models\Stack_casino;
 use App\Models\Group_archings_casino;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Group_cierre_boveda_casinosController extends Controller
 {

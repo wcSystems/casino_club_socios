@@ -279,7 +279,7 @@
 
        
 
-        dataTable("{{route('clientes_casinos.service')}}",[
+        dataTableClientesCasinos("{{route('clientes_casinos.service')}}",[
             {
                 render: function ( data,type, row,all  ) {
                     return row.id;
@@ -299,8 +299,7 @@
                     let html = ``
 
                         html += `<a onclick="elim('clientes_casinos',${row.id})" style="color: var(--global-2)" class="btn btn-danger btn-icon btn-circle m-2"><i class="fa fa-times"></i></a>
-                                 <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>
-                                 <a onclick="whatsappApi()" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>`
+                                 <a onclick="modal('Editar',${row.id})" style="color: var(--global-2)" class="btn btn-yellow btn-icon btn-circle m-2"><i class="fas fa-pen"></i></a>`
                   
                     
                     return html;

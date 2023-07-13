@@ -15,6 +15,7 @@ use App\Models\Fichas_casino;
 use App\Models\Stack_casino;
 use App\Models\Global_warehouse;
 use App\Models\Group_archings_casino;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -31,6 +32,7 @@ class Cierre_mesasController extends Controller
      */
     public function index()
     {
+        $dataUser = Auth::user();
         $sedes = Sede::all();
         $rooms = Room::all();
         $global_warehouses = Global_warehouse::all();
@@ -51,6 +53,7 @@ class Cierre_mesasController extends Controller
                     ->with('sedes',$sedes)
                     ->with('rooms',$rooms)
                     ->with('room_groups',$room_groups)
+                    ->with('dataUser',$dataUser)
                     ->with('global_warehouses',$global_warehouses)
                     ->with('group_cierre_bovedas',$group_cierre_bovedas)
                     ->with('group_archings_casinos',$group_archings_casinos)

@@ -231,11 +231,7 @@
     }
 
     dataTable("{{route('users.service')}}",[
-        {
-            render: function ( data,type, row,all  ) {
-                return all.row+1;
-            }
-        },
+        { data: 'id' },
         { data: 'name' },
         { data: 'email' },
         { data: 'level_name' },

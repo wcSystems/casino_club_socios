@@ -34,18 +34,34 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
-                <div class="form-group w-100">
-                    <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
-                        <select id="search_sede_all" class="form-control w-100">
-                            <option value="" selected >Todos las sedes</option>
-                            @foreach( $sedes as $item )
-                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                            @endforeach
-                        </select>
+        @if( Auth::user()->level_id == 1 )
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                    <div class="form-group w-100">
+                        <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                            <select id="search_sede_all" class="form-control w-100">
+                                <option value="" selected >Todos las sedes</option>
+                                @foreach( $sedes as $item )
+                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 form-inline mb-3">
+                    <div class="form-group w-100">
+                        <div class="px-0 col-xs-12 col-sm-7 col-md-6 col-lg-8">
+                            <select id="search_sede_all" class="form-control w-100">
+                                @foreach( $sedes as $item )
+                                    @if( Auth::user()->sede_id ==  $item->id )
+                                        <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="table-responsive">
             <table id="data-table-default" class="table table-bordered table-td-valign-middle" style="width:100% !important">
@@ -71,6 +87,15 @@
     let chart_drop_diario_mes_data;
     $('#group_cierre_boveda_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
+        let fecha_min = "";
+        if(!id){
+            let user = {!! Auth::user() !!}
+            let data = {!! $group_cierre_boveda_casinos !!}
+                data = data.filter( i => i.sede_id == user.sede_id )
+                fecha_min = data.reduce(function (p, v) {
+                    return ( moment(p.created_at).format('YYYYMMDD') > moment(v.created_at).format('YYYYMMDD') ? moment(p.created_at).format('YYYY-MM-DD') : moment(v.created_at).add(1, 'days').format('YYYY-MM-DD') );
+                })
+        }
         Swal.fire({
             title: `${type} Registro`,
             showConfirmButton: false,
@@ -78,25 +103,52 @@
                 <form id="form-all" class="needs-validation" action="javascript:void(0);" novalidate>
                 @csrf
                     <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <div class="form-group row m-b-0">
-                                <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
-                                <div class="col-lg-12">
-                                    <select required id="sede_id" class="form-control w-100" >
-                                        <option value="" selected disabled >Selecione una Sede</option>
-                                        @foreach( $sedes as $item )
-                                            <option value="{{ $item->id }}" > {{ $item->name }} </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback text-left">Error campo obligatorio.</div>
+                    
+
+                        @if( Auth::user()->level_id == 1 )
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12">
+                                        <select id="sede_id" class="form-control w-100">
+                                            <option value="" selected >Todos las sedes</option>
+                                            @foreach( $sedes as $item )
+                                                <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                           
+                        @else
+                            <div class="col-md-12 col-sm-12">
+                                <div class="form-group row m-b-0">
+                                    <label class=" text-lg-right col-form-label"> Sedes <span class="text-danger"> *</span> </label>
+                                    <div class="col-lg-12">
+                                        <select id="sede_id" class="form-control w-100">
+                                            @foreach( $sedes as $item )
+                                                @if( Auth::user()->sede_id ==  $item->id )
+                                                    <option value="{{ $item->id }}" > {{ $item->name }} </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        @endif
+
+
+
+
+
+
+
                         <div class="col-md-12 col-sm-12">
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Fecha <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="date" id="created_at" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
+                                    <input required type="date" id="created_at" min="${ !id ? fecha_min : '' }" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>

@@ -34,6 +34,8 @@ use App\Models\Fichas_casino;
 use App\Models\Group_cierre_boveda;
 use App\Models\Global_warehouse;
 use App\Models\Range_machine;
+use App\Models\Clasificacion_cliente_casino;
+use App\Models\Clientes_casino;
 
 Auth::routes();
 Route::middleware(['auth'])->group(function () {
@@ -490,7 +492,7 @@ Route::get("/schedule_department/{department_id}/{year_month_group_id}/{day_init
 Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_drops_casino_id,$fecha){
 
     $group_drops_casino = Group_drops_casino::where("id","=",$group_drops_casino_id)->first();
-
+    $sede = Sede::where("id","=",$group_drops_casino->sede_id)->first();
 
     $mesas_casinos = Mesas_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
     $billetes_casinos = Billetes_casino::where("sede_id","=",$group_drops_casino->sede_id)->get();
@@ -501,6 +503,11 @@ Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_d
     ->where("group_drops_casino_id","=",$group_drops_casino_id)
     ->join('billetes_casinos', 'conteo_drop_cecom_casinos.billetes_casino_id', '=', 'billetes_casinos.id')
     ->get();
+
+    $total_drop_sede = 0;
+    foreach ($conteo_drop_cecom_casinos as $key => $value) {
+     $total_drop_sede = $total_drop_sede + ( $value->cantidad * $value->billete_name );
+    }
        
 
         return view("view_drop_cecom.index")
@@ -509,6 +516,8 @@ Route::get("/view/drop/{group_drops_casino_id}/cecom/{fecha}", function($group_d
         ->with('mesas_casinos',$mesas_casinos )
         ->with('billetes_casinos',$billetes_casinos )
         ->with('fecha',$fecha )
+        ->with('sede',$sede )
+        ->with('total_drop_sede',$total_drop_sede )
         ->with('conteo_drop_cecom_casinos',$conteo_drop_cecom_casinos );
 });
 
@@ -651,9 +660,28 @@ Route::get("/drop-cecom-sedes/{fecha}", function($fecha){
 
 });
 
+// VIEW - CARPETA
+Route::get("/fotos-clientes/{sede_id}/{clasificacion_cliente_casino_id}", function($sede_id,$clasificacion_cliente_casino_id){
+    
+    $sede = Sede::where("id","=",$sede_id)->first();
+    $clasificacion_cliente_casino = Clasificacion_cliente_casino::where("id","=",$clasificacion_cliente_casino_id)->first();
 
-
-
+    $clientes_casinos = DB::table('clientes_casinos')
+    ->selectRaw('clientes_casinos.*,sexs.name AS sex_name, sedes.name AS sede_name, clasificacion_cliente_casinos.name AS clasificacion_cliente_casino_name')
+    ->where([
+        'clientes_casinos.clasificacion_cliente_casino_id' => $clasificacion_cliente_casino_id,
+        'clientes_casinos.sede_id' => $sede_id
+    ])
+    ->join('clasificacion_cliente_casinos', 'clientes_casinos.clasificacion_cliente_casino_id', '=', 'clasificacion_cliente_casinos.id')
+    ->join('sedes', 'clientes_casinos.sede_id', '=', 'sedes.id')
+    ->join('sexs', 'clientes_casinos.sex_id', '=', 'sexs.id')
+    ->get();
+    
+    return view("view_fotos_clientes.index")
+        ->with('clasificacion_cliente_casino',$clasificacion_cliente_casino )
+        ->with('clientes_casinos',$clientes_casinos )
+        ->with('sede',$sede );
+});
 
 
 // VIEW - ARCHINGS CECOM
