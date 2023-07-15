@@ -17,6 +17,8 @@ use App\Models\Global_warehouse;
 use App\Models\Group_archings_casino;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Range_machine;
+
 
 
 use App\Models\Conteo_archings_cecom_casino;
@@ -41,6 +43,7 @@ class Cierre_mesasController extends Controller
         $mesas_casinos = Mesas_casino::all();
         $billetes_casinos = Billetes_casino::all();
         $fichas_casinos = Fichas_casino::all();
+        $range_machines = Range_machine::all();
         $group_archings_casinos = Group_archings_casino::all();
 
         $stack_casinos = DB::table('stack_casinos')
@@ -54,6 +57,7 @@ class Cierre_mesasController extends Controller
                     ->with('rooms',$rooms)
                     ->with('room_groups',$room_groups)
                     ->with('dataUser',$dataUser)
+                    ->with('range_machines',$range_machines)
                     ->with('global_warehouses',$global_warehouses)
                     ->with('group_cierre_bovedas',$group_cierre_bovedas)
                     ->with('group_archings_casinos',$group_archings_casinos)

@@ -240,8 +240,13 @@
                     if( dataUser.level_id == 1 || dataUser.level_id == 3  ){
                         btns +=`<a class="btn btn-blue m-5" onclick="viewDrop(${row.id},${row.sede_id},${row.extra})" > Mesas </a>`
                     }
+
+                    // aca maquinas
+                    // btns +=`<a class="btn btn-info m-5" onclick="viewDropMaquinas(${row.id},${row.sede_id},${row.extra},${row.room_id})" > Maquinas </a>`
+
                     if( dataUser.level_id == 1 || dataUser.level_id == 4 ){
-                        btns +=`<a class="btn btn-info m-5" onclick="viewDropMaquinas(${row.id},${row.sede_id},${row.extra},${row.room_id})" > Maquinas </a>`
+                        btns +=`<a class="btn btn-info m-5" onclick="viewModeRange(${row.id},${row.sede_id},${row.extra},${row.room_id})" > Maquinas </a>`
+                        
                     }
 
                     
@@ -265,6 +270,27 @@
             }
         },
     ],"group_name")
+
+
+function viewModeRange(id,sede_id,extra,room_id) {
+
+    let html = ``
+    let rangos = {!! $range_machines !!}
+
+        rangos.forEach(element => {
+            html +=`<a class="btn btn-blue m-5" onclick="viewDropMaquinas(${id},${sede_id},${extra},${room_id},${element.id},'${element.name}')"  > ${element.name} </a>`
+        });
+
+        Swal.fire({
+            title: `Rangos`,
+            showConfirmButton: false,
+            showCloseButton: true,
+            allowOutsideClick: false,
+            width: "95%",
+            html: html
+        })  
+    }
+
 
 
     /* OPCION N2 - DROP */
@@ -388,7 +414,7 @@
         });
     }
 
-    function viewDropMaquinas(id,sede_id,extra,room_id) {
+    function viewDropMaquinas(id,sede_id,extra,room_id,range_id,range_name) {
         let currentGroup = {!! $group_cierre_bovedas !!}.find( i => i.id == id )
         let sede = {!! $sedes !!}.find( i => i.id == sede_id )
         let room = {!! $rooms !!}.find( i => i.id == room_id )
@@ -406,7 +432,7 @@
             success: function (res) {
                 clearInterval(timerInterval)
 
-                let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
+                let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id && i.range_machine_id == range_id )
                 let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
                 let html = ``;
                 html += `
@@ -482,7 +508,7 @@
                     </div>
                 </div>`
                 Swal.fire({
-                    title: `MAQUINAS <br /> BILLETERA BOVEDA <br /> ${room.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
+                    title: `MAQUINAS ${range_name} <br /> BILLETERA BOVEDA <br /> ${room.name} <br /> ${moment( currentGroup.created_at ).format("YYYY-MM-DD")}`,
                     showConfirmButton: false,
                     showCloseButton: true,
                     allowOutsideClick: false,
