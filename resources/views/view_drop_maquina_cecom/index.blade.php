@@ -227,7 +227,7 @@
                                 billetes_casinos.forEach(billete => {
                                     let current = conteo_drop_cecom_casinos.find( i => i.global_warehouse_id == maquina.id && i.billetes_casino_id == billete.id )
                                     let id = ( current == undefined ) ? 0 : parseInt(current.id)
-                                    let cantidad = ( current == undefined ) ? "" : parseInt(current.cantidad)
+                                    let cantidad = ( current == undefined ) ? 0 : parseInt(current.cantidad)
                                     html += `
                                     <td class="font-weight-bold" style="background-color:#EDEDED !important" >
                                         <input type="hidden" id="id_${maquina.id}_${billete.id}" value="${id}"  > 

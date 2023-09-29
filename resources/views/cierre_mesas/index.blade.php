@@ -85,15 +85,15 @@
     let dataUser = {!! $dataUser !!}
     $('#cierre_mesas_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
-        let fecha_min = "";
+        /* let fecha_min = "";
         if(!id){
             let user = {!! Auth::user() !!}
             let data = {!! $group_cierre_bovedas !!}
                 data = data.filter( i => i.sede_id == user.sede_id )
                 fecha_min = data.reduce(function (p, v) {
-                    return ( moment(p.created_at).format('YYYYMMDD') > moment(v.created_at).format('YYYYMMDD') ? moment(p.created_at).format('YYYY-MM-DD') : moment(v.created_at).add(1, 'days').format('YYYY-MM-DD') );
+                    return ( moment(p.created_at).format('YYYYMMDD') > moment(v.created_at).format('YYYYMMDD') ? moment(p.created_at).format('YYYY-MM-DD') : moment(v.created_at).format('YYYY-MM-DD') );
                 })
-        }
+        } */
 
         Swal.fire({
             title: `${type} Registro`,
@@ -174,7 +174,7 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Fecha <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="date" id="created_at" min="${ fecha_min }" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
+                                    <input required type="date" id="created_at"  name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
@@ -459,10 +459,11 @@ function viewModeRange(id,sede_id,extra,room_id) {
                                         let current = res.list.find( i => i.global_warehouse_id == maquina.id && i.billetes_casino_id == billete.id )
                                         let id = ( current == undefined ) ? 0 : parseFloat(current.id)
                                         let cantidad = ( current == undefined ) ? "" : parseFloat(current.cantidad)
+                                            cantidad = ( cantidad == 0 ) ? "" : cantidad
                                         html += `
                                         <td class="font-weight-bold" style="background-color:#EDEDED !important" >
                                             <input type="hidden" id="id_${maquina.id}_${billete.id}" value="${id}"  > 
-                                            <input  value="${cantidad}" id="mesa_billete_${maquina.id}_${billete.id}" onkeyup="sumMesaBilleteTotalMaquina(${maquina.id},${billete.id},${billete.name},${sede_id},${room_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
+                                            <input  value="${cantidad}" id="mesa_billete_${maquina.id}_${billete.id}" onkeyup="sumMesaBilleteTotalMaquina(${maquina.id},${billete.id},${billete.name},${sede_id},${room_id},${range_id})" type="number" min="0"  class="form-control p-0 m-auto text-center font-weight-bold parsley-normal upper" style="min-width:80px !important" > 
                                         </td>`
                                     });
                                 html += `
@@ -503,7 +504,7 @@ function viewModeRange(id,sede_id,extra,room_id) {
 
                     html += `
                     <div class="col-sm-12" style="margin-top:20px">
-                        <button onclick="saveDropMaquina(${id},${sede_id},${room_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
+                        <button onclick="saveDropMaquina(${id},${sede_id},${room_id},${range_id})" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block;"> Guardar </button>
                         <button onclick="salir()" type="submit" class="swal2-confirm swal2-styled bg-secondary" aria-label="" style="display: inline-block;"> Cerrar </button>
                     </div>
                 </div>`
@@ -517,14 +518,14 @@ function viewModeRange(id,sede_id,extra,room_id) {
                 }) 
                 global_warehouses.forEach(maquina => {
                     billetes_casinos.forEach(billete => {
-                        sumMesaBilleteTotalMaquina(maquina.id,billete.id,billete.name,sede_id,room_id)
+                        sumMesaBilleteTotalMaquina(maquina.id,billete.id,billete.name,sede_id,room_id,range_id)
                     })
                 })
                 //sumMesaALL(sede_id)
             }
         });
     }
-    function sumMesaBilleteTotalMaquina(maquina_id,billete_id,billete_name,sede_id,room_id) {
+    function sumMesaBilleteTotalMaquina(maquina_id,billete_id,billete_name,sede_id,room_id,range_id) {
         let extra = $(`#extra`).val() == "" ? 0 : parseFloat($(`#extra`).val())
         let sumTotalMesas = 0
         let sumTotalBilletes = 0
@@ -534,7 +535,7 @@ function viewModeRange(id,sede_id,extra,room_id) {
         let cantidad_billeteFinal = 0
         let cantidadFinal = 0
 
-        let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
+        let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id && i.range_machine_id == range_id )
         let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
             
             billetes_casinos.forEach(element => {
@@ -654,8 +655,8 @@ function viewModeRange(id,sede_id,extra,room_id) {
         let extra = $(`#extra`).val() == "" ? 0 : parseFloat($(`#extra`).val())
         $(`#total_extra`).val(`$ ${global_sumTotalFinal+extra}`)
     }
-    function saveDropMaquina(group_cierre_boveda_id,sede_id,room_id) {
-        let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id )
+    function saveDropMaquina(group_cierre_boveda_id,sede_id,room_id,range_id) {
+        let global_warehouses = {!! $global_warehouses !!}.filter( i => i.room_id == room_id && i.range_machine_id == range_id )
         let billetes_casinos = {!! $billetes_casinos !!}.filter( i => i.sede_id == sede_id )
         let total_registros = global_warehouses.length*billetes_casinos.length
         let countReset = 0

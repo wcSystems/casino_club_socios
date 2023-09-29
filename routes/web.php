@@ -660,6 +660,20 @@ Route::get("/drop-cecom-sedes/{fecha}", function($fecha){
 
 });
 
+// VIEW - CARPETA - TODAS LAS SEDES
+Route::get("/fotos-clientes-sedes/", function(){
+
+    $clientes_casinos = DB::table('clientes_casinos')
+    ->selectRaw('clientes_casinos.*,sexs.name AS sex_name, sedes.name AS sede_name, clasificacion_cliente_casinos.name AS clasificacion_cliente_casino_name')
+    ->join('clasificacion_cliente_casinos', 'clientes_casinos.clasificacion_cliente_casino_id', '=', 'clasificacion_cliente_casinos.id')
+    ->join('sedes', 'clientes_casinos.sede_id', '=', 'sedes.id')
+    ->join('sexs', 'clientes_casinos.sex_id', '=', 'sexs.id')
+    ->get();
+    
+    return view("view_fotos_clientes_sedes.index")
+        ->with('clientes_casinos',$clientes_casinos );
+});
+
 // VIEW - CARPETA
 Route::get("/fotos-clientes/{sede_id}/{clasificacion_cliente_casino_id}", function($sede_id,$clasificacion_cliente_casino_id){
     

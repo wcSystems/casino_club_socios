@@ -87,15 +87,15 @@
     let chart_drop_diario_mes_data;
     $('#group_cierre_boveda_casinos_nav').removeClass("closed").addClass("active").addClass("expand")
     function modal(type,id) {
-        let fecha_min = "";
+        /* let fecha_min = "";
         if(!id){
             let user = {!! Auth::user() !!}
             let data = {!! $group_cierre_boveda_casinos !!}
                 data = data.filter( i => i.sede_id == user.sede_id )
                 fecha_min = data.reduce(function (p, v) {
-                    return ( moment(p.created_at).format('YYYYMMDD') > moment(v.created_at).format('YYYYMMDD') ? moment(p.created_at).format('YYYY-MM-DD') : moment(v.created_at).add(1, 'days').format('YYYY-MM-DD') );
+                    return ( moment(p.created_at).format('YYYYMMDD') > moment(v.created_at).format('YYYYMMDD') ? moment(p.created_at).format('YYYY-MM-DD') : moment(v.created_at).format('YYYY-MM-DD') );
                 })
-        }
+        } */
         Swal.fire({
             title: `${type} Registro`,
             showConfirmButton: false,
@@ -148,7 +148,7 @@
                             <div class="form-group row m-b-0">
                                 <label class=" text-lg-right col-form-label"> Fecha <span class="text-danger"> *</span> </label>
                                 <div class="col-lg-12">
-                                    <input required type="date" id="created_at" min="${ !id ? fecha_min : '' }" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
+                                    <input required type="date" id="created_at" name="created_at" class="form-control parsley-normal upper" style="color: var(--global-2) !important" placeholder="Defina la fecha aca" >
                                     <div class="invalid-feedback text-left">Error campo obligatorio.</div>
                                 </div>
                             </div>
